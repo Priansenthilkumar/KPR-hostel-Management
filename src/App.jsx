@@ -1,0 +1,136 @@
+// src/App.jsx
+import { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import Navbar from './components/Layout/Navbar';
+import Footer from './components/Layout/Footer';
+import { useDarkMode } from './hooks/useDarkMode';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import kprLogo from './assets/kprLogo.png';
+
+const Dashboard        = lazy(() => import('./pages/Dashboard'));
+const Overview         = lazy(() => import('./pages/Overview'));
+const FoodMenu         = lazy(() => import('./pages/FoodMenu'));
+const MessToken        = lazy(() => import('./pages/MessToken'));
+const AddEntry         = lazy(() => import('./pages/AddEntry'));
+const Login            = lazy(() => import('./pages/Login'));
+
+// Parallel Hostel Management Suite
+const HostelDashboard  = lazy(() => import('./pages/HostelDashboard'));
+const HostelManagement = lazy(() => import('./pages/HostelManagement'));
+const HostelSchedule   = lazy(() => import('./pages/HostelSchedule'));
+const HostelGatePass   = lazy(() => import('./pages/HostelGatePass'));
+const AddHostelEntry   = lazy(() => import('./pages/AddHostelEntry'));
+
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="flex flex-col items-center gap-4">
+      <img
+        src={kprLogo}
+        alt="KPR Logo"
+        className="h-10 w-auto object-contain bg-white/95 p-1.5 rounded-xl shadow-xs"
+      />
+      <div className="flex gap-1.5">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="w-2 h-2 rounded-full bg-[#52B74A] animate-bounce"
+            style={{ animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+function ProtectedRoute({ children, allowedRole }) {
+  const { user } = useAuth();
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  if (allowedRole && user.role !== allowedRole) {
+    return <Navigate to={user.role === 'warden' ? '/hostel-dashboard' : '/'} replace />;
+  }
+  return children;
+}
+
+function HomeRedirect() {
+  const { user } = useAuth();
+  if (user?.role === 'warden') {
+    return <Navigate to="/hostel-dashboard" replace />;
+  }
+  return <Dashboard />;
+}
+
+function MainAppLayout() {
+  const location = useLocation();
+  const isLogin = location.pathname === '/login';
+
+  return (
+    <div className={`min-h-screen ${isLogin ? 'bg-slate-900' : 'bg-[var(--bg-page)]'} text-[var(--text-primary)] transition-colors duration-300`}>
+      <Navbar />
+
+      <main className={`${isLogin ? 'w-full' : 'pb-16 w-full'} flex flex-col items-center`}>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            
+            {/* Mess Protected Routes (Only Mess Staff) */}
+            <Route path="/"                  element={<ProtectedRoute allowedRole="mess_staff"><HomeRedirect /></ProtectedRoute>} />
+            <Route path="/overview"          element={<ProtectedRoute allowedRole="mess_staff"><Overview /></ProtectedRoute>} />
+            <Route path="/menu"              element={<ProtectedRoute allowedRole="mess_staff"><FoodMenu /></ProtectedRoute>} />
+            <Route path="/tokens"            element={<ProtectedRoute allowedRole="mess_staff"><MessToken /></ProtectedRoute>} />
+            <Route path="/add-entry"         element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
+            <Route path="/add-entry/:id"     element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
+
+            {/* Hostel Management Suite Routes (Only Wardens) */}
+            <Route path="/hostel-dashboard"  element={<ProtectedRoute allowedRole="warden"><HostelDashboard /></ProtectedRoute>} />
+            <Route path="/hostel-overview"   element={<ProtectedRoute allowedRole="warden"><HostelManagement /></ProtectedRoute>} />
+            <Route path="/hostel-pass"       element={<ProtectedRoute allowedRole="warden"><HostelGatePass /></ProtectedRoute>} />
+            <Route path="/hostel-add-entry"  element={<ProtectedRoute allowedRole="warden"><AddHostelEntry /></ProtectedRoute>} />
+
+            <Route path="*"                  element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
+
+export default function App() {
+  const { isDark, toggle } = useDarkMode();
+
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <MainAppLayout />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 3500,
+            style: {
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '13.5px',
+              fontWeight: 500,
+              borderRadius: '10px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
+              border: '1px solid var(--border)',
+              background: 'var(--toast-bg)',
+              color: 'var(--text-primary)',
+            },
+            success: {
+              iconTheme: { primary: '#52B74A', secondary: '#fff' },
+              style: { borderLeft: '4px solid #52B74A' },
+            },
+            error: {
+              iconTheme: { primary: '#D32F2F', secondary: '#fff' },
+              style: { borderLeft: '4px solid #D32F2F' },
+            },
+          }}
+        />
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
