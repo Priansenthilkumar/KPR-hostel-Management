@@ -70,11 +70,11 @@ export default function Login() {
   if (user) {
     return (
       <div
-        className="fixed inset-0 z-50 w-full h-full overflow-y-auto flex items-center justify-center p-4 sm:p-6 bg-cover bg-center bg-no-repeat page-enter"
+        className="fixed inset-0 z-50 w-full h-full min-h-screen overflow-y-auto flex items-center justify-center p-4 sm:p-6 bg-cover bg-center bg-no-repeat page-enter"
         style={{ backgroundImage: `url(${campusBg})` }}
       >
-        {/* Soft Blur Vignette Overlay */}
-        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md pointer-events-none" />
+        {/* Soft Blur Backdrop covering 100% of viewport */}
+        <div className="fixed inset-0 w-full h-full bg-slate-900/40 backdrop-blur-md pointer-events-none z-0" />
 
         <div className="relative z-10 w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100 flex flex-col items-center text-center gap-5 text-gray-900">
           <img
@@ -125,11 +125,11 @@ export default function Login() {
 
   return (
     <div
-      className="fixed inset-0 z-50 w-full h-full overflow-y-auto flex items-center justify-center p-4 sm:p-6 bg-cover bg-center bg-no-repeat page-enter"
+      className="fixed inset-0 z-50 w-full h-full min-h-screen overflow-y-auto flex items-center justify-center p-4 sm:p-6 bg-cover bg-center bg-no-repeat page-enter"
       style={{ backgroundImage: `url(${campusBg})` }}
     >
-      {/* Soft Blur Backdrop matching official CAP screenshot */}
-      <div className="absolute inset-0 bg-slate-900/35 backdrop-blur-md pointer-events-none" />
+      {/* Soft Blur Backdrop covering 100% of screen */}
+      <div className="fixed inset-0 w-full h-full bg-slate-900/40 backdrop-blur-md pointer-events-none z-0" />
 
       {/* Clean White CAP Style Card */}
       <div className="relative z-10 w-full max-w-[94vw] sm:max-w-md bg-white rounded-3xl shadow-2xl border-0 overflow-hidden flex flex-col my-auto text-gray-900 p-5 sm:p-8">
