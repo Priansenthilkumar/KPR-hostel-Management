@@ -228,13 +228,6 @@ export default function Login() {
               className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium transition-all"
               required
             />
-            <span className="text-[10.5px] text-[#1C5362] font-extrabold flex items-center gap-1 mt-0.5">
-              <span>
-                {activeTab === 'super_admin'
-                  ? '👑 Super Admin Access: Full CRUD permissions for both Hostel & Mess'
-                  : '🔒 Only official @kpriet.ac.in mail IDs are granted access'}
-              </span>
-            </span>
           </div>
 
           {/* Password Input */}
