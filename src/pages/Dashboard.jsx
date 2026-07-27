@@ -12,6 +12,7 @@ import {
   Clock,
   ChevronRight,
   MessageSquareWarning,
+  AlertCircle,
 } from 'lucide-react';
 import { useEntries } from '../hooks/useEntries';
 import { formatDisplayDate, formatKg } from '../utils/dateUtils';
@@ -74,10 +75,10 @@ export default function Dashboard() {
                 variant="danger"
                 size="md"
                 onClick={() => setIsComplaintModalOpen(true)}
-                className="shadow-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm bg-red-600/90 hover:bg-red-600 text-white border border-red-500/40"
+                className="shadow-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm bg-red-600/90 hover:bg-red-600 text-white border border-red-500/40 flex items-center gap-2 font-extrabold"
               >
-                <MessageSquareWarning size={16} strokeWidth={2.2} />
-                Complaint Box
+                <AlertCircle size={16} strokeWidth={2.2} />
+                <span>Complaint Box (App Fault Resolution)</span>
               </Button>
             </div>
           </div>
@@ -109,14 +110,14 @@ export default function Dashboard() {
         onClose={() => setIsComplaintModalOpen(false)}
       />
 
-      {/* ── Quick Action Launchpad (Hidden on Mobile) ── */}
-      <div className="hidden sm:block">
-        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4 tracking-tight flex items-center gap-2">
+      {/* ── Quick Action Launchpad (Mobile & Desktop) ── */}
+      <div>
+        <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)] mb-4 tracking-tight flex items-center gap-2">
           <Utensils size={18} className="text-[#52B74A]" />
           <span>Quick Launchpad</span>
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Card 1: Add Entry */}
           <div
             onClick={() => navigate('/add-entry')}
@@ -201,6 +202,28 @@ export default function Dashboard() {
             </div>
             <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-semibold text-amber-600">
               <span>Download File</span>
+              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 5: Complaint Box (App Fault Resolution) */}
+          <div
+            onClick={() => setIsComplaintModalOpen(true)}
+            className="card p-5 rounded-2xl cursor-pointer group hover:border-red-500 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between border border-red-500/30 bg-red-500/5 shadow-xs"
+          >
+            <div>
+              <div className="w-11 h-11 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center mb-3 group-hover:bg-red-500 group-hover:text-white transition-colors">
+                <AlertCircle size={22} strokeWidth={2.2} />
+              </div>
+              <h3 className="font-bold text-base text-[var(--text-primary)] group-hover:text-red-500 transition-colors">
+                Complaint Box
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+                Report app glitches, menu errors, or fault resolution tickets.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-red-500/20 flex items-center justify-between text-xs font-semibold text-red-500">
+              <span>Open Complaint Box</span>
               <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
