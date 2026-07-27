@@ -56,6 +56,29 @@ export const authService = {
       };
     }
 
+    // Super Admin Access
+    const isSuperAdmin =
+      selectedRole === 'super_admin' ||
+      inputEmail.includes('superadmin') ||
+      inputEmail.includes('admin') ||
+      inputEmail.includes('director');
+
+    if (isSuperAdmin) {
+      const superAdminUser = {
+        id: `usr_super_${Date.now()}`,
+        email: inputEmail,
+        name: inputEmail.split('@')[0].toUpperCase() || 'SUPER ADMIN',
+        role: 'super_admin',
+        roleTitle: 'Super Admin (Full Access)',
+        avatarBg: '#8B5CF6',
+        isSuperAdmin: true,
+        canEditHostel: true,
+        canEditMess: true,
+      };
+      const session = this.createSession(superAdminUser);
+      return { success: true, user: session, redirectPath: '/', role: 'super_admin' };
+    }
+
     const isWarden = selectedRole === 'warden' || inputEmail.includes('warden') || inputEmail.includes('hostel');
 
     if (isWarden) {

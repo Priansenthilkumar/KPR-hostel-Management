@@ -57,7 +57,12 @@ export default function Login() {
     toast.loading('Authenticating via KPRIET Google SSO...', { duration: 1500 });
     
     setTimeout(() => {
-      const ssoEmail = activeTab === 'warden' ? 'warden@kpriet.ac.in' : 'mess.staff@kpriet.ac.in';
+      const ssoEmail =
+        activeTab === 'super_admin'
+          ? 'admin@kpriet.ac.in'
+          : activeTab === 'warden'
+          ? 'warden@kpriet.ac.in'
+          : 'mess.staff@kpriet.ac.in';
       const res = login(ssoEmail, 'sso_token_ok', activeTab);
       if (res.success && res.user) {
         toast.success(`Authenticated via KPRIET SSO (${ssoEmail})!`);
@@ -155,12 +160,12 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Dual Tab Bar (Mess Coordinator vs Hostel Warden) */}
+        {/* Triple Tab Bar (Mess Coordinator vs Hostel Warden vs Super Admin) */}
         <div className="w-full rounded-xl overflow-hidden border border-gray-300 flex mb-5 shadow-xs">
           <button
             type="button"
             onClick={() => handleTabChange('mess_staff')}
-            className={`flex-1 py-2.5 sm:py-3 px-1 text-[11px] sm:text-xs font-extrabold transition-all text-center leading-tight ${
+            className={`flex-1 py-2.5 sm:py-3 px-0.5 text-[10.5px] sm:text-xs font-extrabold transition-all text-center leading-tight ${
               activeTab === 'mess_staff'
                 ? 'bg-[#1C5362] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -171,7 +176,7 @@ export default function Login() {
           <button
             type="button"
             onClick={() => handleTabChange('warden')}
-            className={`flex-1 py-2.5 sm:py-3 px-1 text-[11px] sm:text-xs font-extrabold transition-all text-center leading-tight ${
+            className={`flex-1 py-2.5 sm:py-3 px-0.5 text-[10.5px] sm:text-xs font-extrabold transition-all text-center leading-tight border-x border-gray-300 ${
               activeTab === 'warden'
                 ? 'bg-[#1C5362] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -179,13 +184,24 @@ export default function Login() {
           >
             Hostel Warden
           </button>
+          <button
+            type="button"
+            onClick={() => handleTabChange('super_admin')}
+            className={`flex-1 py-2.5 sm:py-3 px-0.5 text-[10.5px] sm:text-xs font-extrabold transition-all text-center leading-tight ${
+              activeTab === 'super_admin'
+                ? 'bg-purple-800 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Super Admin
+          </button>
         </div>
 
         {/* Divider with Text */}
         <div className="relative flex py-2 items-center mb-5">
           <div className="flex-grow border-t border-gray-200"></div>
           <span className="flex-shrink mx-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-            {activeTab === 'warden' ? 'Warden' : 'Mess'} credentials login
+            {activeTab === 'super_admin' ? 'Super Admin' : activeTab === 'warden' ? 'Warden' : 'Mess'} credentials login
           </span>
           <div className="flex-grow border-t border-gray-200"></div>
         </div>
@@ -200,14 +216,24 @@ export default function Login() {
             </label>
             <input
               type="text"
-              placeholder={activeTab === 'warden' ? 'warden@kpriet.ac.in' : 'mess.staff@kpriet.ac.in'}
+              placeholder={
+                activeTab === 'super_admin'
+                  ? 'admin@kpriet.ac.in'
+                  : activeTab === 'warden'
+                  ? 'warden@kpriet.ac.in'
+                  : 'mess.staff@kpriet.ac.in'
+              }
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium transition-all"
               required
             />
             <span className="text-[10.5px] text-[#1C5362] font-extrabold flex items-center gap-1 mt-0.5">
-              <span>🔒 Only official @kpriet.ac.in mail IDs are granted access</span>
+              <span>
+                {activeTab === 'super_admin'
+                  ? '👑 Super Admin Access: Full CRUD permissions for both Hostel & Mess'
+                  : '🔒 Only official @kpriet.ac.in mail IDs are granted access'}
+              </span>
             </span>
           </div>
 

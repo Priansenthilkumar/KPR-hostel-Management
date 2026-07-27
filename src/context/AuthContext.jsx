@@ -13,8 +13,14 @@ export function AuthProvider({ children }) {
 
     if (result.success) {
       setUser(result.user);
-      const greeting = result.user.role === 'warden' ? 'Hostel Warden Portal' : 'Mess Management Hub';
-      toast.success(`Welcome to ${greeting}, ${result.user.name}!`, { icon: '🔓', duration: 4000 });
+      const greeting =
+        result.user.role === 'super_admin'
+          ? 'Super Admin Full Management Suite'
+          : result.user.role === 'warden'
+          ? 'Hostel Warden Portal'
+          : 'Mess Management Hub';
+      const icon = result.user.role === 'super_admin' ? '👑' : '🔓';
+      toast.success(`Welcome to ${greeting}, ${result.user.name}!`, { icon, duration: 4000 });
     } else {
       toast.error(result.message || 'Invalid email or password.');
     }
@@ -28,8 +34,26 @@ export function AuthProvider({ children }) {
     toast.success('Logged out successfully.');
   };
 
+  const isSuperAdmin = user?.role === 'super_admin';
+  const isWarden = user?.role === 'warden';
+  const isMessStaff = user?.role === 'mess_staff';
+  const canEditHostel = isSuperAdmin || isWarden;
+  const canEditMess = isSuperAdmin || isMessStaff;
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, getDemoUsers: authService.getDemoUsers }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        isSuperAdmin,
+        isWarden,
+        isMessStaff,
+        canEditHostel,
+        canEditMess,
+        getDemoUsers: authService.getDemoUsers,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

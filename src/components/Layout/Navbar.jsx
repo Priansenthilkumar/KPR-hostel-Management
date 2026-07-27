@@ -39,6 +39,16 @@ const wardenNavLinks = [
   { to: '/hostel-add-entry', label: 'Add Entry', icon: PlusCircle, desc: 'Log Duty / Remarks' },
 ];
 
+const superAdminNavLinks = [
+  { to: '/', label: 'Mess Hub', icon: Home, desc: 'Mess Management Dashboard' },
+  { to: '/hostel-dashboard', label: 'Hostel Hub', icon: ShieldCheck, desc: 'Hostel Warden Dashboard' },
+  { to: '/overview', label: 'Mess Logs', icon: BarChart2, desc: 'Mess Analytics & Entries' },
+  { to: '/hostel-overview', label: 'Hostel Logs', icon: BarChart2, desc: 'Duty Logs & Student Remarks' },
+  { to: '/hostel-pass', label: 'Gate Pass', icon: Ticket, desc: 'Outing Gate Pass Generator' },
+  { to: '/add-entry', label: '+ Mess Log', icon: PlusCircle, desc: 'Add Mess Meal Entry' },
+  { to: '/hostel-add-entry', label: '+ Hostel Log', icon: PlusCircle, desc: 'Add Warden Duty/Remark' },
+];
+
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,7 +59,12 @@ export default function Navbar() {
     return null;
   }
 
-  const activeNavLinks = user?.role === 'warden' ? wardenNavLinks : messNavLinks;
+  const activeNavLinks =
+    user?.role === 'super_admin'
+      ? superAdminNavLinks
+      : user?.role === 'warden'
+      ? wardenNavLinks
+      : messNavLinks;
 
   const handleRefresh = () => {
     toast.success('Dashboard data refreshed!');
@@ -167,17 +182,22 @@ export default function Navbar() {
             {/* Auth User Profile Badge - Desktop Full Pill, Mobile Compact Avatar triggering left slidebar */}
             {user ? (
               <>
-                {/* Desktop View */}
+                {/* Desktop View Profile Badge */}
                 <div className="hidden md:flex items-center gap-1.5 sm:gap-2 bg-[#123843] border border-[#235868] px-2 sm:px-2.5 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
                   <div
                     className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full flex items-center justify-center text-[10px] sm:text-[10.5px] font-extrabold text-white flex-shrink-0"
                     style={{ backgroundColor: user.avatarBg }}
                   >
-                    {user.role === 'warden' ? 'W' : 'M'}
+                    {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
                   </div>
                   <span className="font-bold text-[11px] sm:text-xs max-w-[140px] truncate">
                     {user.name}
                   </span>
+                  {user.role === 'super_admin' && (
+                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-purple-600 text-white uppercase">
+                      Admin
+                    </span>
+                  )}
                   <button
                     onClick={logout}
                     className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 ml-0.5 flex-shrink-0"
@@ -186,6 +206,32 @@ export default function Navbar() {
                     <LogOut size={14} />
                   </button>
                 </div>
+
+                {/* Super Admin Quick Switcher Bar on Desktop */}
+                {user.role === 'super_admin' && (
+                  <div className="hidden xl:flex items-center gap-1 bg-purple-950/80 p-1 rounded-xl border border-purple-500/40">
+                    <button
+                      onClick={() => navigate('/')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
+                        !location.pathname.startsWith('/hostel')
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : 'text-purple-300 hover:text-white'
+                      }`}
+                    >
+                      Mess Hub
+                    </button>
+                    <button
+                      onClick={() => navigate('/hostel-dashboard')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
+                        location.pathname.startsWith('/hostel')
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : 'text-purple-300 hover:text-white'
+                      }`}
+                    >
+                      Hostel Hub
+                    </button>
+                  </div>
+                )}
               </>
             ) : (
               <NavLink
@@ -222,7 +268,11 @@ export default function Navbar() {
                   />
                   <div>
                     <h2 className="text-sm font-extrabold text-white leading-tight">
-                      {user?.role === 'warden' ? 'KPR HOSTELS WARDEN' : 'KPR MESS MANAGEMENT'}
+                      {user?.role === 'super_admin'
+                        ? 'SUPER ADMIN PORTAL'
+                        : user?.role === 'warden'
+                        ? 'KPR HOSTELS WARDEN'
+                        : 'KPR MESS MANAGEMENT'}
                     </h2>
                   </div>
                 </div>
@@ -244,7 +294,7 @@ export default function Navbar() {
                       className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black text-white shadow-sm"
                       style={{ backgroundColor: user.avatarBg }}
                     >
-                      {user.role === 'warden' ? 'W' : 'M'}
+                      {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
                     </div>
                     <div>
                       <span className="text-xs font-extrabold block text-white">{user.name}</span>
@@ -273,6 +323,40 @@ export default function Navbar() {
                     <LogIn size={15} />
                     <span>Sign In to Portal</span>
                   </NavLink>
+                </div>
+              )}
+
+              {/* Super Admin Quick Switcher Bar in Mobile Drawer */}
+              {user?.role === 'super_admin' && (
+                <div className="mx-4 mb-3 p-1.5 rounded-2xl bg-purple-950/90 border border-purple-500/40 flex items-center justify-between gap-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeDrawer();
+                      navigate('/');
+                    }}
+                    className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-center transition-all ${
+                      !location.pathname.startsWith('/hostel')
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'text-purple-300 hover:text-white'
+                    }`}
+                  >
+                    Mess Hub
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeDrawer();
+                      navigate('/hostel-dashboard');
+                    }}
+                    className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-center transition-all ${
+                      location.pathname.startsWith('/hostel')
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'text-purple-300 hover:text-white'
+                    }`}
+                  >
+                    Hostel Hub
+                  </button>
                 </div>
               )}
 
