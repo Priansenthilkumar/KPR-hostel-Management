@@ -21,6 +21,7 @@ const HostelManagement = lazy(() => import('./pages/HostelManagement'));
 const HostelSchedule   = lazy(() => import('./pages/HostelSchedule'));
 const HostelGatePass   = lazy(() => import('./pages/HostelGatePass'));
 const AddHostelEntry   = lazy(() => import('./pages/AddHostelEntry'));
+const SuperAdminHome   = lazy(() => import('./pages/SuperAdminHome'));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -48,14 +49,17 @@ function ProtectedRoute({ children, allowedRole }) {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  if (allowedRole && user.role !== allowedRole) {
-    return <Navigate to={user.role === 'warden' ? '/hostel-dashboard' : '/'} replace />;
+  if (allowedRole && user.role !== 'super_admin' && user.role !== allowedRole) {
+    return <Navigate to={user.role === 'super_admin' ? '/admin-home' : user.role === 'warden' ? '/hostel-dashboard' : '/'} replace />;
   }
   return children;
 }
 
 function HomeRedirect() {
   const { user } = useAuth();
+  if (user?.role === 'super_admin') {
+    return <SuperAdminHome />;
+  }
   if (user?.role === 'warden') {
     return <Navigate to="/hostel-dashboard" replace />;
   }
@@ -75,7 +79,10 @@ function MainAppLayout() {
           <Routes>
             <Route path="/login" element={<Login />} />
             
-            {/* Mess Protected Routes (Only Mess Staff) */}
+            {/* Common Super Admin Home Route */}
+            <Route path="/admin-home" element={<ProtectedRoute allowedRole="super_admin"><SuperAdminHome /></ProtectedRoute>} />
+            
+            {/* Mess Protected Routes (Mess Staff & Super Admin) */}
             <Route path="/"                  element={<ProtectedRoute allowedRole="mess_staff"><HomeRedirect /></ProtectedRoute>} />
             <Route path="/overview"          element={<ProtectedRoute allowedRole="mess_staff"><Overview /></ProtectedRoute>} />
             <Route path="/menu"              element={<ProtectedRoute allowedRole="mess_staff"><FoodMenu /></ProtectedRoute>} />
@@ -83,7 +90,7 @@ function MainAppLayout() {
             <Route path="/add-entry"         element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
             <Route path="/add-entry/:id"     element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
 
-            {/* Hostel Management Suite Routes (Only Wardens) */}
+            {/* Hostel Management Suite Routes (Wardens & Super Admin) */}
             <Route path="/hostel-dashboard"  element={<ProtectedRoute allowedRole="warden"><HostelDashboard /></ProtectedRoute>} />
             <Route path="/hostel-overview"   element={<ProtectedRoute allowedRole="warden"><HostelManagement /></ProtectedRoute>} />
             <Route path="/hostel-pass"       element={<ProtectedRoute allowedRole="warden"><HostelGatePass /></ProtectedRoute>} />

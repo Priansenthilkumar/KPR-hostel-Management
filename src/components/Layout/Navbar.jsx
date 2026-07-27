@@ -17,6 +17,7 @@ import {
   LogIn,
   LogOut,
   User,
+  Crown,
 } from 'lucide-react';
 import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';
@@ -40,13 +41,12 @@ const wardenNavLinks = [
 ];
 
 const superAdminNavLinks = [
+  { to: '/admin-home', label: 'Master Home', icon: Crown, desc: 'Common Admin Command Center' },
   { to: '/', label: 'Mess Hub', icon: Home, desc: 'Mess Management Dashboard' },
   { to: '/hostel-dashboard', label: 'Hostel Hub', icon: ShieldCheck, desc: 'Hostel Warden Dashboard' },
   { to: '/overview', label: 'Mess Logs', icon: BarChart2, desc: 'Mess Analytics & Entries' },
   { to: '/hostel-overview', label: 'Hostel Logs', icon: BarChart2, desc: 'Duty Logs & Student Remarks' },
   { to: '/hostel-pass', label: 'Gate Pass', icon: Ticket, desc: 'Outing Gate Pass Generator' },
-  { to: '/add-entry', label: '+ Mess Log', icon: PlusCircle, desc: 'Add Mess Meal Entry' },
-  { to: '/hostel-add-entry', label: '+ Hostel Log', icon: PlusCircle, desc: 'Add Warden Duty/Remark' },
 ];
 
 export default function Navbar() {
@@ -107,7 +107,7 @@ export default function Navbar() {
             {/* Brand Logo & Title */}
             <div
               className="flex items-center gap-2.5 cursor-pointer flex-shrink-0 select-none group"
-              onClick={() => navigate(user?.role === 'warden' ? '/hostel-dashboard' : '/')}
+              onClick={() => navigate(user?.role === 'super_admin' ? '/admin-home' : user?.role === 'warden' ? '/hostel-dashboard' : '/')}
             >
               <img
                 src={kprLogo}
@@ -116,10 +116,10 @@ export default function Navbar() {
               />
               <div className="flex flex-col text-left justify-center">
                 <h1 className="text-xs sm:text-sm md:text-base font-extrabold text-white leading-tight tracking-tight whitespace-nowrap">
-                  {user ? (user.role === 'warden' ? 'KPR HOSTELS' : 'KPR MESS') : 'KPR HOSTELS & MESS'}
+                  {user ? (user.role === 'super_admin' ? 'KPR SUPER ADMIN' : user.role === 'warden' ? 'KPR HOSTELS' : 'KPR MESS') : 'KPR HOSTELS & MESS'}
                 </h1>
                 <span className="text-[10px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider">
-                  {user ? (user.role === 'warden' ? 'Warden Portal' : 'Mess Operations') : 'Management Suite'}
+                  {user ? (user.role === 'super_admin' ? 'Command Center' : user.role === 'warden' ? 'Warden Portal' : 'Mess Operations') : 'Management Suite'}
                 </span>
               </div>
             </div>
@@ -131,7 +131,7 @@ export default function Navbar() {
               <NavLink
                 key={to}
                 to={to}
-                end={to === '/' || to === '/hostel-management'}
+                end={to === '/' || to === '/hostel-management' || to === '/admin-home'}
                 className={({ isActive }) =>
                   `inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition-all duration-150 leading-none ${
                     isActive
@@ -179,7 +179,7 @@ export default function Navbar() {
               <span>Export Excel</span>
             </button>
 
-            {/* Auth User Profile Badge - Desktop Full Pill, Mobile Compact Avatar triggering left slidebar */}
+            {/* Auth User Profile Badge - Desktop Full Pill */}
             {user ? (
               <>
                 {/* Desktop View Profile Badge */}
@@ -211,10 +211,20 @@ export default function Navbar() {
                 {user.role === 'super_admin' && (
                   <div className="hidden xl:flex items-center gap-1 bg-purple-950/80 p-1 rounded-xl border border-purple-500/40">
                     <button
+                      onClick={() => navigate('/admin-home')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
+                        location.pathname === '/admin-home'
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : 'text-purple-300 hover:text-white'
+                      }`}
+                    >
+                      Master Home
+                    </button>
+                    <button
                       onClick={() => navigate('/')}
                       className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
-                        !location.pathname.startsWith('/hostel')
-                          ? 'bg-purple-600 text-white shadow-xs'
+                        location.pathname === '/' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/tokens') || location.pathname.startsWith('/add-entry')
+                          ? 'bg-[#52B74A] text-white shadow-xs'
                           : 'text-purple-300 hover:text-white'
                       }`}
                     >
@@ -224,7 +234,7 @@ export default function Navbar() {
                       onClick={() => navigate('/hostel-dashboard')}
                       className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
                         location.pathname.startsWith('/hostel')
-                          ? 'bg-purple-600 text-white shadow-xs'
+                          ? 'bg-sky-600 text-white shadow-xs'
                           : 'text-purple-300 hover:text-white'
                       }`}
                     >
@@ -328,16 +338,30 @@ export default function Navbar() {
 
               {/* Super Admin Quick Switcher Bar in Mobile Drawer */}
               {user?.role === 'super_admin' && (
-                <div className="mx-4 mb-3 p-1.5 rounded-2xl bg-purple-950/90 border border-purple-500/40 flex items-center justify-between gap-2 text-xs">
+                <div className="mx-4 mb-3 p-1.5 rounded-2xl bg-purple-950/90 border border-purple-500/40 flex items-center justify-between gap-1.5 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeDrawer();
+                      navigate('/admin-home');
+                    }}
+                    className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
+                      location.pathname === '/admin-home'
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'text-purple-300 hover:text-white'
+                    }`}
+                  >
+                    Master Home
+                  </button>
                   <button
                     type="button"
                     onClick={() => {
                       closeDrawer();
                       navigate('/');
                     }}
-                    className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-center transition-all ${
-                      !location.pathname.startsWith('/hostel')
-                        ? 'bg-purple-600 text-white shadow-xs'
+                    className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
+                      location.pathname === '/' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/tokens') || location.pathname.startsWith('/add-entry')
+                        ? 'bg-[#52B74A] text-white shadow-xs'
                         : 'text-purple-300 hover:text-white'
                     }`}
                   >
@@ -349,9 +373,9 @@ export default function Navbar() {
                       closeDrawer();
                       navigate('/hostel-dashboard');
                     }}
-                    className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-center transition-all ${
+                    className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
                       location.pathname.startsWith('/hostel')
-                        ? 'bg-purple-600 text-white shadow-xs'
+                        ? 'bg-sky-600 text-white shadow-xs'
                         : 'text-purple-300 hover:text-white'
                     }`}
                   >
