@@ -83,7 +83,7 @@ export default function SuperAdminHome() {
               <Button
                 variant="success"
                 size="md"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/mess-dashboard')}
                 className="shadow-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm font-extrabold flex items-center gap-2"
               >
                 <Utensils size={16} />
@@ -303,7 +303,7 @@ export default function SuperAdminHome() {
           <Button
             variant="success"
             size="lg"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/mess-dashboard')}
             className="w-full shadow-md text-xs font-extrabold flex items-center justify-center gap-2 h-12"
           >
             <span>Open Mess Management Portal</span>

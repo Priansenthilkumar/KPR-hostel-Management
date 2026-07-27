@@ -42,7 +42,7 @@ const wardenNavLinks = [
 
 const superAdminNavLinks = [
   { to: '/admin-home', label: 'Master Home', icon: Crown, desc: 'Common Admin Command Center' },
-  { to: '/', label: 'Mess Hub', icon: Home, desc: 'Mess Management Dashboard' },
+  { to: '/mess-dashboard', label: 'Mess Hub', icon: Home, desc: 'Mess Management Dashboard' },
   { to: '/hostel-dashboard', label: 'Hostel Hub', icon: ShieldCheck, desc: 'Hostel Warden Dashboard' },
   { to: '/overview', label: 'Mess Logs', icon: BarChart2, desc: 'Mess Analytics & Entries' },
   { to: '/hostel-overview', label: 'Hostel Logs', icon: BarChart2, desc: 'Duty Logs & Student Remarks' },
@@ -221,9 +221,9 @@ export default function Navbar() {
                       Master Home
                     </button>
                     <button
-                      onClick={() => navigate('/')}
+                      onClick={() => navigate('/mess-dashboard')}
                       className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
-                        location.pathname === '/' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/tokens') || location.pathname.startsWith('/add-entry')
+                        location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/tokens') || location.pathname.startsWith('/add-entry')
                           ? 'bg-[#52B74A] text-white shadow-xs'
                           : 'text-purple-300 hover:text-white'
                       }`}
@@ -357,10 +357,10 @@ export default function Navbar() {
                     type="button"
                     onClick={() => {
                       closeDrawer();
-                      navigate('/');
+                      navigate('/mess-dashboard');
                     }}
                     className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
-                      location.pathname === '/' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/tokens') || location.pathname.startsWith('/add-entry')
+                      location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/tokens') || location.pathname.startsWith('/add-entry')
                         ? 'bg-[#52B74A] text-white shadow-xs'
                         : 'text-purple-300 hover:text-white'
                     }`}

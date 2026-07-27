@@ -80,10 +80,11 @@ function MainAppLayout() {
             <Route path="/login" element={<Login />} />
             
             {/* Common Super Admin Home Route */}
-            <Route path="/admin-home" element={<ProtectedRoute allowedRole="super_admin"><SuperAdminHome /></ProtectedRoute>} />
+            <Route path="/admin-home"        element={<ProtectedRoute allowedRole="super_admin"><SuperAdminHome /></ProtectedRoute>} />
             
             {/* Mess Protected Routes (Mess Staff & Super Admin) */}
             <Route path="/"                  element={<ProtectedRoute allowedRole="mess_staff"><HomeRedirect /></ProtectedRoute>} />
+            <Route path="/mess-dashboard"    element={<ProtectedRoute allowedRole="mess_staff"><Dashboard /></ProtectedRoute>} />
             <Route path="/overview"          element={<ProtectedRoute allowedRole="mess_staff"><Overview /></ProtectedRoute>} />
             <Route path="/menu"              element={<ProtectedRoute allowedRole="mess_staff"><FoodMenu /></ProtectedRoute>} />
             <Route path="/tokens"            element={<ProtectedRoute allowedRole="mess_staff"><MessToken /></ProtectedRoute>} />
