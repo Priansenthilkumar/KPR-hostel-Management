@@ -225,20 +225,20 @@ export default function FoodMenu() {
             </div>
           </div>
 
-          {/* ── Interactive Day Tabs Selector ── */}
-          <div className="flex flex-col gap-4 mb-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
-                <Calendar size={14} className="text-[#52B74A]" />
-                <span>Weekly Menu Schedule by Day</span>
+          {/* ── Interactive Day Selector & Daily Menu Table (Mobile-Optimized) ── */}
+          <div className="flex flex-col gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
+                <Calendar size={16} className="text-[#52B74A]" />
+                <span>Daily Menu Table — {selectedDay}</span>
               </h2>
               <span className="text-xs text-[var(--text-muted)] font-semibold">
-                Viewing: <strong className="text-[#52B74A]">{selectedDay} Menu</strong>
+                Tap day to view table
               </span>
             </div>
 
-            {/* Segmented Day Selector */}
-            <div className="p-1.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] shadow-inner grid grid-cols-7 gap-1 select-none">
+            {/* Segmented Day Selector Button Row */}
+            <div className="p-1 sm:p-1.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] shadow-inner grid grid-cols-7 gap-1 select-none">
               {days.map((d) => {
                 const isSelected = selectedDay === d;
                 const isToday = d === todayDayName;
@@ -247,13 +247,13 @@ export default function FoodMenu() {
                     type="button"
                     key={d}
                     onClick={() => setSelectedDay(d)}
-                    className={`py-2.5 px-1 rounded-xl text-xs font-extrabold transition-all duration-200 flex flex-col items-center justify-center leading-tight border ${
+                    className={`py-2 sm:py-2.5 px-0.5 sm:px-1 rounded-xl text-[11px] sm:text-xs font-extrabold transition-all duration-200 flex flex-col items-center justify-center leading-tight border ${
                       isSelected
-                        ? 'bg-[#52B74A] text-white border-[#52B74A] shadow-sm scale-[1.02]'
+                        ? 'bg-[#52B74A] text-white border-[#52B74A] shadow-xs scale-[1.02]'
                         : 'bg-transparent text-[var(--text-secondary)] border-transparent hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)]'
                     }`}
                   >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5">
                       <span>{d.slice(0, 3)}</span>
                       {isToday && <span className="w-1.5 h-1.5 rounded-full bg-amber-400" title="Today" />}
                     </div>
@@ -262,9 +262,77 @@ export default function FoodMenu() {
                 );
               })}
             </div>
+
+            {/* ── Selected Day Dedicated Menu Table ── */}
+            <div className="card p-4 sm:p-6 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col gap-3">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-extrabold text-[#52B74A]">{selectedDay} Menu Table</span>
+                  {selectedDay === todayDayName && (
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#52B74A] text-white uppercase">
+                      Today
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs text-[var(--text-muted)] font-bold">3 Meals Served</span>
+              </div>
+
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-[var(--border)] text-[11px] font-extrabold uppercase text-[var(--text-muted)] bg-[var(--bg-subtle)]">
+                      <th className="py-2.5 px-3 w-28 sm:w-36">Meal</th>
+                      <th className="py-2.5 px-3 w-32 sm:w-40">Timing</th>
+                      <th className="py-2.5 px-3">Items Served</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border)] text-xs">
+                    {['Breakfast', 'Lunch', 'Dinner'].map((meal) => {
+                      const Icon = MEAL_ICONS[meal] || Utensils;
+                      const items = currentDayMenu[meal] || [];
+                      const colorBadge =
+                        meal === 'Breakfast'
+                          ? 'bg-amber-500/15 text-amber-600 border-amber-500/30'
+                          : meal === 'Lunch'
+                          ? 'bg-[#52B74A]/15 text-[#52B74A] border-[#52B74A]/30'
+                          : 'bg-[#174351]/15 text-[#174351] dark:text-[#3DA1D1] border-[#174351]/30';
+
+                      return (
+                        <tr key={meal} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                          <td className="py-3 px-3 align-top font-bold">
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-extrabold ${colorBadge}`}>
+                              <Icon size={13} />
+                              <span>{meal}</span>
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 align-top text-[11px] font-semibold text-[var(--text-muted)] whitespace-nowrap">
+                            <span className="flex items-center gap-1">
+                              <Clock size={12} />
+                              <span>{MEAL_TIMINGS[meal]}</span>
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 align-top">
+                            <div className="flex flex-wrap gap-1.5">
+                              {items.map((item) => (
+                                <span
+                                  key={item}
+                                  className="text-xs px-2.5 py-1 rounded-lg bg-[var(--bg-subtle)] border border-[var(--border)] text-[var(--text-primary)] font-semibold leading-relaxed"
+                                >
+                                  {item}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
-          {/* ── Selected Day Meal Cards ── */}
+          {/* ── Selected Day Card Visual View ── */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             {['Breakfast', 'Lunch', 'Dinner'].map((meal) => {
               const Icon = MEAL_ICONS[meal] || Utensils;
@@ -273,7 +341,7 @@ export default function FoodMenu() {
               return (
                 <div
                   key={meal}
-                  className="card p-6 rounded-2xl flex flex-col gap-4 shadow-xs border border-[var(--border)] hover:shadow-md transition-shadow"
+                  className="card p-5 sm:p-6 rounded-2xl flex flex-col gap-4 shadow-xs border border-[var(--border)] hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
                     <div className="flex items-center gap-2.5">
@@ -297,7 +365,7 @@ export default function FoodMenu() {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    {items.map((dish, i) => (
+                    {items.map((dish) => (
                       <div
                         key={dish}
                         className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold text-[var(--text-primary)]"
@@ -312,63 +380,93 @@ export default function FoodMenu() {
             })}
           </div>
 
-          {/* ── Complete Weekly Schedule Overview Table ── */}
-          <div className="card p-6 rounded-2xl flex flex-col gap-4 shadow-xs">
-            <div className="flex items-center gap-2 pb-3 border-b border-[var(--border)]">
-              <Flame size={18} className="text-[#52B74A]" />
-              <h3 className="font-extrabold text-sm text-[var(--text-primary)] uppercase tracking-wider">
-                Full 7-Day Weekly Mess Menu Matrix
-              </h3>
+          {/* ── Complete 7-Day Menu Tables Stack (Every Day Table View for Mobile & Desktop) ── */}
+          <div className="card p-4 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+              <div className="flex items-center gap-2">
+                <Flame size={18} className="text-[#52B74A]" />
+                <h3 className="font-extrabold text-xs sm:text-sm text-[var(--text-primary)] uppercase tracking-wider">
+                  Full 7-Day Weekly Mess Menu Tables
+                </h3>
+              </div>
+              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#52B74A]/15 text-[#52B74A] border border-[#52B74A]/30">
+                All 7 Days
+              </span>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="data-table w-full">
-                <thead>
-                  <tr>
-                    <th className="w-28">Day</th>
-                    <th>Breakfast</th>
-                    <th>Lunch</th>
-                    <th>Dinner</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {days.map((d) => {
-                    const isToday = d === todayDayName;
-                    const dayMeals = menuData[d] || {};
-                    return (
-                      <tr
-                        key={d}
-                        onClick={() => setSelectedDay(d)}
-                        className={`cursor-pointer transition-colors ${
-                          d === selectedDay
-                            ? 'bg-[#52B74A]/10 font-bold'
-                            : 'hover:bg-[var(--bg-subtle)]'
-                        }`}
+            {/* Stacked Tables for Every Single Day */}
+            <div className="flex flex-col gap-6">
+              {days.map((dayName) => {
+                const isToday = dayName === todayDayName;
+                const isSelected = dayName === selectedDay;
+                const dayMenu = menuData[dayName] || {};
+
+                return (
+                  <div
+                    key={dayName}
+                    className={`rounded-2xl border transition-all p-4 ${
+                      isSelected
+                        ? 'border-[#52B74A] bg-[#52B74A]/5 shadow-sm'
+                        : 'border-[var(--border)] bg-[var(--bg-card)]'
+                    }`}
+                  >
+                    {/* Day Header */}
+                    <div className="flex items-center justify-between pb-2.5 border-b border-[var(--border)] mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-extrabold text-sm text-[var(--text-primary)]">{dayName} Menu</span>
+                        {isToday && (
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#52B74A] text-white uppercase">
+                            Today
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedDay(dayName)}
+                        className="text-xs font-bold text-[#52B74A] hover:underline"
                       >
-                        <td className="whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-xs">{d}</span>
-                            {isToday && (
-                              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#52B74A] text-white">
-                                Today
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="text-xs text-[var(--text-secondary)]">
-                          {(dayMeals.Breakfast || []).join(', ')}
-                        </td>
-                        <td className="text-xs text-[var(--text-secondary)]">
-                          {(dayMeals.Lunch || []).join(', ')}
-                        </td>
-                        <td className="text-xs text-[var(--text-secondary)]">
-                          {(dayMeals.Dinner || []).join(', ')}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                        Select Day
+                      </button>
+                    </div>
+
+                    {/* Day Table */}
+                    <div className="overflow-x-auto w-full">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="border-b border-[var(--border)] text-[10.5px] font-extrabold uppercase text-[var(--text-muted)] bg-[var(--bg-subtle)]">
+                            <th className="py-2 px-3 w-28">Meal</th>
+                            <th className="py-2 px-3 w-32">Timing</th>
+                            <th className="py-2 px-3">Dishes Served</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--border)]">
+                          {['Breakfast', 'Lunch', 'Dinner'].map((meal) => {
+                            const Icon = MEAL_ICONS[meal] || Utensils;
+                            const items = dayMenu[meal] || [];
+
+                            return (
+                              <tr key={meal} className="hover:bg-[var(--bg-subtle)]/50">
+                                <td className="py-2.5 px-3 font-bold align-top">
+                                  <span className="inline-flex items-center gap-1 text-[11.5px] text-[var(--text-primary)]">
+                                    <Icon size={13} className="text-[#52B74A]" />
+                                    <span>{meal}</span>
+                                  </span>
+                                </td>
+                                <td className="py-2.5 px-3 text-[11px] text-[var(--text-muted)] font-semibold align-top whitespace-nowrap">
+                                  {MEAL_TIMINGS[meal]}
+                                </td>
+                                <td className="py-2.5 px-3 text-xs text-[var(--text-secondary)] font-medium align-top leading-relaxed">
+                                  {items.join(', ')}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </>
