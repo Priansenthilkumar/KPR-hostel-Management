@@ -40,11 +40,14 @@ export default function Login() {
       setIsSubmitting(false);
 
       if (res.success && res.user) {
+        toast.success(`Welcome back, ${res.user.name}!`);
         if (res.user.role === 'warden') {
           navigate('/hostel-dashboard', { replace: true });
         } else {
           navigate('/', { replace: true });
         }
+      } else if (res.message) {
+        toast.error(res.message);
       }
     }, 250);
   };
@@ -54,14 +57,17 @@ export default function Login() {
     toast.loading('Authenticating via KPRIET Google SSO...', { duration: 1500 });
     
     setTimeout(() => {
-      const ssoEmail = activeTab === 'warden' ? 'warden@kpr.edu' : 'mess.staff@kpr.edu';
+      const ssoEmail = activeTab === 'warden' ? 'warden@kpriet.ac.in' : 'mess.staff@kpriet.ac.in';
       const res = login(ssoEmail, 'sso_token_ok', activeTab);
       if (res.success && res.user) {
+        toast.success(`Authenticated via KPRIET SSO (${ssoEmail})!`);
         if (res.user.role === 'warden') {
           navigate('/hostel-dashboard', { replace: true });
         } else {
           navigate('/', { replace: true });
         }
+      } else if (res.message) {
+        toast.error(res.message);
       }
     }, 1500);
   };
@@ -190,16 +196,19 @@ export default function Login() {
           {/* Email Input */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-              KPRIET Email / Username <span className="text-red-500">*</span>
+              KPRIET Mail ID <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              placeholder={activeTab === 'warden' ? 'warden@kpr.edu' : 'mess.staff@kpr.edu'}
+              placeholder={activeTab === 'warden' ? 'warden@kpriet.ac.in' : 'mess.staff@kpriet.ac.in'}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium transition-all"
               required
             />
+            <span className="text-[10.5px] text-[#1C5362] font-extrabold flex items-center gap-1 mt-0.5">
+              <span>🔒 Only official @kpriet.ac.in mail IDs are granted access</span>
+            </span>
           </div>
 
           {/* Password Input */}

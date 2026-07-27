@@ -34,10 +34,26 @@ export const authService = {
    * Authenticate user credentials against backend database
    */
   authenticate(email, password, selectedRole = 'mess_staff') {
-    const inputEmail = email.trim().toLowerCase();
+    let inputEmail = email.trim().toLowerCase();
 
     if (!inputEmail || !password) {
       return { success: false, message: 'Please enter both email and password.' };
+    }
+
+    // Auto-append @kpriet.ac.in if user entered username without domain
+    if (!inputEmail.includes('@')) {
+      inputEmail = `${inputEmail}@kpriet.ac.in`;
+    }
+
+    // Enforce strictly @kpriet.ac.in institutional email domain
+    const emailDomain = inputEmail.split('@')[1];
+    const allowedDomains = ['kpriet.ac.in', 'kpr.edu'];
+
+    if (!allowedDomains.includes(emailDomain)) {
+      return {
+        success: false,
+        message: 'Access Denied: Only official KPRIET institutional email IDs (@kpriet.ac.in) are permitted to log in.',
+      };
     }
 
     const isWarden = selectedRole === 'warden' || inputEmail.includes('warden') || inputEmail.includes('hostel');
