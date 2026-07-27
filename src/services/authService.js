@@ -45,25 +45,26 @@ export const authService = {
       inputEmail = `${inputEmail}@kpriet.ac.in`;
     }
 
-    // Enforce strictly @kpriet.ac.in institutional email domain
-    const emailDomain = inputEmail.split('@')[1];
-    const allowedDomains = ['kpriet.ac.in', 'kpr.edu'];
+    // Authorized Super Admin Whitelist
+    const AUTHORIZED_SUPER_ADMINS = [
+      '24cb042@kpriet.ac.in',
+      'priansenthilkumar99@gmail.com',
+      'bh.overallcoordinator@kpriet.ac.in',
+    ];
 
-    if (!allowedDomains.includes(emailDomain)) {
-      return {
-        success: false,
-        message: 'Access Denied: Only official KPRIET institutional email IDs (@kpriet.ac.in) are permitted to log in.',
-      };
-    }
-
-    // Super Admin Access
-    const isSuperAdmin =
+    const isSuperAdminRequest =
       selectedRole === 'super_admin' ||
-      inputEmail.includes('superadmin') ||
-      inputEmail.includes('admin') ||
-      inputEmail.includes('director');
+      AUTHORIZED_SUPER_ADMINS.includes(inputEmail);
 
-    if (isSuperAdmin) {
+    if (isSuperAdminRequest) {
+      if (!AUTHORIZED_SUPER_ADMINS.includes(inputEmail)) {
+        return {
+          success: false,
+          message:
+            'Access Denied: This email ID is not authorized for Super Admin access.',
+        };
+      }
+
       const superAdminUser = {
         id: `usr_super_${Date.now()}`,
         email: inputEmail,
@@ -76,7 +77,18 @@ export const authService = {
         canEditMess: true,
       };
       const session = this.createSession(superAdminUser);
-      return { success: true, user: session, redirectPath: '/', role: 'super_admin' };
+      return { success: true, user: session, redirectPath: '/admin-home', role: 'super_admin' };
+    }
+
+    // Enforce strictly @kpriet.ac.in institutional email domain for staff
+    const emailDomain = inputEmail.split('@')[1];
+    const allowedDomains = ['kpriet.ac.in', 'kpr.edu'];
+
+    if (!allowedDomains.includes(emailDomain)) {
+      return {
+        success: false,
+        message: 'Access Denied: Only official KPRIET institutional email IDs (@kpriet.ac.in) are permitted to log in.',
+      };
     }
 
     const isWarden = selectedRole === 'warden' || inputEmail.includes('warden') || inputEmail.includes('hostel');

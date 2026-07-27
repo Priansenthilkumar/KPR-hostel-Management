@@ -59,7 +59,7 @@ export default function Login() {
     setTimeout(() => {
       const ssoEmail =
         activeTab === 'super_admin'
-          ? 'admin@kpriet.ac.in'
+          ? '24cb042@kpriet.ac.in'
           : activeTab === 'warden'
           ? 'warden@kpriet.ac.in'
           : 'mess.staff@kpriet.ac.in';
@@ -218,7 +218,7 @@ export default function Login() {
               type="text"
               placeholder={
                 activeTab === 'super_admin'
-                  ? 'admin@kpriet.ac.in'
+                  ? '24cb042@kpriet.ac.in'
                   : activeTab === 'warden'
                   ? 'warden@kpriet.ac.in'
                   : 'mess.staff@kpriet.ac.in'
@@ -231,7 +231,7 @@ export default function Login() {
             <span className="text-[10.5px] text-[#1C5362] font-extrabold flex items-center gap-1 mt-0.5">
               <span>
                 {activeTab === 'super_admin'
-                  ? '👑 Super Admin Access: Full CRUD permissions for both Hostel & Mess'
+                  ? '👑 Super Admin IDs: 24cb042@kpriet.ac.in, priansenthilkumar99@gmail.com, bh.overallcoordinator@kpriet.ac.in'
                   : '🔒 Only official @kpriet.ac.in mail IDs are granted access'}
               </span>
             </span>
