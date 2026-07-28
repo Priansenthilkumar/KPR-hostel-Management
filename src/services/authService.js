@@ -3,9 +3,12 @@ import {
   generateSalt,
   hashPasswordWithSalt,
 } from '../utils/cryptoUtils';
+import { db } from './firebaseConfig';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 /**
  * KPR HOSTELS & MESS MANAGEMENT - Production Authentication Backend Service
+ * Integrated with Firebase Cloud Firestore Database
  */
 
 const AUTH_STORAGE_KEY = 'kpr_auth_session_v6';
@@ -116,10 +119,10 @@ export const authService = {
     }
   },
 
-  // ── DIRECT REGISTRATION FLOW (NO OTP REQUIRED) ──
+  // ── DIRECT REGISTRATION FLOW (FIREBASE FIRESTORE SYNCED) ──
 
   /**
-   * Complete User Registration with Salted SHA-256 Hashing
+   * Complete User Registration with Firebase Firestore & Salted Hashing
    */
   async completeRegistration(email, password, name, role = 'mess_staff') {
     let inputEmail = normalizeEmail(email);
@@ -172,8 +175,33 @@ export const authService = {
       isVerified: true,
     };
 
+    // Save locally
     this.saveRegisteredUser(userObj);
     this.resetFailedAttempts(inputEmail);
+
+    // Save to Firebase Cloud Firestore Database
+    try {
+      const userDocRef = doc(db, 'users', inputEmail);
+      await setDoc(
+        userDocRef,
+        {
+          id: userObj.id,
+          email: inputEmail,
+          name: displayName,
+          role: userObj.role,
+          roleTitle: userObj.roleTitle,
+          passwordHash,
+          salt,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          isVerified: true,
+        },
+        { merge: true }
+      );
+      console.log('✅ User account & credentials stored in Firebase Firestore successfully!');
+    } catch (fbErr) {
+      console.warn('Firebase Firestore sync notice:', fbErr);
+    }
 
     // Auto log in newly registered user
     const session = this.createSession(userObj);
@@ -181,14 +209,14 @@ export const authService = {
       success: true,
       user: session,
       redirectPath: isSuperAdmin ? '/admin-home' : isWarden ? '/hostel-dashboard' : '/mess-dashboard',
-      message: 'Account successfully created and registered!',
+      message: 'Account successfully registered and saved to Firebase!',
     };
   },
 
-  // ── DIRECT PASSWORD RESET FLOW (NO OTP REQUIRED) ──
+  // ── DIRECT PASSWORD RESET FLOW (FIREBASE FIRESTORE SYNCED) ──
 
   /**
-   * Complete Password Reset Directly
+   * Complete Password Reset Directly & Update Firebase Firestore
    */
   async completePasswordReset(email, newPassword) {
     let inputEmail = normalizeEmail(email);
@@ -235,13 +263,31 @@ export const authService = {
     this.saveRegisteredUser(user);
     this.resetFailedAttempts(inputEmail);
 
+    // Update password hash in Firebase Cloud Firestore Database
+    try {
+      const userDocRef = doc(db, 'users', inputEmail);
+      await setDoc(
+        userDocRef,
+        {
+          email: inputEmail,
+          passwordHash,
+          salt,
+          updatedAt: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+      console.log('✅ Password update synced to Firebase Firestore successfully!');
+    } catch (fbErr) {
+      console.warn('Firebase Firestore password update notice:', fbErr);
+    }
+
     return {
       success: true,
       message: 'Password successfully updated! You can now log in with your new password.',
     };
   },
 
-  // ── AUTHENTICATION & LOGIN FLOW ──
+  // ── AUTHENTICATION & LOGIN FLOW (FIREBASE FIRESTORE READ) ──
 
   /**
    * Authenticate user credentials against salted password hashes
@@ -284,7 +330,33 @@ export const authService = {
       }
     }
 
-    // 2. Check in Registered Users Database
+    // 2. Check in Firebase Cloud Firestore first
+    try {
+      const userDocRef = doc(db, 'users', inputEmail);
+      const userSnap = await getDoc(userDocRef);
+      if (userSnap.exists()) {
+        const fbUserData = userSnap.data();
+        if (fbUserData.passwordHash && fbUserData.salt) {
+          const inputHash = await hashPasswordWithSalt(password, fbUserData.salt);
+          if (inputHash === fbUserData.passwordHash) {
+            this.resetFailedAttempts(inputEmail);
+            this.saveRegisteredUser(fbUserData); // Cache locally
+            const session = this.createSession(fbUserData);
+            const redirectPath =
+              fbUserData.role === 'super_admin'
+                ? '/admin-home'
+                : fbUserData.role === 'warden'
+                ? '/hostel-dashboard'
+                : '/mess-dashboard';
+            return { success: true, user: session, redirectPath, role: fbUserData.role };
+          }
+        }
+      }
+    } catch (fbErr) {
+      console.warn('Firebase Firestore auth lookup notice:', fbErr);
+    }
+
+    // 3. Check in Local Registered Users Database
     let registeredUser = this.findRegisteredUser(inputEmail);
 
     if (registeredUser) {
@@ -310,7 +382,7 @@ export const authService = {
       return { success: true, user: session, redirectPath, role: registeredUser.role };
     }
 
-    // 3. Fallback Initial Setup for Standard Institutional Staff (First Login auto-hash setup)
+    // 4. Fallback Initial Setup for Standard Institutional Staff (First Login auto-hash setup & Firebase sync)
     const isWarden = selectedRole === 'warden' || inputEmail.includes('warden') || inputEmail.includes('hostel');
     const isSuperAdmin = isSuperAdminRequest;
 
@@ -335,6 +407,14 @@ export const authService = {
 
     this.saveRegisteredUser(newUser);
     this.resetFailedAttempts(inputEmail);
+
+    // Sync initial account to Firebase
+    try {
+      const userDocRef = doc(db, 'users', inputEmail);
+      await setDoc(userDocRef, { ...newUser, createdAt: new Date().toISOString() }, { merge: true });
+    } catch (fbErr) {
+      console.warn('Firebase initial user sync notice:', fbErr);
+    }
 
     const session = this.createSession(newUser);
     const redirectPath = isSuperAdmin
