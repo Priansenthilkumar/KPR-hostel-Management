@@ -20,7 +20,6 @@ const FAULT_CATEGORIES = [
   'Food Menu Schedule Mistake',
   'Meal Log / Calculation Error',
   'Mobile UI Layout Glitch',
-  'Token Generation Fault',
   'General App Bug / Suggestion',
 ];
 

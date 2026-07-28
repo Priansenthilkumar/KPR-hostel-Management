@@ -219,7 +219,7 @@ export default function Dashboard() {
                 Complaint Box
               </h3>
               <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
-                Report app glitches, menu errors, or fault resolution tickets.
+                Report app glitches, menu errors, or fault resolution complaints.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-red-500/20 flex items-center justify-between text-xs font-semibold text-red-500">

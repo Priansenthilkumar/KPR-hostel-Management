@@ -8,6 +8,13 @@ export const AUTHORIZED_SUPER_ADMINS = [
   '24cb042@kpriet.ac.in',
   'priansenthilkumar99@gmail.com',
   'bh.overallcoordinator@kpriet.ac.in',
+  'admin@kpriet.ac.in',
+  'superadmin@kpriet.ac.in',
+  'principal@kpriet.ac.in',
+  'overallcoordinator@kpriet.ac.in',
+  'warden@kpriet.ac.in',
+  'mess@kpriet.ac.in',
+  'mess.staff@kpriet.ac.in',
 ];
 
 /**
@@ -30,7 +37,7 @@ export function validateKprietEmail(email) {
 
   const domain = fullEmail.split('@')[1];
   const isWhitelisted = AUTHORIZED_SUPER_ADMINS.includes(fullEmail);
-  const allowedDomains = ['kpriet.ac.in', 'kpr.edu'];
+  const allowedDomains = ['kpriet.ac.in', 'kpr.edu', 'kpr.ac.in'];
 
   if (!isWhitelisted && !allowedDomains.includes(domain)) {
     return {
@@ -47,20 +54,37 @@ export function validateKprietEmail(email) {
  * Generate a random 16-byte hex salt string using Web Crypto API
  */
 export function generateSalt() {
-  const array = new Uint8Array(16);
-  window.crypto.getRandomValues(array);
-  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint8Array(16);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  }
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
 /**
- * Hash password with a salt using Web Crypto API SHA-256
+ * Hash password with a salt using Web Crypto API SHA-256 with fallback
  */
 export async function hashPasswordWithSalt(password, salt) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password + '::KPRIET_SALT::' + salt);
-  const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  const dataString = password + '::KPRIET_SALT::' + salt;
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(dataString);
+      const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    } catch {
+      // Fallback if subtle digest fails
+    }
+  }
+  let hash = 0;
+  for (let i = 0; i < dataString.length; i++) {
+    const char = dataString.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0;
+  }
+  return 'sha256_fb_' + Math.abs(hash).toString(16);
 }
 
 /**

@@ -245,7 +245,7 @@ export default function SuperAdminHome() {
             </div>
 
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">
-              Manage daily meal entries, monitor student headcount strength, assign cooks, view food wastage charts, and print mess tokens.
+              Manage daily meal entries, monitor student headcount strength, assign cooks, and view food wastage charts.
             </p>
 
             {/* Quick Action Grid */}
@@ -260,18 +260,6 @@ export default function SuperAdminHome() {
                   <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
                 </div>
                 <span className="text-xs font-bold text-[var(--text-primary)]">Add Meal Log</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => navigate('/tokens')}
-                className="p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-[#52B74A] text-left flex flex-col gap-1 transition-all group"
-              >
-                <div className="flex items-center justify-between text-amber-600">
-                  <Ticket size={16} />
-                  <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-                </div>
-                <span className="text-xs font-bold text-[var(--text-primary)]">Mess Tokens PDF</span>
               </button>
 
               <button

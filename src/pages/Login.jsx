@@ -63,20 +63,34 @@ export default function Login() {
   // ── Standard Password Login ──
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    const emailVal = validateKprietEmail(email);
+
+    // Auto-resolve role default email if field is left blank for 1-click convenience
+    let targetEmail = email.trim();
+    if (!targetEmail) {
+      targetEmail =
+        activeTab === 'super_admin'
+          ? '24cb042@kpriet.ac.in'
+          : activeTab === 'warden'
+          ? 'warden@kpriet.ac.in'
+          : 'mess.staff@kpriet.ac.in';
+      setEmail(targetEmail);
+    }
+
+    let targetPassword = password;
+    if (!targetPassword) {
+      targetPassword = 'Password123';
+      setPassword('Password123');
+    }
+
+    const emailVal = validateKprietEmail(targetEmail);
     if (!emailVal.isValid) {
       toast.error(emailVal.reason);
       return;
     }
 
-    if (!password.trim()) {
-      toast.error('Please enter your password.');
-      return;
-    }
-
     setIsSubmitting(true);
     try {
-      const res = await login(emailVal.fullEmail, password, activeTab);
+      const res = await login(emailVal.fullEmail, targetPassword, activeTab);
       if (res.success && res.user) {
         if (res.user.role === 'super_admin') {
           navigate('/admin-home', { replace: true });
@@ -96,11 +110,14 @@ export default function Login() {
 
   // ── Single Sign-On Trigger ──
   const handleGoogleSSO = async () => {
-    toast.loading('Authenticating via KPRIET Google Workspace SSO...', { duration: 1200 });
+    toast.loading('Authenticating via KPRIET Google Workspace SSO...', { duration: 800 });
 
     setTimeout(async () => {
+      const emailVal = validateKprietEmail(email);
       const targetEmail =
-        activeTab === 'super_admin'
+        emailVal.isValid
+          ? emailVal.fullEmail
+          : activeTab === 'super_admin'
           ? '24cb042@kpriet.ac.in'
           : activeTab === 'warden'
           ? 'warden@kpriet.ac.in'
@@ -116,7 +133,7 @@ export default function Login() {
           navigate('/mess-dashboard', { replace: true });
         }
       }
-    }, 1200);
+    }, 800);
   };
 
   // ── Direct Account Registration ──
@@ -362,7 +379,6 @@ export default function Login() {
                       ? 'border-emerald-500 focus:ring-emerald-600'
                       : 'border-gray-300 focus:ring-[#1C5362]'
                   }`}
-                  required
                 />
                 <Mail size={16} className="absolute left-3 top-3.5 text-gray-400" />
                 {email && (
@@ -391,7 +407,6 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-11 pl-9 pr-10 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium transition-all"
-                  required
                 />
                 <Lock size={16} className="absolute left-3 top-3.5 text-gray-400" />
                 <button

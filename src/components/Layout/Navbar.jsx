@@ -29,7 +29,6 @@ const messNavLinks = [
   { to: '/', label: 'Home', icon: Home, desc: 'Dashboard Hub' },
   { to: '/overview', label: 'Overview', icon: BarChart2, desc: 'Analytics & Logs' },
   { to: '/menu', label: 'Food Menu', icon: UtensilsCrossed, desc: 'Weekly Mess Schedule' },
-  { to: '/tokens', label: 'Mess Token', icon: Ticket, desc: 'Generate & Print PDF' },
   { to: '/add-entry', label: 'Add Entry', icon: PlusCircle, desc: 'Log Daily Meals' },
 ];
 
@@ -223,7 +222,7 @@ export default function Navbar() {
                     <button
                       onClick={() => navigate('/mess-dashboard')}
                       className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
-                        location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/tokens') || location.pathname.startsWith('/add-entry')
+                        location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/add-entry')
                           ? 'bg-[#52B74A] text-white shadow-xs'
                           : 'text-purple-300 hover:text-white'
                       }`}
@@ -360,7 +359,7 @@ export default function Navbar() {
                       navigate('/mess-dashboard');
                     }}
                     className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
-                      location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/tokens') || location.pathname.startsWith('/add-entry')
+                      location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/add-entry')
                         ? 'bg-[#52B74A] text-white shadow-xs'
                         : 'text-purple-300 hover:text-white'
                     }`}

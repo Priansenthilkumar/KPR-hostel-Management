@@ -11,7 +11,6 @@ import kprLogo from './assets/kprLogo.png';
 const Dashboard        = lazy(() => import('./pages/Dashboard'));
 const Overview         = lazy(() => import('./pages/Overview'));
 const FoodMenu         = lazy(() => import('./pages/FoodMenu'));
-const MessToken        = lazy(() => import('./pages/MessToken'));
 const AddEntry         = lazy(() => import('./pages/AddEntry'));
 const Login            = lazy(() => import('./pages/Login'));
 
@@ -87,7 +86,6 @@ function MainAppLayout() {
             <Route path="/mess-dashboard"    element={<ProtectedRoute allowedRole="mess_staff"><Dashboard /></ProtectedRoute>} />
             <Route path="/overview"          element={<ProtectedRoute allowedRole="mess_staff"><Overview /></ProtectedRoute>} />
             <Route path="/menu"              element={<ProtectedRoute allowedRole="mess_staff"><FoodMenu /></ProtectedRoute>} />
-            <Route path="/tokens"            element={<ProtectedRoute allowedRole="mess_staff"><MessToken /></ProtectedRoute>} />
             <Route path="/add-entry"         element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
             <Route path="/add-entry/:id"     element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
 
