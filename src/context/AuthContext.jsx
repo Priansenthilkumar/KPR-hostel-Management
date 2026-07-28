@@ -8,8 +8,8 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => authService.getCurrentSession());
 
-  const login = (email, password, role) => {
-    const result = authService.authenticate(email, password, role);
+  const login = async (email, password, role) => {
+    const result = await authService.authenticate(email, password, role);
 
     if (result.success) {
       setUser(result.user);
@@ -34,6 +34,13 @@ export function AuthProvider({ children }) {
     toast.success('Logged out successfully.');
   };
 
+  const requestSignupOTP = (email, role) => authService.requestSignupOTP(email, role);
+  const verifySignupOTP = (email, otpCode) => authService.verifyOTP(email, otpCode, 'signup');
+  const completeRegistration = (email, password, name, role) => authService.completeRegistration(email, password, name, role);
+  
+  const requestPasswordResetOTP = (email) => authService.requestPasswordResetOTP(email);
+  const completePasswordReset = (email, otpCode, newPassword) => authService.completePasswordReset(email, otpCode, newPassword);
+
   const isSuperAdmin = user?.role === 'super_admin';
   const isWarden = user?.role === 'warden';
   const isMessStaff = user?.role === 'mess_staff';
@@ -46,6 +53,11 @@ export function AuthProvider({ children }) {
         user,
         login,
         logout,
+        requestSignupOTP,
+        verifySignupOTP,
+        completeRegistration,
+        requestPasswordResetOTP,
+        completePasswordReset,
         isSuperAdmin,
         isWarden,
         isMessStaff,
