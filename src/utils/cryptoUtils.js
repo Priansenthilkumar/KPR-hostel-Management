@@ -1,7 +1,47 @@
 // src/utils/cryptoUtils.js
 /**
- * Cryptographic Utility Functions for Salted Password Hashing, OTP Generation & Password Strength Evaluation
+ * Cryptographic Utility Functions for Salted Password Hashing, OTP Generation & Email Validation
  */
+
+// Whitelisted Super Admins
+export const AUTHORIZED_SUPER_ADMINS = [
+  '24cb042@kpriet.ac.in',
+  'priansenthilkumar99@gmail.com',
+  'bh.overallcoordinator@kpriet.ac.in',
+];
+
+/**
+ * Validate standard email syntax and KPRIET domain requirements
+ */
+export function validateKprietEmail(email) {
+  const cleanEmail = (email || '').trim().toLowerCase();
+  if (!cleanEmail) {
+    return { isValid: false, reason: 'Email address is required.' };
+  }
+
+  // Auto-append domain if user typed username without @
+  const fullEmail = cleanEmail.includes('@') ? cleanEmail : `${cleanEmail}@kpriet.ac.in`;
+
+  // Standard RFC 5322 Email Format Regex
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(fullEmail)) {
+    return { isValid: false, reason: 'Invalid email format. Please enter a valid email address.' };
+  }
+
+  const domain = fullEmail.split('@')[1];
+  const isWhitelisted = AUTHORIZED_SUPER_ADMINS.includes(fullEmail);
+  const allowedDomains = ['kpriet.ac.in', 'kpr.edu'];
+
+  if (!isWhitelisted && !allowedDomains.includes(domain)) {
+    return {
+      isValid: false,
+      fullEmail,
+      reason: 'Access Denied: Only official KPRIET institutional email IDs (@kpriet.ac.in) are permitted.',
+    };
+  }
+
+  return { isValid: true, fullEmail, domain };
+}
 
 /**
  * Generate a random 16-byte hex salt string using Web Crypto API
@@ -29,7 +69,7 @@ export async function hashPasswordWithSalt(password, salt) {
 export function generateOTP() {
   const array = new Uint32Array(1);
   window.crypto.getRandomValues(array);
-  const val = array[0] % 900000 + 100000;
+  const val = (array[0] % 900000) + 100000;
   return val.toString();
 }
 

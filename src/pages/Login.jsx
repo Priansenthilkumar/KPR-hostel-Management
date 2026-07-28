@@ -16,8 +16,9 @@ import {
   UserPlus,
   ArrowLeft,
   CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
-import { evaluatePasswordStrength } from '../utils/cryptoUtils';
+import { evaluatePasswordStrength, validateKprietEmail } from '../utils/cryptoUtils';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -62,14 +63,20 @@ export default function Login() {
   // ── Standard Password Login ──
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      toast.error('Please enter both email and password.');
+    const emailVal = validateKprietEmail(email);
+    if (!emailVal.isValid) {
+      toast.error(emailVal.reason);
+      return;
+    }
+
+    if (!password.trim()) {
+      toast.error('Please enter your password.');
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const res = await login(email, password, activeTab);
+      const res = await login(emailVal.fullEmail, password, activeTab);
       if (res.success && res.user) {
         if (res.user.role === 'super_admin') {
           navigate('/admin-home', { replace: true });
@@ -115,9 +122,9 @@ export default function Login() {
   // ── Direct Account Registration ──
   const handleCompleteRegistration = async (e) => {
     e.preventDefault();
-    const cleanEmail = email.trim();
-    if (!cleanEmail) {
-      toast.error('Please enter a valid KPRIET email address.');
+    const emailVal = validateKprietEmail(email);
+    if (!emailVal.isValid) {
+      toast.error(emailVal.reason);
       return;
     }
 
@@ -133,7 +140,7 @@ export default function Login() {
 
     setIsSubmitting(true);
     try {
-      const res = await completeRegistration(cleanEmail, newPassword, regName, activeTab);
+      const res = await completeRegistration(emailVal.fullEmail, newPassword, regName, activeTab);
       if (res.success && res.user) {
         toast.success('Account successfully created & logged in!', { icon: '🎉' });
         if (res.user.role === 'super_admin') {
@@ -157,9 +164,9 @@ export default function Login() {
   // ── Direct Password Reset ──
   const handleCompletePasswordReset = async (e) => {
     e.preventDefault();
-    const cleanEmail = email.trim();
-    if (!cleanEmail) {
-      toast.error('Please enter your registered email address.');
+    const emailVal = validateKprietEmail(email);
+    if (!emailVal.isValid) {
+      toast.error(emailVal.reason);
       return;
     }
 
@@ -175,7 +182,7 @@ export default function Login() {
 
     setIsSubmitting(true);
     try {
-      const res = await completePasswordReset(cleanEmail, newPassword);
+      const res = await completePasswordReset(emailVal.fullEmail, newPassword);
       if (res.success) {
         toast.success('Password successfully reset! Please sign in with your new password.');
         handleSwitchMode('login');
@@ -190,8 +197,9 @@ export default function Login() {
     }
   };
 
-  // Evaluated password strength
+  // Evaluated password strength & email validity
   const passStrength = evaluatePasswordStrength(newPassword);
+  const emailVal = validateKprietEmail(email);
 
   // Active Session View
   if (user) {
@@ -353,11 +361,29 @@ export default function Login() {
                   }
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-11 pl-9 pr-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium transition-all"
+                  className={`w-full h-11 pl-9 pr-9 text-xs rounded-xl bg-gray-50 border text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:bg-white font-medium transition-all ${
+                    email && !emailVal.isValid
+                      ? 'border-amber-400 focus:ring-amber-500'
+                      : email && emailVal.isValid
+                      ? 'border-emerald-500 focus:ring-emerald-600'
+                      : 'border-gray-300 focus:ring-[#1C5362]'
+                  }`}
                   required
                 />
                 <Mail size={16} className="absolute left-3 top-3.5 text-gray-400" />
+                {email && (
+                  <div className="absolute right-3 top-3.5">
+                    {emailVal.isValid ? (
+                      <CheckCircle2 size={16} className="text-emerald-500" />
+                    ) : (
+                      <AlertCircle size={16} className="text-amber-500" />
+                    )}
+                  </div>
+                )}
               </div>
+              {email && !emailVal.isValid && (
+                <span className="text-[10.5px] font-bold text-amber-600 pl-1">{emailVal.reason}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -461,11 +487,29 @@ export default function Login() {
                   placeholder="yourname@kpriet.ac.in"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-11 pl-9 pr-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
+                  className={`w-full h-11 pl-9 pr-9 text-xs rounded-xl bg-gray-50 border text-gray-900 focus:outline-none focus:ring-2 focus:bg-white font-medium transition-all ${
+                    email && !emailVal.isValid
+                      ? 'border-amber-400 focus:ring-amber-500'
+                      : email && emailVal.isValid
+                      ? 'border-emerald-500 focus:ring-emerald-600'
+                      : 'border-gray-300 focus:ring-[#1C5362]'
+                  }`}
                   required
                 />
                 <Mail size={16} className="absolute left-3 top-3.5 text-gray-400" />
+                {email && (
+                  <div className="absolute right-3 top-3.5">
+                    {emailVal.isValid ? (
+                      <CheckCircle2 size={16} className="text-emerald-500" />
+                    ) : (
+                      <AlertCircle size={16} className="text-amber-500" />
+                    )}
+                  </div>
+                )}
               </div>
+              {email && !emailVal.isValid && (
+                <span className="text-[10.5px] font-bold text-amber-600 pl-1">{emailVal.reason}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">

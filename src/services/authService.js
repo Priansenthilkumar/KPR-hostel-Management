@@ -2,25 +2,20 @@
 import {
   generateSalt,
   hashPasswordWithSalt,
+  validateKprietEmail,
+  AUTHORIZED_SUPER_ADMINS,
 } from '../utils/cryptoUtils';
 import { db } from './firebaseConfig';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 /**
  * KPR HOSTELS & MESS MANAGEMENT - Production Authentication Backend Service
- * Integrated with Firebase Cloud Firestore Database
+ * Integrated with Firebase Cloud Firestore Database & Email Validation
  */
 
 const AUTH_STORAGE_KEY = 'kpr_auth_session_v6';
 const REGISTERED_USERS_KEY = 'kpr_registered_users_v6';
 const FAILED_ATTEMPTS_KEY = 'kpr_failed_attempts_v6';
-
-// Authorized Super Admin Email Whitelist
-const AUTHORIZED_SUPER_ADMINS = [
-  '24cb042@kpriet.ac.in',
-  'priansenthilkumar99@gmail.com',
-  'bh.overallcoordinator@kpriet.ac.in',
-];
 
 // Helper: Normalize Email Address
 const normalizeEmail = (email) => {
@@ -125,22 +120,13 @@ export const authService = {
    * Complete User Registration with Firebase Firestore & Salted Hashing
    */
   async completeRegistration(email, password, name, role = 'mess_staff') {
-    let inputEmail = normalizeEmail(email);
-
-    if (!inputEmail) {
-      return { success: false, message: 'Please enter a valid KPRIET email address.' };
+    const emailVal = validateKprietEmail(email);
+    if (!emailVal.isValid) {
+      return { success: false, message: emailVal.reason };
     }
 
-    const emailDomain = inputEmail.split('@')[1];
+    let inputEmail = emailVal.fullEmail;
     const isWhitelisted = AUTHORIZED_SUPER_ADMINS.includes(inputEmail);
-    const allowedDomains = ['kpriet.ac.in', 'kpr.edu'];
-
-    if (!isWhitelisted && !allowedDomains.includes(emailDomain)) {
-      return {
-        success: false,
-        message: 'Access Denied: Only official KPRIET institutional email IDs (@kpriet.ac.in) are permitted to register.',
-      };
-    }
 
     if (!password || password.length < 8) {
       return { success: false, message: 'Password must be at least 8 characters long.' };
@@ -219,11 +205,12 @@ export const authService = {
    * Complete Password Reset Directly & Update Firebase Firestore
    */
   async completePasswordReset(email, newPassword) {
-    let inputEmail = normalizeEmail(email);
-
-    if (!inputEmail) {
-      return { success: false, message: 'Please enter your registered KPRIET email address.' };
+    const emailVal = validateKprietEmail(email);
+    if (!emailVal.isValid) {
+      return { success: false, message: emailVal.reason };
     }
+
+    let inputEmail = emailVal.fullEmail;
 
     if (!newPassword || newPassword.length < 8) {
       return { success: false, message: 'New password must be at least 8 characters long.' };
@@ -293,10 +280,15 @@ export const authService = {
    * Authenticate user credentials against salted password hashes
    */
   async authenticate(email, password, selectedRole = 'mess_staff') {
-    let inputEmail = normalizeEmail(email);
+    const emailVal = validateKprietEmail(email);
+    if (!emailVal.isValid) {
+      return { success: false, message: emailVal.reason };
+    }
 
-    if (!inputEmail || !password) {
-      return { success: false, message: 'Please enter both email and password.' };
+    let inputEmail = emailVal.fullEmail;
+
+    if (!password) {
+      return { success: false, message: 'Please enter your password.' };
     }
 
     // 1. Check Brute-Force Rate Limiting
@@ -315,17 +307,6 @@ export const authService = {
         return {
           success: false,
           message: 'Access Denied: This email ID is not authorized for Super Admin access.',
-        };
-      }
-    } else {
-      // Staff domain check
-      const emailDomain = inputEmail.split('@')[1];
-      const allowedDomains = ['kpriet.ac.in', 'kpr.edu'];
-      if (!allowedDomains.includes(emailDomain)) {
-        this.recordFailedAttempt(inputEmail);
-        return {
-          success: false,
-          message: 'Access Denied: Only official KPRIET institutional email IDs (@kpriet.ac.in) are permitted to log in.',
         };
       }
     }
