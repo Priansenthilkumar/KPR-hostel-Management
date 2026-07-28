@@ -2,9 +2,7 @@
 import {
   generateSalt,
   hashPasswordWithSalt,
-  generateOTP,
 } from '../utils/cryptoUtils';
-import { emailService } from './emailService';
 
 /**
  * KPR HOSTELS & MESS MANAGEMENT - Production Authentication Backend Service
@@ -13,7 +11,6 @@ import { emailService } from './emailService';
 const AUTH_STORAGE_KEY = 'kpr_auth_session_v6';
 const REGISTERED_USERS_KEY = 'kpr_registered_users_v6';
 const FAILED_ATTEMPTS_KEY = 'kpr_failed_attempts_v6';
-const OTP_STORAGE_KEY = 'kpr_otp_records_v6';
 
 // Authorized Super Admin Email Whitelist
 const AUTHORIZED_SUPER_ADMINS = [
@@ -119,62 +116,12 @@ export const authService = {
     }
   },
 
-  // ── Helper: OTP Management ──
-  getOTPMap() {
-    try {
-      const raw = localStorage.getItem(OTP_STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch {
-      return {};
-    }
-  },
-
-  storeOTP(email, otpCode, purpose = 'signup') {
-    const map = this.getOTPMap();
-    const key = normalizeEmail(email);
-    map[key] = {
-      otp: otpCode,
-      purpose,
-      expiresAt: Date.now() + 10 * 60 * 1000, // 10 mins expiry
-    };
-    localStorage.setItem(OTP_STORAGE_KEY, JSON.stringify(map));
-  },
-
-  verifyOTP(email, inputOTP, purpose = 'signup') {
-    const map = this.getOTPMap();
-    const key = normalizeEmail(email);
-    const record = map[key];
-
-    if (!record) {
-      return { success: false, message: 'No OTP verification request found for this email address.' };
-    }
-
-    if (record.purpose !== purpose) {
-      return { success: false, message: 'Invalid OTP verification context.' };
-    }
-
-    if (Date.now() > record.expiresAt) {
-      delete map[key];
-      localStorage.setItem(OTP_STORAGE_KEY, JSON.stringify(map));
-      return { success: false, message: 'Verification OTP has expired. Please click Resend OTP.' };
-    }
-
-    if (record.otp !== (inputOTP || '').trim()) {
-      return { success: false, message: 'Incorrect 6-digit OTP code. Please check and try again.' };
-    }
-
-    // OTP validated successfully, clear it
-    delete map[key];
-    localStorage.setItem(OTP_STORAGE_KEY, JSON.stringify(map));
-    return { success: true };
-  },
-
-  // ── FIRST-TIME SIGNUP FLOW ──
+  // ── DIRECT REGISTRATION FLOW (NO OTP REQUIRED) ──
 
   /**
-   * Step 1: Request Registration OTP for @kpriet.ac.in Email
+   * Complete User Registration with Salted SHA-256 Hashing
    */
-  async requestSignupOTP(email, role = 'mess_staff') {
+  async completeRegistration(email, password, name, role = 'mess_staff') {
     let inputEmail = normalizeEmail(email);
 
     if (!inputEmail) {
@@ -192,49 +139,22 @@ export const authService = {
       };
     }
 
-    // Auto-fallback for non-whitelisted super_admin requests
+    if (!password || password.length < 8) {
+      return { success: false, message: 'Password must be at least 8 characters long.' };
+    }
+
+    // Role assignment
     let finalRole = role;
     if (role === 'super_admin' && !isWhitelisted) {
       finalRole = inputEmail.includes('warden') || inputEmail.includes('hostel') ? 'warden' : 'mess_staff';
     }
 
-    // Generate 6-digit OTP
-    const otpCode = generateOTP();
-    this.storeOTP(inputEmail, otpCode, 'signup');
-
-    // Trigger background email dispatch safely
-    try {
-      emailService.sendOTPEmail(inputEmail, otpCode, 'Registration Verification');
-    } catch (e) {
-      console.warn('Email dispatch warning:', e);
-    }
-
-    return {
-      success: true,
-      email: inputEmail,
-      otpCode,
-      role: finalRole,
-      message: `Verification OTP generated for ${inputEmail}! Check your inbox or use code ${otpCode}.`,
-    };
-  },
-
-  /**
-   * Step 2: Complete User Registration & Password Hashing
-   */
-  async completeRegistration(email, password, name, role = 'mess_staff') {
-    let inputEmail = normalizeEmail(email);
-
-    if (!inputEmail || !password || password.length < 8) {
-      return { success: false, message: 'Password must be at least 8 characters long.' };
-    }
+    const isSuperAdmin = finalRole === 'super_admin' || AUTHORIZED_SUPER_ADMINS.includes(inputEmail);
+    const isWarden = finalRole === 'warden';
 
     const salt = generateSalt();
     const passwordHash = await hashPasswordWithSalt(password, salt);
-
     const displayName = (name || '').trim() || inputEmail.split('@')[0].toUpperCase();
-
-    const isSuperAdmin = role === 'super_admin' || AUTHORIZED_SUPER_ADMINS.includes(inputEmail);
-    const isWarden = role === 'warden';
 
     const userObj = {
       id: `usr_${Date.now()}`,
@@ -253,6 +173,7 @@ export const authService = {
     };
 
     this.saveRegisteredUser(userObj);
+    this.resetFailedAttempts(inputEmail);
 
     // Auto log in newly registered user
     const session = this.createSession(userObj);
@@ -260,56 +181,20 @@ export const authService = {
       success: true,
       user: session,
       redirectPath: isSuperAdmin ? '/admin-home' : isWarden ? '/hostel-dashboard' : '/mess-dashboard',
-      message: 'Account successfully registered and verified!',
+      message: 'Account successfully created and registered!',
     };
   },
 
-  // ── PASSWORD RESET FLOW ──
+  // ── DIRECT PASSWORD RESET FLOW (NO OTP REQUIRED) ──
 
   /**
-   * Step 1: Request Password Reset OTP
+   * Complete Password Reset Directly
    */
-  async requestPasswordResetOTP(email) {
+  async completePasswordReset(email, newPassword) {
     let inputEmail = normalizeEmail(email);
+
     if (!inputEmail) {
-      return { success: false, message: 'Please enter your registered email address.' };
-    }
-
-    const registeredUser = this.findRegisteredUser(inputEmail);
-    // Allow reset even if first-time user using default institutional access
-    const isWhitelisted = AUTHORIZED_SUPER_ADMINS.includes(inputEmail);
-    const isInstitutional = inputEmail.endsWith('@kpriet.ac.in') || inputEmail.endsWith('@kpr.edu');
-
-    if (!registeredUser && !isWhitelisted && !isInstitutional) {
-      return { success: false, message: 'No registered account found with this email ID.' };
-    }
-
-    const otpCode = generateOTP();
-    this.storeOTP(inputEmail, otpCode, 'reset_password');
-
-    // Trigger background email dispatch safely
-    try {
-      emailService.sendOTPEmail(inputEmail, otpCode, 'Password Reset');
-    } catch (e) {
-      console.warn('Email dispatch warning:', e);
-    }
-
-    return {
-      success: true,
-      email: inputEmail,
-      otpCode,
-      message: `Password reset OTP generated for ${inputEmail}! Check your email inbox.`,
-    };
-  },
-
-  /**
-   * Step 2: Verify Reset OTP and Set New Password
-   */
-  async completePasswordReset(email, otpCode, newPassword) {
-    let inputEmail = normalizeEmail(email);
-    const verifyRes = this.verifyOTP(inputEmail, otpCode, 'reset_password');
-    if (!verifyRes.success) {
-      return verifyRes;
+      return { success: false, message: 'Please enter your registered KPRIET email address.' };
     }
 
     if (!newPassword || newPassword.length < 8) {
@@ -321,7 +206,14 @@ export const authService = {
     const passwordHash = await hashPasswordWithSalt(newPassword, salt);
 
     if (!user) {
-      // Register user with new password
+      const isWhitelisted = AUTHORIZED_SUPER_ADMINS.includes(inputEmail);
+      const isInstitutional = inputEmail.endsWith('@kpriet.ac.in') || inputEmail.endsWith('@kpr.edu');
+
+      if (!isWhitelisted && !isInstitutional) {
+        return { success: false, message: 'Access Denied: Only official KPRIET institutional email IDs are permitted.' };
+      }
+
+      // Register new user with this password
       const isSuperAdmin = AUTHORIZED_SUPER_ADMINS.includes(inputEmail);
       user = {
         id: `usr_${Date.now()}`,

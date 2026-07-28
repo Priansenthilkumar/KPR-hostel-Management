@@ -34,12 +34,8 @@ export function AuthProvider({ children }) {
     toast.success('Logged out successfully.');
   };
 
-  const requestSignupOTP = async (email, role) => await authService.requestSignupOTP(email, role);
-  const verifySignupOTP = (email, otpCode) => authService.verifyOTP(email, otpCode, 'signup');
   const completeRegistration = (email, password, name, role) => authService.completeRegistration(email, password, name, role);
-  
-  const requestPasswordResetOTP = async (email) => await authService.requestPasswordResetOTP(email);
-  const completePasswordReset = (email, otpCode, newPassword) => authService.completePasswordReset(email, otpCode, newPassword);
+  const completePasswordReset = (email, newPassword) => authService.completePasswordReset(email, newPassword);
 
   const isSuperAdmin = user?.role === 'super_admin';
   const isWarden = user?.role === 'warden';
@@ -53,10 +49,7 @@ export function AuthProvider({ children }) {
         user,
         login,
         logout,
-        requestSignupOTP,
-        verifySignupOTP,
         completeRegistration,
-        requestPasswordResetOTP,
         completePasswordReset,
         isSuperAdmin,
         isWarden,

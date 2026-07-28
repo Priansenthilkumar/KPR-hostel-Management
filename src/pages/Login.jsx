@@ -1,8 +1,7 @@
 // src/pages/Login.jsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { authService } from '../services/authService';
 import kprLogo from '../assets/kprLogo.png';
 import campusBg from '../assets/campusBg.jpg';
 import Button from '../components/UI/Button';
@@ -10,66 +9,38 @@ import toast from 'react-hot-toast';
 import {
   Eye,
   EyeOff,
-  ShieldCheck,
-  Crown,
-  Utensils,
-  KeyRound,
   Mail,
   User,
-  ArrowRight,
+  Lock,
+  KeyRound,
+  UserPlus,
   ArrowLeft,
   CheckCircle2,
-  Lock,
-  RefreshCw,
-  Sparkles,
 } from 'lucide-react';
 import { evaluatePasswordStrength } from '../utils/cryptoUtils';
 
 export default function Login() {
   const navigate = useNavigate();
-  const {
-    user,
-    login,
-    logout,
-    requestSignupOTP,
-    verifySignupOTP,
-    completeRegistration,
-    requestPasswordResetOTP,
-    completePasswordReset,
-  } = useAuth();
+  const { user, login, logout, completeRegistration, completePasswordReset } = useAuth();
 
   // Mode: 'login' | 'signup' | 'forgot'
   const [authMode, setAuthMode] = useState('login');
 
-  // Role Tab for login/signup: 'mess_staff' | 'warden' | 'super_admin'
+  // Role Tab: 'mess_staff' | 'warden' | 'super_admin'
   const [activeTab, setActiveTab] = useState('mess_staff');
 
-  // Common Login Form
+  // Form Fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Registration & Reset Wizard States
-  const [wizardStep, setWizardStep] = useState(1); // 1: Email, 2: OTP, 3: Password
   const [regName, setRegName] = useState('');
-  const [otpInputs, setOtpInputs] = useState(['', '', '', '', '', '']);
-  const [otpTimer, setOtpTimer] = useState(60);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showNewPassword, setShowNewPassword] = useState(false);
 
-  // OTP Countdown Timer
-  useEffect(() => {
-    let timerId;
-    if (wizardStep === 2 && otpTimer > 0) {
-      timerId = setInterval(() => {
-        setOtpTimer((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(timerId);
-  }, [wizardStep, otpTimer]);
+  // Toggles
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Switch tab role selection
   const handleTabChange = (roleKey) => {
@@ -81,9 +52,7 @@ export default function Login() {
   // Reset forms on mode switch
   const handleSwitchMode = (mode) => {
     setAuthMode(mode);
-    setWizardStep(1);
-    setOtpInputs(['', '', '', '', '', '']);
-    setPreviewOTP('');
+    setRegName('');
     setNewPassword('');
     setConfirmPassword('');
     setShowPassword(false);
@@ -99,21 +68,26 @@ export default function Login() {
     }
 
     setIsSubmitting(true);
-    const res = await login(email, password, activeTab);
-    setIsSubmitting(false);
-
-    if (res.success && res.user) {
-      if (res.user.role === 'super_admin') {
-        navigate('/admin-home', { replace: true });
-      } else if (res.user.role === 'warden') {
-        navigate('/hostel-dashboard', { replace: true });
-      } else {
-        navigate('/mess-dashboard', { replace: true });
+    try {
+      const res = await login(email, password, activeTab);
+      if (res.success && res.user) {
+        if (res.user.role === 'super_admin') {
+          navigate('/admin-home', { replace: true });
+        } else if (res.user.role === 'warden') {
+          navigate('/hostel-dashboard', { replace: true });
+        } else {
+          navigate('/mess-dashboard', { replace: true });
+        }
       }
+    } catch (err) {
+      console.error('Login error:', err);
+      toast.error('Login failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // ── Single Sign-On Direct Trigger ──
+  // ── Single Sign-On Trigger ──
   const handleGoogleSSO = async () => {
     toast.loading('Authenticating via KPRIET Google Workspace SSO...', { duration: 1200 });
 
@@ -138,8 +112,8 @@ export default function Login() {
     }, 1200);
   };
 
-  // ── Registration: Step 1 Request OTP ──
-  const handleRequestSignupOTP = async (e) => {
+  // ── Direct Account Registration ──
+  const handleCompleteRegistration = async (e) => {
     e.preventDefault();
     const cleanEmail = email.trim();
     if (!cleanEmail) {
@@ -147,113 +121,21 @@ export default function Login() {
       return;
     }
 
-    setIsSubmitting(true);
-    try {
-      const res = await requestSignupOTP(cleanEmail, activeTab);
-      if (res.success) {
-        setEmail(res.email);
-        if (res.role) setActiveTab(res.role);
-        setWizardStep(2);
-        setOtpTimer(60);
-        toast.success(`6-Digit Verification OTP sent to ${res.email}!`, { icon: '🔑' });
-      } else {
-        toast.error(res.message || 'Failed to generate OTP.');
-      }
-    } catch (err) {
-      console.error('Signup OTP error:', err);
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // ── OTP Single-Digit Box Input Handling ──
-  const handleOtpBoxChange = (index, value) => {
-    if (!/^[0-9]?$/.test(value)) return;
-    const newArr = [...otpInputs];
-    newArr[index] = value;
-    setOtpInputs(newArr);
-
-    if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-input-${index + 1}`);
-      if (nextInput) nextInput.focus();
-    }
-  };
-
-  const handleOtpKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && !otpInputs[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-input-${index - 1}`);
-      if (prevInput) prevInput.focus();
-    }
-  };
-
-  // Auto-fill OTP Code helper
-  const handleAutoFillOTP = () => {
-    const cleanEmail = authService.normalizeEmail(email);
-    const record = authService.getOTPMap()[cleanEmail];
-    if (record && record.otp) {
-      setOtpInputs(record.otp.split(''));
-      toast.success(`Auto-filled OTP Code: ${record.otp}`, { icon: '⚡' });
-    } else {
-      toast.error('No active OTP code found. Please click Resend OTP.');
-    }
-  };
-
-  // ── Registration: Step 2 Verify OTP ──
-  const handleVerifySignupOTP = (e) => {
-    e.preventDefault();
-    const enteredOTP = otpInputs.join('');
-    if (enteredOTP.length < 6) {
-      toast.error('Please enter the full 6-digit verification OTP code.');
-      return;
-    }
-
-    const res = verifySignupOTP(email, enteredOTP);
-    if (res.success) {
-      toast.success('Email address verified successfully!');
-      setWizardStep(3);
-    } else {
-      toast.error(res.message);
-    }
-  };
-
-  // Resend Registration OTP
-  const handleResendOTP = async () => {
-    setIsSubmitting(true);
-    try {
-      const res =
-        authMode === 'signup'
-          ? await requestSignupOTP(email, activeTab)
-          : await requestPasswordResetOTP(email);
-
-      if (res.success) {
-        setOtpTimer(60);
-        setOtpInputs(['', '', '', '', '', '']);
-        toast.success('A new 6-digit OTP code has been generated and dispatched!');
-      } else {
-        toast.error(res.message);
-      }
-    } catch (err) {
-      console.error('Resend OTP error:', err);
-      toast.error('Failed to resend OTP.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // ── Registration: Step 3 Create Password & Submit ──
-  const handleCompleteRegistration = async (e) => {
-    e.preventDefault();
     if (!newPassword || newPassword.length < 8) {
       toast.error('Password must be at least 8 characters long.');
       return;
     }
 
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match. Please re-enter.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const res = await completeRegistration(email, newPassword, regName, activeTab);
+      const res = await completeRegistration(cleanEmail, newPassword, regName, activeTab);
       if (res.success && res.user) {
-        toast.success('Account successfully registered & logged in!', { icon: '🎉' });
+        toast.success('Account successfully created & logged in!', { icon: '🎉' });
         if (res.user.role === 'super_admin') {
           navigate('/admin-home', { replace: true });
         } else if (res.user.role === 'warden') {
@@ -272,40 +154,12 @@ export default function Login() {
     }
   };
 
-  // ── Password Reset: Step 1 Request Reset OTP ──
-  const handleRequestResetOTP = async (e) => {
+  // ── Direct Password Reset ──
+  const handleCompletePasswordReset = async (e) => {
     e.preventDefault();
     const cleanEmail = email.trim();
     if (!cleanEmail) {
       toast.error('Please enter your registered email address.');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const res = await requestPasswordResetOTP(cleanEmail);
-      if (res.success) {
-        setEmail(res.email);
-        setWizardStep(2);
-        setOtpTimer(60);
-        toast.success(`Password reset OTP sent to ${res.email}! Please check your inbox.`);
-      } else {
-        toast.error(res.message);
-      }
-    } catch (err) {
-      console.error('Reset OTP error:', err);
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // ── Password Reset: Step 2 & 3 Complete Reset ──
-  const handleCompletePasswordReset = async (e) => {
-    e.preventDefault();
-    const enteredOTP = otpInputs.join('');
-    if (enteredOTP.length < 6) {
-      toast.error('Please enter the full 6-digit verification OTP code.');
       return;
     }
 
@@ -320,14 +174,19 @@ export default function Login() {
     }
 
     setIsSubmitting(true);
-    const res = await completePasswordReset(email, enteredOTP, newPassword);
-    setIsSubmitting(false);
-
-    if (res.success) {
-      toast.success('Password successfully reset! Please sign in with your new password.');
-      handleSwitchMode('login');
-    } else {
-      toast.error(res.message);
+    try {
+      const res = await completePasswordReset(cleanEmail, newPassword);
+      if (res.success) {
+        toast.success('Password successfully reset! Please sign in with your new password.');
+        handleSwitchMode('login');
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      console.error('Reset password error:', err);
+      toast.error('Password reset failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -407,9 +266,9 @@ export default function Login() {
           </h1>
           <p className="text-xs text-gray-500 font-medium mt-0.5">
             {authMode === 'signup'
-              ? 'First-Time Registration & Email Verification'
+              ? 'First-Time User Registration'
               : authMode === 'forgot'
-              ? 'Verify your @kpriet.ac.in email to reset password'
+              ? 'Update password for your @kpriet.ac.in account'
               : 'Hostel & Mess Management Platform'}
           </p>
         </div>
@@ -437,13 +296,13 @@ export default function Login() {
                   : 'text-gray-500 hover:text-gray-800'
               }`}
             >
-              First-Time Sign Up
+              Create Account
             </button>
           </div>
         )}
 
         {/* Role Tab Selector (Mess Staff vs Hostel Warden vs Super Admin) */}
-        {authMode !== 'forgot' && wizardStep === 1 && (
+        {authMode !== 'forgot' && (
           <div className="w-full rounded-xl overflow-hidden border border-gray-300 flex mb-4 shadow-xs">
             <button
               type="button"
@@ -573,361 +432,181 @@ export default function Login() {
           </form>
         )}
 
-        {/* ── MODE 2: FIRST-TIME SIGNUP WIZARD ── */}
+        {/* ── MODE 2: DIRECT REGISTRATION FORM ── */}
         {authMode === 'signup' && (
-          <div className="flex flex-col gap-4">
-            
-            {/* Step Progress Bar */}
-            <div className="flex items-center justify-between px-2 mb-1">
-              {[1, 2, 3].map((stepNum) => (
-                <div key={stepNum} className="flex items-center gap-2">
-                  <div
-                    className={`w-7 h-7 rounded-full text-xs font-black flex items-center justify-center transition-all ${
-                      wizardStep === stepNum
-                        ? 'bg-[#1C5362] text-white ring-4 ring-[#1C5362]/20'
-                        : wizardStep > stepNum
-                        ? 'bg-[#52B74A] text-white'
-                        : 'bg-gray-200 text-gray-500'
-                    }`}
-                  >
-                    {wizardStep > stepNum ? <CheckCircle2 size={16} /> : stepNum}
-                  </div>
-                  <span className="text-[11px] font-extrabold text-gray-600 hidden sm:inline">
-                    {stepNum === 1 ? 'Email' : stepNum === 2 ? 'Verify OTP' : 'Password'}
-                  </span>
-                </div>
-              ))}
+          <form onSubmit={handleCompleteRegistration} className="flex flex-col gap-3.5">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+                Full Name (Optional)
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Enter your name..."
+                  value={regName}
+                  onChange={(e) => setRegName(e.target.value)}
+                  className="w-full h-11 pl-9 pr-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
+                />
+                <User size={16} className="absolute left-3 top-3.5 text-gray-400" />
+              </div>
             </div>
 
-            {/* STEP 1: Enter Email */}
-            {wizardStep === 1 && (
-              <form onSubmit={handleRequestSignupOTP} className="flex flex-col gap-3.5">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-                    Full Name (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your name..."
-                    value={regName}
-                    onChange={(e) => setRegName(e.target.value)}
-                    className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
-                  />
-                </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+                KPRIET Email ID <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="yourname@kpriet.ac.in"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-11 pl-9 pr-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
+                  required
+                />
+                <Mail size={16} className="absolute left-3 top-3.5 text-gray-400" />
+              </div>
+            </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-                    KPRIET Email ID <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="yourname@kpriet.ac.in"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="success"
-                  size="lg"
-                  className="w-full mt-2 shadow-md h-12 text-sm font-bold flex items-center justify-center bg-[#1C5362] hover:bg-[#143B47] text-white border-0 gap-2"
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+                Create Password <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showNewPassword ? 'text' : 'password'}
+                  placeholder="Minimum 8 characters..."
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full h-11 pl-9 pr-10 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
+                  required
+                />
+                <KeyRound size={16} className="absolute left-3 top-3.5 text-gray-400" />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-700"
                 >
-                  <span>Send Verification OTP</span>
-                  <ArrowRight size={16} />
-                </Button>
-              </form>
-            )}
+                  {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
 
-            {/* STEP 2: Verify 6-Digit OTP */}
-            {wizardStep === 2 && (
-              <form onSubmit={handleVerifySignupOTP} className="flex flex-col gap-4">
-                <div className="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-900 text-xs flex flex-col gap-1">
-                  <div className="flex items-center justify-between font-extrabold">
-                    <span>OTP Sent to {email}</span>
-                    <span className="text-sky-700 font-mono">⏱️ {otpTimer}s</span>
+              {/* Password Strength Indicator */}
+              {newPassword && (
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden flex gap-1">
+                    {[1, 2, 3, 4].map((step) => (
+                      <div
+                        key={step}
+                        className={`flex-1 h-full transition-all ${
+                          passStrength.score >= step ? passStrength.color : 'bg-transparent'
+                        }`}
+                      />
+                    ))}
                   </div>
-                  <p className="text-[11px] text-sky-700 font-medium mt-0.5">
-                    A 6-digit verification code has been dispatched to your official KPRIET email address. Please check your inbox or spam folder.
-                  </p>
+                  <span className="text-[10px] font-extrabold text-gray-600">
+                    {passStrength.label}
+                  </span>
                 </div>
+              )}
+            </div>
 
-                <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider text-center">
-                  Enter 6-Digit Verification Code
-                </label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+                Confirm Password <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                placeholder="Re-enter password..."
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
+                required
+              />
+            </div>
 
-                <div className="flex items-center justify-center gap-2">
-                  {otpInputs.map((digit, idx) => (
-                    <input
-                      key={idx}
-                      id={`otp-input-${idx}`}
-                      type="text"
-                      maxLength={1}
-                      value={digit}
-                      onChange={(e) => handleOtpBoxChange(idx, e.target.value)}
-                      onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                      className="w-10 h-12 text-center text-lg font-black rounded-xl border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white transition-all"
-                    />
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setWizardStep(1)}
-                    className="text-xs font-bold text-gray-500 hover:text-gray-800 flex items-center gap-1"
-                  >
-                    <ArrowLeft size={14} />
-                    <span>Change Email</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    disabled={otpTimer > 0}
-                    onClick={handleResendOTP}
-                    className={`text-xs font-bold flex items-center gap-1 ${
-                      otpTimer > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#1C5362] hover:underline'
-                    }`}
-                  >
-                    <RefreshCw size={13} />
-                    <span>Resend OTP</span>
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-center gap-3 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const cleanEmail = authService.normalizeEmail(email);
-                      const record = authService.getOTPMap()[cleanEmail];
-                      if (record && record.otp) {
-                        toast.success(`Verification OTP Code: ${record.otp}`, { icon: '📧', duration: 10000 });
-                      } else {
-                        toast.error('No active OTP record found. Please click Resend OTP.');
-                      }
-                    }}
-                    className="text-[11px] text-gray-500 hover:text-gray-800 underline font-semibold transition-colors"
-                  >
-                    Didn't receive email? Get Code
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleAutoFillOTP}
-                    className="text-[11px] font-extrabold text-[#1C5362] bg-[#1C5362]/10 hover:bg-[#1C5362]/20 px-3 py-1 rounded-full border border-[#1C5362]/20 flex items-center gap-1 transition-all"
-                  >
-                    <Sparkles size={12} />
-                    <span>Auto-Fill Code</span>
-                  </button>
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="success"
-                  size="lg"
-                  className="w-full mt-2 shadow-md h-12 text-sm font-bold flex items-center justify-center bg-[#1C5362] hover:bg-[#143B47] text-white border-0 gap-2"
-                >
-                  <span>Verify OTP & Continue</span>
-                  <CheckCircle2 size={16} />
-                </Button>
-              </form>
-            )}
-
-            {/* STEP 3: Password Creation & Hash */}
-            {wizardStep === 3 && (
-              <form onSubmit={handleCompleteRegistration} className="flex flex-col gap-3.5">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-                    Create Strong Password <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showNewPassword ? 'text' : 'password'}
-                      placeholder="Minimum 8 characters..."
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full h-11 pl-9 pr-10 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
-                      required
-                    />
-                    <KeyRound size={16} className="absolute left-3 top-3.5 text-gray-400" />
-                    <button
-                      type="button"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-700"
-                    >
-                      {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
-                  </div>
-
-                  {/* Password Strength Indicator */}
-                  {newPassword && (
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden flex gap-1">
-                        {[1, 2, 3, 4].map((step) => (
-                          <div
-                            key={step}
-                            className={`flex-1 h-full transition-all ${
-                              passStrength.score >= step ? passStrength.color : 'bg-transparent'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-[10px] font-extrabold text-gray-600">
-                        {passStrength.label}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-                    Confirm Password <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Re-enter password..."
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="success"
-                  size="lg"
-                  disabled={isSubmitting}
-                  className="w-full mt-2 shadow-md h-12 text-sm font-bold flex items-center justify-center bg-[#52B74A] hover:bg-[#44A03C] text-white border-0 gap-2"
-                >
-                  {isSubmitting ? 'Encrypting & Saving...' : 'Complete Registration'}
-                </Button>
-              </form>
-            )}
-          </div>
+            <Button
+              type="submit"
+              variant="success"
+              size="lg"
+              disabled={isSubmitting}
+              className="w-full mt-2 shadow-md h-12 text-sm font-bold flex items-center justify-center bg-[#1C5362] hover:bg-[#143B47] text-white border-0 gap-2"
+            >
+              <UserPlus size={18} />
+              <span>{isSubmitting ? 'Creating Account...' : 'Create Account & Register'}</span>
+            </Button>
+          </form>
         )}
 
-        {/* ── MODE 3: FORGOT PASSWORD RESET WIZARD ── */}
+        {/* ── MODE 3: DIRECT PASSWORD RESET ── */}
         {authMode === 'forgot' && (
-          <div className="flex flex-col gap-4">
-            {wizardStep === 1 && (
-              <form onSubmit={handleRequestResetOTP} className="flex flex-col gap-3.5">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-                    Your Registered Email ID <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="yourname@kpriet.ac.in"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
-                    required
-                  />
-                </div>
+          <form onSubmit={handleCompletePasswordReset} className="flex flex-col gap-3.5">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+                Your Registered Email ID <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="yourname@kpriet.ac.in"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-11 pl-9 pr-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
+                  required
+                />
+                <Mail size={16} className="absolute left-3 top-3.5 text-gray-400" />
+              </div>
+            </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleSwitchMode('login')}
-                    className="px-4 py-3 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors"
-                  >
-                    Back
-                  </button>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+                New Password <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                placeholder="Minimum 8 characters..."
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
+                required
+              />
+            </div>
 
-                  <Button
-                    type="submit"
-                    variant="success"
-                    size="lg"
-                    className="flex-1 shadow-md h-11 text-xs font-bold flex items-center justify-center bg-[#1C5362] hover:bg-[#143B47] text-white border-0 gap-2"
-                  >
-                    <span>Send Reset OTP</span>
-                    <ArrowRight size={14} />
-                  </Button>
-                </div>
-              </form>
-            )}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+                Confirm New Password <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                placeholder="Re-enter new password..."
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
+                required
+              />
+            </div>
 
-            {wizardStep === 2 && (
-              <form onSubmit={handleCompletePasswordReset} className="flex flex-col gap-3.5">
-                <div className="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-900 text-xs flex flex-col gap-1">
-                  <span className="font-extrabold text-sky-900">Reset Code Sent to {email}</span>
-                  <p className="text-[11px] text-sky-700 font-medium">
-                    A 6-digit password reset OTP code has been sent to your email. Please enter the code below to set your new password.
-                  </p>
-                </div>
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => handleSwitchMode('login')}
+                className="px-4 py-3 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-1"
+              >
+                <ArrowLeft size={14} />
+                <span>Back</span>
+              </button>
 
-                <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider text-center">
-                  Enter 6-Digit Reset OTP
-                </label>
-
-                <div className="flex items-center justify-center gap-2">
-                  {otpInputs.map((digit, idx) => (
-                    <input
-                      key={idx}
-                      id={`otp-input-${idx}`}
-                      type="text"
-                      maxLength={1}
-                      value={digit}
-                      onChange={(e) => handleOtpBoxChange(idx, e.target.value)}
-                      onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                      className="w-10 h-12 text-center text-lg font-black rounded-xl border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white transition-all"
-                    />
-                  ))}
-                </div>
-
-                <div className="flex flex-col gap-1.5 pt-1">
-                  <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-                    New Password <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Minimum 8 characters..."
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-                    Confirm New Password <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Re-enter new password..."
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full h-11 px-3.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1C5362] focus:bg-white font-medium"
-                    required
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => handleSwitchMode('login')}
-                    className="px-4 py-3 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors"
-                  >
-                    Cancel
-                  </button>
-
-                  <Button
-                    type="submit"
-                    variant="success"
-                    size="lg"
-                    disabled={isSubmitting}
-                    className="flex-1 shadow-md h-11 text-xs font-bold flex items-center justify-center bg-[#52B74A] hover:bg-[#44A03C] text-white border-0"
-                  >
-                    {isSubmitting ? 'Updating Password...' : 'Save New Password'}
-                  </Button>
-                </div>
-              </form>
-            )}
-          </div>
+              <Button
+                type="submit"
+                variant="success"
+                size="lg"
+                disabled={isSubmitting}
+                className="flex-1 shadow-md h-11 text-xs font-bold flex items-center justify-center bg-[#52B74A] hover:bg-[#44A03C] text-white border-0"
+              >
+                {isSubmitting ? 'Updating Password...' : 'Save New Password'}
+              </Button>
+            </div>
+          </form>
         )}
 
         {/* Footer Text */}
