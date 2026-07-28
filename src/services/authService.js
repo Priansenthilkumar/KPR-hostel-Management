@@ -179,14 +179,10 @@ export const authService = {
    * Step 1: Request Registration OTP for @kpriet.ac.in Email
    */
   async requestSignupOTP(email, role = 'mess_staff') {
-    let inputEmail = (email || '').trim().toLowerCase();
+    let inputEmail = this.normalizeEmail(email);
 
     if (!inputEmail) {
       return { success: false, message: 'Please enter a valid KPRIET email address.' };
-    }
-
-    if (!inputEmail.includes('@')) {
-      inputEmail = `${inputEmail}@kpriet.ac.in`;
     }
 
     const emailDomain = inputEmail.split('@')[1];
@@ -200,25 +196,25 @@ export const authService = {
       };
     }
 
+    // Auto-fallback for non-whitelisted super_admin requests
+    let finalRole = role;
     if (role === 'super_admin' && !isWhitelisted) {
-      return {
-        success: false,
-        message: 'Access Denied: This email ID is not authorized for Super Admin registration privileges.',
-      };
+      finalRole = inputEmail.includes('warden') || inputEmail.includes('hostel') ? 'warden' : 'mess_staff';
     }
 
     // Generate 6-digit OTP
     const otpCode = generateOTP();
     this.storeOTP(inputEmail, otpCode, 'signup');
 
-    // Trigger real email dispatch to inbox
+    // Trigger background email dispatch to inbox
     emailService.sendOTPEmail(inputEmail, otpCode, 'Registration Verification');
 
     return {
       success: true,
       email: inputEmail,
       otpCode,
-      message: `Verification OTP generated and sent to ${inputEmail}! Please check your email inbox.`,
+      role: finalRole,
+      message: `Verification OTP generated for ${inputEmail}! Check your inbox or use code ${otpCode}.`,
     };
   },
 

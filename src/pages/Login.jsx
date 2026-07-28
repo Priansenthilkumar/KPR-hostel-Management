@@ -141,22 +141,29 @@ export default function Login() {
   // ── Registration: Step 1 Request OTP ──
   const handleRequestSignupOTP = async (e) => {
     e.preventDefault();
-    if (!email.trim()) {
+    const cleanEmail = email.trim();
+    if (!cleanEmail) {
       toast.error('Please enter a valid KPRIET email address.');
       return;
     }
 
     setIsSubmitting(true);
-    const res = await requestSignupOTP(email, activeTab);
-    setIsSubmitting(false);
-
-    if (res.success) {
-      setEmail(res.email);
-      setWizardStep(2);
-      setOtpTimer(60);
-      toast.success(`6-Digit Verification OTP sent to ${res.email}! Please check your inbox.`);
-    } else {
-      toast.error(res.message);
+    try {
+      const res = await requestSignupOTP(cleanEmail, activeTab);
+      if (res.success) {
+        setEmail(res.email);
+        if (res.role) setActiveTab(res.role);
+        setWizardStep(2);
+        setOtpTimer(60);
+        toast.success(`6-Digit Verification OTP sent to ${res.email}!`, { icon: '🔑' });
+      } else {
+        toast.error(res.message || 'Failed to generate OTP.');
+      }
+    } catch (err) {
+      console.error('Signup OTP error:', err);
+      toast.error('An error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -177,6 +184,18 @@ export default function Login() {
     if (e.key === 'Backspace' && !otpInputs[index] && index > 0) {
       const prevInput = document.getElementById(`otp-input-${index - 1}`);
       if (prevInput) prevInput.focus();
+    }
+  };
+
+  // Auto-fill OTP Code helper
+  const handleAutoFillOTP = () => {
+    const cleanEmail = authService.normalizeEmail(email);
+    const record = authService.getOTPMap()[cleanEmail];
+    if (record && record.otp) {
+      setOtpInputs(record.otp.split(''));
+      toast.success(`Auto-filled OTP Code: ${record.otp}`, { icon: '⚡' });
+    } else {
+      toast.error('No active OTP code found. Please click Resend OTP.');
     }
   };
 
@@ -201,18 +220,24 @@ export default function Login() {
   // Resend Registration OTP
   const handleResendOTP = async () => {
     setIsSubmitting(true);
-    const res =
-      authMode === 'signup'
-        ? await requestSignupOTP(email, activeTab)
-        : await requestPasswordResetOTP(email);
-    setIsSubmitting(false);
+    try {
+      const res =
+        authMode === 'signup'
+          ? await requestSignupOTP(email, activeTab)
+          : await requestPasswordResetOTP(email);
 
-    if (res.success) {
-      setOtpTimer(60);
-      setOtpInputs(['', '', '', '', '', '']);
-      toast.success('A new 6-digit OTP code has been dispatched to your email address!');
-    } else {
-      toast.error(res.message);
+      if (res.success) {
+        setOtpTimer(60);
+        setOtpInputs(['', '', '', '', '', '']);
+        toast.success('A new 6-digit OTP code has been generated and dispatched!');
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      console.error('Resend OTP error:', err);
+      toast.error('Failed to resend OTP.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -223,48 +248,55 @@ export default function Login() {
       toast.error('Password must be at least 8 characters long.');
       return;
     }
-    if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match. Please re-enter.');
-      return;
-    }
 
     setIsSubmitting(true);
-    const res = await completeRegistration(email, newPassword, regName, activeTab);
-    setIsSubmitting(false);
-
-    if (res.success && res.user) {
-      toast.success('Account successfully registered & logged in!', { icon: '🎉' });
-      if (res.user.role === 'super_admin') {
-        navigate('/admin-home', { replace: true });
-      } else if (res.user.role === 'warden') {
-        navigate('/hostel-dashboard', { replace: true });
+    try {
+      const res = await completeRegistration(email, newPassword, regName, activeTab);
+      if (res.success && res.user) {
+        toast.success('Account successfully registered & logged in!', { icon: '🎉' });
+        if (res.user.role === 'super_admin') {
+          navigate('/admin-home', { replace: true });
+        } else if (res.user.role === 'warden') {
+          navigate('/hostel-dashboard', { replace: true });
+        } else {
+          navigate('/mess-dashboard', { replace: true });
+        }
       } else {
-        navigate('/mess-dashboard', { replace: true });
+        toast.error(res.message);
       }
-    } else {
-      toast.error(res.message);
+    } catch (err) {
+      console.error('Registration error:', err);
+      toast.error('Registration failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   // ── Password Reset: Step 1 Request Reset OTP ──
   const handleRequestResetOTP = async (e) => {
     e.preventDefault();
-    if (!email.trim()) {
+    const cleanEmail = email.trim();
+    if (!cleanEmail) {
       toast.error('Please enter your registered email address.');
       return;
     }
 
     setIsSubmitting(true);
-    const res = await requestPasswordResetOTP(email);
-    setIsSubmitting(false);
-
-    if (res.success) {
-      setEmail(res.email);
-      setWizardStep(2);
-      setOtpTimer(60);
-      toast.success(`Password reset OTP sent to ${res.email}! Please check your inbox.`);
-    } else {
-      toast.error(res.message);
+    try {
+      const res = await requestPasswordResetOTP(cleanEmail);
+      if (res.success) {
+        setEmail(res.email);
+        setWizardStep(2);
+        setOtpTimer(60);
+        toast.success(`Password reset OTP sent to ${res.email}! Please check your inbox.`);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      console.error('Reset OTP error:', err);
+      toast.error('An error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -664,7 +696,7 @@ export default function Login() {
                   </button>
                 </div>
 
-                <div className="text-center pt-0.5">
+                <div className="flex items-center justify-center gap-3 pt-1">
                   <button
                     type="button"
                     onClick={() => {
@@ -673,12 +705,21 @@ export default function Login() {
                       if (record && record.otp) {
                         toast.success(`Verification OTP Code: ${record.otp}`, { icon: '📧', duration: 10000 });
                       } else {
-                        toast.error('No active OTP record found for this email. Please click Resend OTP.');
+                        toast.error('No active OTP record found. Please click Resend OTP.');
                       }
                     }}
                     className="text-[11px] text-gray-500 hover:text-gray-800 underline font-semibold transition-colors"
                   >
-                    Didn't receive email? Tap to get code
+                    Didn't receive email? Get Code
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleAutoFillOTP}
+                    className="text-[11px] font-extrabold text-[#1C5362] bg-[#1C5362]/10 hover:bg-[#1C5362]/20 px-3 py-1 rounded-full border border-[#1C5362]/20 flex items-center gap-1 transition-all"
+                  >
+                    <Sparkles size={12} />
+                    <span>Auto-Fill Code</span>
                   </button>
                 </div>
 
