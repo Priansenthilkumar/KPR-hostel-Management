@@ -668,11 +668,12 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => {
-                      const record = authService.getOTPMap()[(email || '').trim().toLowerCase()];
+                      const cleanEmail = authService.normalizeEmail(email);
+                      const record = authService.getOTPMap()[cleanEmail];
                       if (record && record.otp) {
-                        toast.success(`Verification OTP Code: ${record.otp}`, { icon: '📧', duration: 8000 });
+                        toast.success(`Verification OTP Code: ${record.otp}`, { icon: '📧', duration: 10000 });
                       } else {
-                        toast.error('No active OTP record found. Please click Resend OTP.');
+                        toast.error('No active OTP record found for this email. Please click Resend OTP.');
                       }
                     }}
                     className="text-[11px] text-gray-500 hover:text-gray-800 underline font-semibold transition-colors"

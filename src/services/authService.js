@@ -47,9 +47,17 @@ export const authService = {
     }
   },
 
+  normalizeEmail(email) {
+    let key = (email || '').trim().toLowerCase();
+    if (key && !key.includes('@')) {
+      key = `${key}@kpriet.ac.in`;
+    }
+    return key;
+  },
+
   findRegisteredUser(email) {
-    const cleanEmail = (email || '').trim().toLowerCase();
-    return this.getRegisteredUsers().find((u) => u.email.toLowerCase() === cleanEmail);
+    const cleanEmail = this.normalizeEmail(email);
+    return this.getRegisteredUsers().find((u) => this.normalizeEmail(u.email) === cleanEmail);
   },
 
   // ── Helper: Rate Limiting (5 failures in 15 mins -> 15 min lock) ──
@@ -64,7 +72,7 @@ export const authService = {
 
   checkRateLimit(email) {
     const map = this.getFailedAttemptsMap();
-    const key = (email || '').trim().toLowerCase();
+    const key = this.normalizeEmail(email);
     const record = map[key];
     if (!record) return { isLocked: false };
 
@@ -90,7 +98,7 @@ export const authService = {
 
   recordFailedAttempt(email) {
     const map = this.getFailedAttemptsMap();
-    const key = (email || '').trim().toLowerCase();
+    const key = this.normalizeEmail(email);
     const record = map[key] || { count: 0, lastAttempt: Date.now() };
     record.count += 1;
     record.lastAttempt = Date.now();
@@ -100,7 +108,7 @@ export const authService = {
 
   resetFailedAttempts(email) {
     const map = this.getFailedAttemptsMap();
-    const key = (email || '').trim().toLowerCase();
+    const key = this.normalizeEmail(email);
     if (map[key]) {
       delete map[key];
       localStorage.setItem(FAILED_ATTEMPTS_KEY, JSON.stringify(map));
@@ -117,9 +125,17 @@ export const authService = {
     }
   },
 
+  normalizeEmail(email) {
+    let key = (email || '').trim().toLowerCase();
+    if (key && !key.includes('@')) {
+      key = `${key}@kpriet.ac.in`;
+    }
+    return key;
+  },
+
   storeOTP(email, otpCode, purpose = 'signup') {
     const map = this.getOTPMap();
-    const key = (email || '').trim().toLowerCase();
+    const key = this.normalizeEmail(email);
     map[key] = {
       otp: otpCode,
       purpose,
@@ -130,7 +146,7 @@ export const authService = {
 
   verifyOTP(email, inputOTP, purpose = 'signup') {
     const map = this.getOTPMap();
-    const key = (email || '').trim().toLowerCase();
+    const key = this.normalizeEmail(email);
     const record = map[key];
 
     if (!record) {
