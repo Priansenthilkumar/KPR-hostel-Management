@@ -198,8 +198,8 @@ export const authService = {
     return {
       success: true,
       email: inputEmail,
-      otpCode, // Returned for instant testing toast / banner
-      message: `Verification OTP generated for ${inputEmail}! Check your inbox or use the preview OTP code below.`,
+      otpCode,
+      message: `Verification OTP generated and sent to ${inputEmail}! Please check your email inbox.`,
     };
   },
 
@@ -279,7 +279,7 @@ export const authService = {
       success: true,
       email: inputEmail,
       otpCode,
-      message: `Password reset OTP generated for ${inputEmail}! Check your email or use the preview OTP code below.`,
+      message: `Password reset OTP generated and sent to ${inputEmail}! Please check your email inbox.`,
     };
   },
 

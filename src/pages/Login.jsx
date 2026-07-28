@@ -54,7 +54,6 @@ export default function Login() {
   const [wizardStep, setWizardStep] = useState(1); // 1: Email, 2: OTP, 3: Password
   const [regName, setRegName] = useState('');
   const [otpInputs, setOtpInputs] = useState(['', '', '', '', '', '']);
-  const [previewOTP, setPreviewOTP] = useState('');
   const [otpTimer, setOtpTimer] = useState(60);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -149,10 +148,9 @@ export default function Login() {
     const res = requestSignupOTP(email, activeTab);
     if (res.success) {
       setEmail(res.email);
-      setPreviewOTP(res.otpCode);
       setWizardStep(2);
       setOtpTimer(60);
-      toast.success(`6-Digit Verification OTP sent to ${res.email}!`);
+      toast.success(`6-Digit Verification OTP sent to ${res.email}! Please check your email inbox.`);
     } else {
       toast.error(res.message);
     }
@@ -204,10 +202,9 @@ export default function Login() {
         : requestPasswordResetOTP(email);
 
     if (res.success) {
-      setPreviewOTP(res.otpCode);
       setOtpTimer(60);
       setOtpInputs(['', '', '', '', '', '']);
-      toast.success('A new 6-digit OTP code has been sent!');
+      toast.success('A new 6-digit OTP code has been dispatched to your email address!');
     } else {
       toast.error(res.message);
     }
@@ -254,10 +251,9 @@ export default function Login() {
     const res = requestPasswordResetOTP(email);
     if (res.success) {
       setEmail(res.email);
-      setPreviewOTP(res.otpCode);
       setWizardStep(2);
       setOtpTimer(60);
-      toast.success(`Password reset OTP sent to ${res.email}!`);
+      toast.success(`Password reset OTP sent to ${res.email}! Please check your email inbox.`);
     } else {
       toast.error(res.message);
     }
@@ -607,16 +603,14 @@ export default function Login() {
             {/* STEP 2: Verify 6-Digit OTP */}
             {wizardStep === 2 && (
               <form onSubmit={handleVerifySignupOTP} className="flex flex-col gap-4">
-                <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col gap-1">
+                <div className="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-900 text-xs flex flex-col gap-1">
                   <div className="flex items-center justify-between font-extrabold">
                     <span>OTP Sent to {email}</span>
-                    <span className="text-amber-700">⏱️ {otpTimer}s</span>
+                    <span className="text-sky-700 font-mono">⏱️ {otpTimer}s</span>
                   </div>
-                  {previewOTP && (
-                    <div className="mt-1 p-2 rounded-xl bg-white border border-amber-300 font-mono text-center font-black text-base tracking-widest text-amber-900">
-                      PREVIEW OTP: {previewOTP}
-                    </div>
-                  )}
+                  <p className="text-[11px] text-sky-700 font-medium mt-0.5">
+                    A 6-digit verification code has been dispatched to your official KPRIET email address. Please check your inbox or spam folder.
+                  </p>
                 </div>
 
                 <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider text-center">
@@ -790,11 +784,12 @@ export default function Login() {
 
             {wizardStep === 2 && (
               <form onSubmit={handleCompletePasswordReset} className="flex flex-col gap-3.5">
-                {previewOTP && (
-                  <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-center font-bold">
-                    RESET OTP: <span className="font-mono text-base font-black tracking-widest">{previewOTP}</span>
-                  </div>
-                )}
+                <div className="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-900 text-xs flex flex-col gap-1">
+                  <span className="font-extrabold text-sky-900">Reset Code Sent to {email}</span>
+                  <p className="text-[11px] text-sky-700 font-medium">
+                    A 6-digit password reset OTP code has been sent to your email. Please enter the code below to set your new password.
+                  </p>
+                </div>
 
                 <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider text-center">
                   Enter 6-Digit Reset OTP
