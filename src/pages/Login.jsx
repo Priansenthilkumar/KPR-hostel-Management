@@ -352,13 +352,7 @@ export default function Login() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder={
-                    activeTab === 'super_admin'
-                      ? '24cb042@kpriet.ac.in'
-                      : activeTab === 'warden'
-                      ? 'warden@kpriet.ac.in'
-                      : 'mess.staff@kpriet.ac.in'
-                  }
+                  placeholder="yourname@kpriet.ac.in"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={`w-full h-11 pl-9 pr-9 text-xs rounded-xl bg-gray-50 border text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:bg-white font-medium transition-all ${
