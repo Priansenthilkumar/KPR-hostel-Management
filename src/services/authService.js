@@ -4,6 +4,7 @@ import {
   hashPasswordWithSalt,
   generateOTP,
 } from '../utils/cryptoUtils';
+import { emailService } from './emailService';
 
 /**
  * KPR HOSTELS & MESS MANAGEMENT - Production Authentication Backend Service
@@ -21,7 +22,18 @@ const AUTHORIZED_SUPER_ADMINS = [
   'bh.overallcoordinator@kpriet.ac.in',
 ];
 
+// Helper: Normalize Email Address
+const normalizeEmail = (email) => {
+  let key = (email || '').trim().toLowerCase();
+  if (key && !key.includes('@')) {
+    key = `${key}@kpriet.ac.in`;
+  }
+  return key;
+};
+
 export const authService = {
+  normalizeEmail,
+
   // ── Helper: Registered Users Database Management ──
   getRegisteredUsers() {
     try {
@@ -47,17 +59,9 @@ export const authService = {
     }
   },
 
-  normalizeEmail(email) {
-    let key = (email || '').trim().toLowerCase();
-    if (key && !key.includes('@')) {
-      key = `${key}@kpriet.ac.in`;
-    }
-    return key;
-  },
-
   findRegisteredUser(email) {
-    const cleanEmail = this.normalizeEmail(email);
-    return this.getRegisteredUsers().find((u) => this.normalizeEmail(u.email) === cleanEmail);
+    const cleanEmail = normalizeEmail(email);
+    return this.getRegisteredUsers().find((u) => normalizeEmail(u.email) === cleanEmail);
   },
 
   // ── Helper: Rate Limiting (5 failures in 15 mins -> 15 min lock) ──
@@ -72,7 +76,7 @@ export const authService = {
 
   checkRateLimit(email) {
     const map = this.getFailedAttemptsMap();
-    const key = this.normalizeEmail(email);
+    const key = normalizeEmail(email);
     const record = map[key];
     if (!record) return { isLocked: false };
 
@@ -98,7 +102,7 @@ export const authService = {
 
   recordFailedAttempt(email) {
     const map = this.getFailedAttemptsMap();
-    const key = this.normalizeEmail(email);
+    const key = normalizeEmail(email);
     const record = map[key] || { count: 0, lastAttempt: Date.now() };
     record.count += 1;
     record.lastAttempt = Date.now();
@@ -108,7 +112,7 @@ export const authService = {
 
   resetFailedAttempts(email) {
     const map = this.getFailedAttemptsMap();
-    const key = this.normalizeEmail(email);
+    const key = normalizeEmail(email);
     if (map[key]) {
       delete map[key];
       localStorage.setItem(FAILED_ATTEMPTS_KEY, JSON.stringify(map));
@@ -125,17 +129,9 @@ export const authService = {
     }
   },
 
-  normalizeEmail(email) {
-    let key = (email || '').trim().toLowerCase();
-    if (key && !key.includes('@')) {
-      key = `${key}@kpriet.ac.in`;
-    }
-    return key;
-  },
-
   storeOTP(email, otpCode, purpose = 'signup') {
     const map = this.getOTPMap();
-    const key = this.normalizeEmail(email);
+    const key = normalizeEmail(email);
     map[key] = {
       otp: otpCode,
       purpose,
@@ -146,7 +142,7 @@ export const authService = {
 
   verifyOTP(email, inputOTP, purpose = 'signup') {
     const map = this.getOTPMap();
-    const key = this.normalizeEmail(email);
+    const key = normalizeEmail(email);
     const record = map[key];
 
     if (!record) {
@@ -163,7 +159,7 @@ export const authService = {
       return { success: false, message: 'Verification OTP has expired. Please click Resend OTP.' };
     }
 
-    if (record.otp !== inputOTP.trim()) {
+    if (record.otp !== (inputOTP || '').trim()) {
       return { success: false, message: 'Incorrect 6-digit OTP code. Please check and try again.' };
     }
 
@@ -179,7 +175,7 @@ export const authService = {
    * Step 1: Request Registration OTP for @kpriet.ac.in Email
    */
   async requestSignupOTP(email, role = 'mess_staff') {
-    let inputEmail = this.normalizeEmail(email);
+    let inputEmail = normalizeEmail(email);
 
     if (!inputEmail) {
       return { success: false, message: 'Please enter a valid KPRIET email address.' };
@@ -206,8 +202,12 @@ export const authService = {
     const otpCode = generateOTP();
     this.storeOTP(inputEmail, otpCode, 'signup');
 
-    // Trigger background email dispatch to inbox
-    emailService.sendOTPEmail(inputEmail, otpCode, 'Registration Verification');
+    // Trigger background email dispatch safely
+    try {
+      emailService.sendOTPEmail(inputEmail, otpCode, 'Registration Verification');
+    } catch (e) {
+      console.warn('Email dispatch warning:', e);
+    }
 
     return {
       success: true,
@@ -222,7 +222,7 @@ export const authService = {
    * Step 2: Complete User Registration & Password Hashing
    */
   async completeRegistration(email, password, name, role = 'mess_staff') {
-    let inputEmail = (email || '').trim().toLowerCase();
+    let inputEmail = normalizeEmail(email);
 
     if (!inputEmail || !password || password.length < 8) {
       return { success: false, message: 'Password must be at least 8 characters long.' };
@@ -270,12 +270,9 @@ export const authService = {
    * Step 1: Request Password Reset OTP
    */
   async requestPasswordResetOTP(email) {
-    let inputEmail = (email || '').trim().toLowerCase();
+    let inputEmail = normalizeEmail(email);
     if (!inputEmail) {
       return { success: false, message: 'Please enter your registered email address.' };
-    }
-    if (!inputEmail.includes('@')) {
-      inputEmail = `${inputEmail}@kpriet.ac.in`;
     }
 
     const registeredUser = this.findRegisteredUser(inputEmail);
@@ -290,14 +287,18 @@ export const authService = {
     const otpCode = generateOTP();
     this.storeOTP(inputEmail, otpCode, 'reset_password');
 
-    // Trigger real email dispatch to inbox
-    emailService.sendOTPEmail(inputEmail, otpCode, 'Password Reset');
+    // Trigger background email dispatch safely
+    try {
+      emailService.sendOTPEmail(inputEmail, otpCode, 'Password Reset');
+    } catch (e) {
+      console.warn('Email dispatch warning:', e);
+    }
 
     return {
       success: true,
       email: inputEmail,
       otpCode,
-      message: `Password reset OTP generated and sent to ${inputEmail}! Please check your email inbox.`,
+      message: `Password reset OTP generated for ${inputEmail}! Check your email inbox.`,
     };
   },
 
@@ -305,7 +306,7 @@ export const authService = {
    * Step 2: Verify Reset OTP and Set New Password
    */
   async completePasswordReset(email, otpCode, newPassword) {
-    let inputEmail = (email || '').trim().toLowerCase();
+    let inputEmail = normalizeEmail(email);
     const verifyRes = this.verifyOTP(inputEmail, otpCode, 'reset_password');
     if (!verifyRes.success) {
       return verifyRes;
@@ -354,15 +355,10 @@ export const authService = {
    * Authenticate user credentials against salted password hashes
    */
   async authenticate(email, password, selectedRole = 'mess_staff') {
-    let inputEmail = (email || '').trim().toLowerCase();
+    let inputEmail = normalizeEmail(email);
 
     if (!inputEmail || !password) {
       return { success: false, message: 'Please enter both email and password.' };
-    }
-
-    // Auto-append @kpriet.ac.in if user entered username without domain
-    if (!inputEmail.includes('@')) {
-      inputEmail = `${inputEmail}@kpriet.ac.in`;
     }
 
     // 1. Check Brute-Force Rate Limiting
