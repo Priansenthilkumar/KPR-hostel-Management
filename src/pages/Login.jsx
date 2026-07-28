@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/authService';
 import kprLogo from '../assets/kprLogo.png';
 import campusBg from '../assets/campusBg.jpg';
 import Button from '../components/UI/Button';
@@ -138,19 +139,22 @@ export default function Login() {
   };
 
   // ── Registration: Step 1 Request OTP ──
-  const handleRequestSignupOTP = (e) => {
+  const handleRequestSignupOTP = async (e) => {
     e.preventDefault();
     if (!email.trim()) {
       toast.error('Please enter a valid KPRIET email address.');
       return;
     }
 
-    const res = requestSignupOTP(email, activeTab);
+    setIsSubmitting(true);
+    const res = await requestSignupOTP(email, activeTab);
+    setIsSubmitting(false);
+
     if (res.success) {
       setEmail(res.email);
       setWizardStep(2);
       setOtpTimer(60);
-      toast.success(`6-Digit Verification OTP sent to ${res.email}! Please check your email inbox.`);
+      toast.success(`6-Digit Verification OTP sent to ${res.email}! Please check your inbox.`);
     } else {
       toast.error(res.message);
     }
@@ -195,11 +199,13 @@ export default function Login() {
   };
 
   // Resend Registration OTP
-  const handleResendOTP = () => {
+  const handleResendOTP = async () => {
+    setIsSubmitting(true);
     const res =
       authMode === 'signup'
-        ? requestSignupOTP(email, activeTab)
-        : requestPasswordResetOTP(email);
+        ? await requestSignupOTP(email, activeTab)
+        : await requestPasswordResetOTP(email);
+    setIsSubmitting(false);
 
     if (res.success) {
       setOtpTimer(60);
@@ -241,19 +247,22 @@ export default function Login() {
   };
 
   // ── Password Reset: Step 1 Request Reset OTP ──
-  const handleRequestResetOTP = (e) => {
+  const handleRequestResetOTP = async (e) => {
     e.preventDefault();
     if (!email.trim()) {
       toast.error('Please enter your registered email address.');
       return;
     }
 
-    const res = requestPasswordResetOTP(email);
+    setIsSubmitting(true);
+    const res = await requestPasswordResetOTP(email);
+    setIsSubmitting(false);
+
     if (res.success) {
       setEmail(res.email);
       setWizardStep(2);
       setOtpTimer(60);
-      toast.success(`Password reset OTP sent to ${res.email}! Please check your email inbox.`);
+      toast.success(`Password reset OTP sent to ${res.email}! Please check your inbox.`);
     } else {
       toast.error(res.message);
     }
@@ -652,6 +661,23 @@ export default function Login() {
                   >
                     <RefreshCw size={13} />
                     <span>Resend OTP</span>
+                  </button>
+                </div>
+
+                <div className="text-center pt-0.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const record = authService.getOTPMap()[(email || '').trim().toLowerCase()];
+                      if (record && record.otp) {
+                        toast.success(`Verification OTP Code: ${record.otp}`, { icon: '📧', duration: 8000 });
+                      } else {
+                        toast.error('No active OTP record found. Please click Resend OTP.');
+                      }
+                    }}
+                    className="text-[11px] text-gray-500 hover:text-gray-800 underline font-semibold transition-colors"
+                  >
+                    Didn't receive email? Tap to get code
                   </button>
                 </div>
 

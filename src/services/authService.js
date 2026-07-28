@@ -162,7 +162,7 @@ export const authService = {
   /**
    * Step 1: Request Registration OTP for @kpriet.ac.in Email
    */
-  requestSignupOTP(email, role = 'mess_staff') {
+  async requestSignupOTP(email, role = 'mess_staff') {
     let inputEmail = (email || '').trim().toLowerCase();
 
     if (!inputEmail) {
@@ -194,6 +194,9 @@ export const authService = {
     // Generate 6-digit OTP
     const otpCode = generateOTP();
     this.storeOTP(inputEmail, otpCode, 'signup');
+
+    // Trigger real email dispatch to inbox
+    emailService.sendOTPEmail(inputEmail, otpCode, 'Registration Verification');
 
     return {
       success: true,
@@ -254,7 +257,7 @@ export const authService = {
   /**
    * Step 1: Request Password Reset OTP
    */
-  requestPasswordResetOTP(email) {
+  async requestPasswordResetOTP(email) {
     let inputEmail = (email || '').trim().toLowerCase();
     if (!inputEmail) {
       return { success: false, message: 'Please enter your registered email address.' };
@@ -274,6 +277,9 @@ export const authService = {
 
     const otpCode = generateOTP();
     this.storeOTP(inputEmail, otpCode, 'reset_password');
+
+    // Trigger real email dispatch to inbox
+    emailService.sendOTPEmail(inputEmail, otpCode, 'Password Reset');
 
     return {
       success: true,
