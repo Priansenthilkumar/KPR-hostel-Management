@@ -29,6 +29,7 @@ function save(entries) {
 
 // Background Cloud Sync Routine
 async function syncMessFromCloud() {
+  if (!db) return;
   try {
     const q = query(collection(db, MESS_COLLECTION), orderBy('createdAt', 'desc'));
     const querySnapshot = await getDocs(q);

@@ -32,6 +32,7 @@ function purgeLegacyHostelKeys() {
 
 // Background Cloud Sync Routine
 async function syncHostelFromCloud() {
+  if (!db) return;
   try {
     const dutySnapshot = await getDocs(query(collection(db, DUTY_COLLECTION), orderBy('createdAt', 'desc')));
     const cloudDuty = [];
