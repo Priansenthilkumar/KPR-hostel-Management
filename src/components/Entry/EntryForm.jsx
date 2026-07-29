@@ -144,6 +144,7 @@ export default function EntryForm({ editEntry = null }) {
             </h3>
             <p className="text-xs text-[var(--text-muted)] mt-0.5">Select date, day of week & meal session using the sliding controls</p>
           </div>
+        </div>
                 <div className="grid grid-cols-1 gap-5">
           {/* Date Picker */}
           <div className="flex flex-col gap-1.5">
