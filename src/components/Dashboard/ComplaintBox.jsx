@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from '../UI/Button';
+import { useAuth } from '../../context/AuthContext';
 import { notificationService } from '../../services/notificationService';
 
 const FAULT_CATEGORIES = [
@@ -27,6 +28,9 @@ const FAULT_CATEGORIES = [
 const STORAGE_KEY = 'kpr_app_fault_complaints_v5';
 
 export default function ComplaintBox({ isOpen, onClose }) {
+  const { user } = useAuth();
+  const isSuperAdmin = user?.role === 'super_admin';
+
   const [category, setCategory] = useState(FAULT_CATEGORIES[0]);
   const [reporterName, setReporterName] = useState('');
   const [description, setDescription] = useState('');
@@ -177,21 +181,22 @@ export default function ComplaintBox({ isOpen, onClose }) {
 
         {/* Modal Body */}
         <div className="p-4 sm:p-6 overflow-y-auto flex flex-col gap-5">
-          
-          {/* Stats Bar */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-[var(--bg-subtle)] p-3 rounded-xl border border-[var(--border)] text-xs">
-            <span className="font-semibold text-[var(--text-secondary)] leading-normal">
-              Total Reported Faults: <strong className="text-[var(--text-primary)]">{faults.length}</strong>
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 font-extrabold border border-amber-500/30 text-[11px] whitespace-nowrap">
-                {pendingCount} Pending
+              {/* Stats Bar — Super Admin Only */}
+          {isSuperAdmin && (
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-[var(--bg-subtle)] p-3 rounded-xl border border-[var(--border)] text-xs">
+              <span className="font-semibold text-[var(--text-secondary)] leading-normal">
+                Total Reported Faults: <strong className="text-[var(--text-primary)]">{faults.length}</strong>
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-extrabold border border-emerald-500/30 text-[11px] whitespace-nowrap">
-                {solvedCount} Solved
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 font-extrabold border border-amber-500/30 text-[11px] whitespace-nowrap">
+                  {pendingCount} Pending
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-extrabold border border-emerald-500/30 text-[11px] whitespace-nowrap">
+                  {solvedCount} Solved
+                </span>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmitFault} className="flex flex-col gap-4 bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border)]">
@@ -256,140 +261,142 @@ export default function ComplaintBox({ isOpen, onClose }) {
             </Button>
           </form>
 
-          {/* Fault Resolution Board */}
-          <div className="flex flex-col gap-3 pt-1">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-[var(--border)]">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5 leading-snug">
-                <ShieldCheck size={15} className="text-[#52B74A] flex-shrink-0" />
-                <span className="leading-normal">App Fault Resolution Log ({faults.length})</span>
-              </h4>
+          {/* Fault Resolution Board — Super Admin Only */}
+          {isSuperAdmin && (
+            <div className="flex flex-col gap-3 pt-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-[var(--border)]">
+                <h4 className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5 leading-snug">
+                  <ShieldCheck size={15} className="text-[#52B74A] flex-shrink-0" />
+                  <span className="leading-normal">App Fault Resolution Log ({faults.length})</span>
+                </h4>
 
-              <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-lg border border-[var(--border)]">
-                {['All', 'Pending', 'Solved'].map((tab) => (
-                  <button
-                    type="button"
-                    key={tab}
-                    onClick={() => setFilterTab(tab)}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                      filterTab === tab
-                        ? 'bg-[#52B74A] text-white shadow-xs'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
+                <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-lg border border-[var(--border)]">
+                  {['All', 'Pending', 'Solved'].map((tab) => (
+                    <button
+                      type="button"
+                      key={tab}
+                      onClick={() => setFilterTab(tab)}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
+                        filterTab === tab
+                          ? 'bg-[#52B74A] text-white shadow-xs'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {filteredFaults.length === 0 ? (
-              <div className="p-6 text-center text-xs text-[var(--text-muted)] font-medium bg-[var(--bg-subtle)] rounded-xl border border-dashed border-[var(--border)] leading-normal">
-                No {filterTab.toLowerCase()} app faults reported yet. All systems running cleanly!
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {filteredFaults.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`p-4 rounded-xl border transition-all flex flex-col gap-2.5 text-xs ${
-                      item.status === 'Solved'
-                        ? 'bg-emerald-500/5 border-emerald-500/30'
-                        : 'bg-amber-500/5 border-amber-500/30'
-                    }`}
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-[var(--text-primary)] text-xs leading-normal">
-                          {item.category}
-                        </span>
-                        <span className="text-[10px] text-[var(--text-muted)] font-medium">
-                          by {item.name} • {item.date}
-                        </span>
-                      </div>
-
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold flex items-center gap-1 ${
-                          item.status === 'Solved'
-                            ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/40'
-                            : 'bg-amber-500/20 text-amber-600 border border-amber-500/40 animate-pulse'
-                        }`}
-                      >
-                        {item.status === 'Solved' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                        <span>{item.status}</span>
-                      </span>
-                    </div>
-
-                    <p className="text-[var(--text-secondary)] font-medium leading-relaxed bg-white/60 dark:bg-black/20 p-2.5 rounded-lg border border-[var(--border)]">
-                      "{item.description}"
-                    </p>
-
-                    {item.status === 'Solved' && item.resolutionNote && (
-                      <div className="flex items-start gap-2 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-semibold text-[11px] leading-normal">
-                        <Check size={14} className="mt-0.5 flex-shrink-0 text-emerald-600" />
-                        <div>
-                          <span className="font-extrabold">Solution Note: </span>
-                          {item.resolutionNote}
-                          {item.solvedAt && <span className="opacity-75"> ({item.solvedAt})</span>}
+              {filteredFaults.length === 0 ? (
+                <div className="p-6 text-center text-xs text-[var(--text-muted)] font-medium bg-[var(--bg-subtle)] rounded-xl border border-dashed border-[var(--border)] leading-normal">
+                  No {filterTab.toLowerCase()} app faults reported yet. All systems running cleanly!
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {filteredFaults.map((item) => (
+                    <div
+                      key={item.id}
+                      className={`p-4 rounded-xl border transition-all flex flex-col gap-2.5 text-xs ${
+                        item.status === 'Solved'
+                          ? 'bg-emerald-500/5 border-emerald-500/30'
+                          : 'bg-amber-500/5 border-amber-500/30'
+                      }`}
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-[var(--text-primary)] text-xs leading-normal">
+                            {item.category}
+                          </span>
+                          <span className="text-[10px] text-[var(--text-muted)] font-medium">
+                            by {item.name} • {item.date}
+                          </span>
                         </div>
-                      </div>
-                    )}
 
-                    <div className="flex items-center justify-between pt-1 border-t border-[var(--border)] mt-1">
-                      <div className="flex items-center gap-2">
-                        {item.status !== 'Solved' && (
-                          <>
-                            {resolvingId === item.id ? (
-                              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full">
-                                <input
-                                  type="text"
-                                  placeholder="Add resolution note (e.g. Fixed!)..."
-                                  value={solutionNote}
-                                  onChange={(e) => setSolutionNote(e.target.value)}
-                                  className="form-input text-[11px] h-8 py-1"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => handleMarkAsSolved(item.id)}
-                                  className="px-3 py-1 rounded-md bg-[#52B74A] text-[#52B74A] text-white text-[11px] font-bold whitespace-nowrap"
-                                >
-                                  Confirm Solved
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setResolvingId(null)}
-                                  className="px-2 py-1 text-[11px] text-[var(--text-muted)] font-semibold"
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => setResolvingId(item.id)}
-                                className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#52B74A] hover:bg-[#44A03C] text-white text-[11px] font-bold shadow-xs transition-all"
-                              >
-                                <CheckCircle2 size={13} />
-                                <span>Mark as Solved</span>
-                              </button>
-                            )}
-                          </>
-                        )}
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold flex items-center gap-1 ${
+                            item.status === 'Solved'
+                              ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/40'
+                              : 'bg-amber-500/20 text-amber-600 border border-amber-500/40 animate-pulse'
+                          }`}
+                        >
+                          {item.status === 'Solved' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
+                          <span>{item.status}</span>
+                        </span>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteFault(item.id)}
-                        className="p-1 rounded-md hover:bg-red-500/10 text-red-500 transition-colors"
-                        title="Delete Fault Log"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <p className="text-[var(--text-secondary)] font-medium leading-relaxed bg-white/60 dark:bg-black/20 p-2.5 rounded-lg border border-[var(--border)]">
+                        "{item.description}"
+                      </p>
+
+                      {item.status === 'Solved' && item.resolutionNote && (
+                        <div className="flex items-start gap-2 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-semibold text-[11px] leading-normal">
+                          <Check size={14} className="mt-0.5 flex-shrink-0 text-emerald-600" />
+                          <div>
+                            <span className="font-extrabold">Solution Note: </span>
+                            {item.resolutionNote}
+                            {item.solvedAt && <span className="opacity-75"> ({item.solvedAt})</span>}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between pt-1 border-t border-[var(--border)] mt-1">
+                        <div className="flex items-center gap-2">
+                          {item.status !== 'Solved' && (
+                            <>
+                              {resolvingId === item.id ? (
+                                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full">
+                                  <input
+                                    type="text"
+                                    placeholder="Add resolution note (e.g. Fixed!)..."
+                                    value={solutionNote}
+                                    onChange={(e) => setSolutionNote(e.target.value)}
+                                    className="form-input text-[11px] h-8 py-1"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleMarkAsSolved(item.id)}
+                                    className="px-3 py-1 rounded-md bg-[#52B74A] text-[#52B74A] text-white text-[11px] font-bold whitespace-nowrap"
+                                  >
+                                    Confirm Solved
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setResolvingId(null)}
+                                    className="px-2 py-1 text-[11px] text-[var(--text-muted)] font-semibold"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => setResolvingId(item.id)}
+                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#52B74A] hover:bg-[#44A03C] text-white text-[11px] font-bold shadow-xs transition-all"
+                                >
+                                  <CheckCircle2 size={13} />
+                                  <span>Mark as Solved</span>
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteFault(item.id)}
+                          className="p-1 rounded-md hover:bg-red-500/10 text-red-500 transition-colors"
+                          title="Delete Fault Log"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
         </div>
       </div>

@@ -184,25 +184,28 @@ export default function Navbar() {
               <RotateCw size={14} strokeWidth={2.2} />
             </button>
 
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsNotifOpen(true)}
-                className="p-1.5 sm:p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/35 transition-all shadow-xs"
-                title="Super Admin Notifications"
-              >
-                {unreadNotifCount > 0 ? (
-                  <BellRing size={16} className="text-amber-400 animate-bounce" />
-                ) : (
-                  <Bell size={16} />
+            {/* Notification Bell — Super Admin Only */}
+            {user?.role === 'super_admin' && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsNotifOpen(true)}
+                  className="p-1.5 sm:p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/35 transition-all shadow-xs"
+                  title="Super Admin Notifications"
+                >
+                  {unreadNotifCount > 0 ? (
+                    <BellRing size={16} className="text-amber-400 animate-bounce" />
+                  ) : (
+                    <Bell size={16} />
+                  )}
+                </button>
+                {unreadNotifCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-black flex items-center justify-center shadow-md pointer-events-none ring-2 ring-[#123843]">
+                    {unreadNotifCount > 9 ? '9+' : unreadNotifCount}
+                  </span>
                 )}
-              </button>
-              {unreadNotifCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-black flex items-center justify-center shadow-md pointer-events-none ring-2 ring-[#123843]">
-                  {unreadNotifCount > 9 ? '9+' : unreadNotifCount}
-                </span>
-              )}
-            </div>
+              </div>
+            )}
 
             <button
               onClick={handleExport}
@@ -215,15 +218,17 @@ export default function Navbar() {
             {/* Auth User Profile Badge - Desktop Full Pill */}
             {user ? (
               <div className="hidden md:flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsComplaintOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-xs font-extrabold transition-all shadow-xs"
-                  title="View App Complaints & Bug Desk"
-                >
-                  <Bug size={14} />
-                  <span>App Complaints</span>
-                </button>
+                {user.role === 'super_admin' && (
+                  <button
+                    type="button"
+                    onClick={() => setIsComplaintOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-xs font-extrabold transition-all shadow-xs"
+                    title="View App Complaints & Bug Desk"
+                  >
+                    <Bug size={14} />
+                    <span>App Complaints</span>
+                  </button>
+                )}
 
                 <div className="flex items-center gap-1.5 sm:gap-2 bg-[#123843] border border-[#235868] px-2.5 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
                   <div
@@ -430,26 +435,28 @@ export default function Navbar() {
                   </NavLink>
                 ))}
 
-                {/* App Complaints & Bug Desk Drawer Button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    closeDrawer();
-                    setIsComplaintOpen(true);
-                  }}
-                  className="flex items-center justify-between p-3 rounded-xl transition-all text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/25 w-full mt-1"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400">
-                      <Bug size={18} />
+                {/* App Complaints & Bug Desk Drawer Button — Super Admin Only */}
+                {user?.role === 'super_admin' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeDrawer();
+                      setIsComplaintOpen(true);
+                    }}
+                    className="flex items-center justify-between p-3 rounded-xl transition-all text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/25 w-full mt-1"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400">
+                        <Bug size={18} />
+                      </div>
+                      <div className="flex flex-col text-left">
+                        <span className="text-sm font-extrabold text-white">App Complaints Desk</span>
+                        <span className="text-[10px] text-red-300 opacity-90">View & Resolve User Reported Bugs</span>
+                      </div>
                     </div>
-                    <div className="flex flex-col text-left">
-                      <span className="text-sm font-extrabold text-white">App Complaints Desk</span>
-                      <span className="text-[10px] text-red-300 opacity-90">View & Resolve User Reported Bugs</span>
-                    </div>
-                  </div>
-                  <ChevronRight size={16} opacity={0.6} />
-                </button>
+                    <ChevronRight size={16} opacity={0.6} />
+                  </button>
+                )}
               </div>
             </div>
 
