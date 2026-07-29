@@ -6,6 +6,14 @@
 const STORAGE_DUTY_KEY = 'kpr_warden_duty_logs_v5';
 const STORAGE_REMARKS_KEY = 'kpr_student_remarks_v5';
 
+function notifyChange() {
+  try {
+    window.dispatchEvent(new CustomEvent('kpr_data_updated'));
+  } catch (e) {
+    console.error('Hostel event dispatch notice:', e);
+  }
+}
+
 export const hostelService = {
   // ── Warden Duty Logs ──
   getDutyLogs() {
@@ -27,6 +35,7 @@ export const hostelService = {
     logs.unshift(newLog);
     try {
       localStorage.setItem(STORAGE_DUTY_KEY, JSON.stringify(logs));
+      notifyChange();
     } catch (e) {
       console.error('Failed to save duty log:', e);
     }
@@ -37,6 +46,7 @@ export const hostelService = {
     const logs = this.getDutyLogs().filter((l) => l.id !== id);
     try {
       localStorage.setItem(STORAGE_DUTY_KEY, JSON.stringify(logs));
+      notifyChange();
     } catch (e) {
       console.error('Failed to delete duty log:', e);
     }
@@ -67,6 +77,7 @@ export const hostelService = {
     remarks.unshift(newRemark);
     try {
       localStorage.setItem(STORAGE_REMARKS_KEY, JSON.stringify(remarks));
+      notifyChange();
     } catch (e) {
       console.error('Failed to save student remark:', e);
     }
@@ -90,6 +101,7 @@ export const hostelService = {
 
     try {
       localStorage.setItem(STORAGE_REMARKS_KEY, JSON.stringify(remarks));
+      notifyChange();
     } catch (e) {
       console.error('Failed to update remark status:', e);
     }
@@ -101,6 +113,7 @@ export const hostelService = {
     const remarks = this.getStudentRemarks().filter((r) => r.id !== id);
     try {
       localStorage.setItem(STORAGE_REMARKS_KEY, JSON.stringify(remarks));
+      notifyChange();
     } catch (e) {
       console.error('Failed to delete student remark:', e);
     }
@@ -116,6 +129,7 @@ export const hostelService = {
       });
       localStorage.setItem(STORAGE_DUTY_KEY, JSON.stringify([]));
       localStorage.setItem(STORAGE_REMARKS_KEY, JSON.stringify([]));
+      notifyChange();
     } catch (e) {
       console.error('Failed to clear hostel records:', e);
     }

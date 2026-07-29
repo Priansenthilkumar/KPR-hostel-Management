@@ -18,6 +18,11 @@ function getAll() {
 
 function save(entries) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  try {
+    window.dispatchEvent(new CustomEvent('kpr_data_updated'));
+  } catch (e) {
+    console.error('Event dispatch notice:', e);
+  }
 }
 
 export const storageService = {

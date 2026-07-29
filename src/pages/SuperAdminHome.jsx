@@ -1,5 +1,4 @@
-// src/pages/SuperAdminHome.jsx
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Crown,
@@ -7,7 +6,6 @@ import {
   Utensils,
   BarChart3,
   PlusCircle,
-  Ticket,
   Download,
   AlertCircle,
   ArrowRight,
@@ -19,12 +17,16 @@ import {
   ChevronRight,
   Layers,
   Wrench,
+  UserCheck,
+  MessageSquare,
 } from 'lucide-react';
 import { storageService } from '../services/storage';
 import { hostelService } from '../services/hostelService';
+import { formatDisplayDate, formatKg } from '../utils/dateUtils';
 import { exportToExcel } from '../utils/exportExcel';
 import ComplaintBox from '../components/Dashboard/ComplaintBox';
 import Button from '../components/UI/Button';
+import Badge from '../components/UI/Badge';
 import kprLogo from '../assets/kprLogo.png';
 import toast from 'react-hot-toast';
 
@@ -32,10 +34,25 @@ export default function SuperAdminHome() {
   const navigate = useNavigate();
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
 
-  // Dynamic Live Stats from Backend Services
-  const messEntries = useMemo(() => storageService.getEntries(), []);
-  const dutyLogs = useMemo(() => hostelService.getDutyLogs(), []);
-  const remarksList = useMemo(() => hostelService.getStudentRemarks(), []);
+  // Dynamic Live State synced across storage & custom events
+  const [messEntries, setMessEntries] = useState(() => storageService.getEntries());
+  const [dutyLogs, setDutyLogs] = useState(() => hostelService.getDutyLogs());
+  const [remarksList, setRemarksList] = useState(() => hostelService.getStudentRemarks());
+
+  const refreshAllData = useCallback(() => {
+    setMessEntries(storageService.getEntries());
+    setDutyLogs(hostelService.getDutyLogs());
+    setRemarksList(hostelService.getStudentRemarks());
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('kpr_data_updated', refreshAllData);
+    window.addEventListener('storage', refreshAllData);
+    return () => {
+      window.removeEventListener('kpr_data_updated', refreshAllData);
+      window.removeEventListener('storage', refreshAllData);
+    };
+  }, [refreshAllData]);
 
   const totalMessEntriesCount = messEntries.length;
   const totalDutyLogsCount = dutyLogs.length;
@@ -372,7 +389,155 @@ export default function SuperAdminHome() {
             <ChevronRight size={16} />
           </Button>
         </div>
+      </div>
 
+      {/* ── LIVE MESS FOOD MAINTENANCE ACTIVITY DATATABLE ── */}
+      <div className="card overflow-hidden p-0 rounded-3xl flex flex-col shadow-xs border border-[#52B74A]/30">
+        <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between bg-[var(--bg-subtle)]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold">
+              <Utensils size={15} />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-[var(--text-primary)] text-sm leading-none">
+                Live Mess Food Maintenance Activity Log
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] mt-1">
+                Real-time logged food entries ({messEntries.length} total records)
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate('/overview')}
+            className="inline-flex items-center gap-1 text-xs text-[#52B74A] hover:text-[#44A03C] font-bold transition-colors"
+          >
+            Full Mess Log
+            <ChevronRight size={14} strokeWidth={2.2} />
+          </button>
+        </div>
+
+        {messEntries.length === 0 ? (
+          <div className="p-8 text-center text-xs text-[var(--text-secondary)] font-medium">
+            No Mess entries logged yet. Click <strong className="text-[#52B74A] cursor-pointer" onClick={() => navigate('/add-entry')}>Add Meal Log</strong> to record your first entry.
+          </div>
+        ) : (
+          <div className="overflow-x-auto w-full">
+            <table className="data-table dashboard-data-table w-full">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Day</th>
+                  <th>Meal</th>
+                  <th>Main Course</th>
+                  <th>Cook</th>
+                  <th className="text-right">Headcount</th>
+                  <th className="text-right">Wastage (KG)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {messEntries.slice(0, 5).map((e) => {
+                  const wastageVal = parseFloat(e.wastage) || 0;
+                  const wastageSeverity = wastageVal > 10 ? 'High' : wastageVal > 5 ? 'Moderate' : 'Low';
+                  return (
+                    <tr key={e.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                      <td className="font-semibold text-[var(--text-primary)] whitespace-nowrap text-xs">
+                        {formatDisplayDate(e.date)}
+                      </td>
+                      <td><Badge label={e.day} /></td>
+                      <td><Badge label={e.meal} /></td>
+                      <td className="text-xs font-medium text-[var(--text-secondary)] max-w-[180px] truncate" title={e.mainCourse}>
+                        {e.mainCourse}
+                      </td>
+                      <td className="text-xs font-semibold text-[var(--text-secondary)] whitespace-nowrap">
+                        {e.cookName}
+                      </td>
+                      <td className="font-bold text-[#52B74A] text-right tabular-nums text-xs">
+                        {parseInt(e.strength || 0).toLocaleString()}
+                      </td>
+                      <td className="text-right whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1.5">
+                          <span className="font-bold text-xs tabular-nums text-[var(--text-primary)]">
+                            {formatKg(e.wastage)}
+                          </span>
+                          <Badge label={wastageSeverity} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* ── LIVE HOSTEL WARDEN & STUDENT REMARKS DATATABLE ── */}
+      <div className="card overflow-hidden p-0 rounded-3xl flex flex-col shadow-xs border border-sky-500/30">
+        <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between bg-[var(--bg-subtle)]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-500 flex items-center justify-center font-bold">
+              <ShieldCheck size={15} />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-[var(--text-primary)] text-sm leading-none">
+                Live Hostel Warden Duty & Student Remarks Logs
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] mt-1">
+                Real-time hostel logs ({dutyLogs.length} duty check-ins, {remarksList.length} student remarks)
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate('/hostel-overview')}
+            className="inline-flex items-center gap-1 text-xs text-sky-500 hover:text-sky-600 font-bold transition-colors"
+          >
+            Full Hostel Log
+            <ChevronRight size={14} strokeWidth={2.2} />
+          </button>
+        </div>
+
+        {dutyLogs.length === 0 && remarksList.length === 0 ? (
+          <div className="p-8 text-center text-xs text-[var(--text-secondary)] font-medium">
+            No Hostel duty logs or student remarks recorded yet. Click <strong className="text-sky-500 cursor-pointer" onClick={() => navigate('/hostel-add-entry')}>Log Duty / Remark</strong> to record your first entry.
+          </div>
+        ) : (
+          <div className="overflow-x-auto w-full">
+            <table className="data-table dashboard-data-table w-full">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Date</th>
+                  <th>Block</th>
+                  <th>Staff / Student Name</th>
+                  <th>Details / Category</th>
+                  <th className="text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dutyLogs.slice(0, 3).map((d) => (
+                  <tr key={d.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                    <td><span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-600 uppercase">Duty Log</span></td>
+                    <td className="font-semibold text-xs text-[var(--text-primary)] whitespace-nowrap">{formatDisplayDate(d.date)}</td>
+                    <td className="text-xs font-medium text-[var(--text-secondary)]">{d.block}</td>
+                    <td className="text-xs font-bold text-[var(--text-primary)]">{d.name} <span className="text-[10px] font-normal text-[var(--text-muted)]">({d.designation})</span></td>
+                    <td className="text-xs text-[var(--text-secondary)]">In: {d.inTime} | Out: {d.outTime}</td>
+                    <td className="text-right"><Badge label={d.status || 'Completed'} /></td>
+                  </tr>
+                ))}
+                {remarksList.slice(0, 3).map((r) => (
+                  <tr key={r.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                    <td><span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-600 uppercase">Remark</span></td>
+                    <td className="font-semibold text-xs text-[var(--text-primary)] whitespace-nowrap">{formatDisplayDate(r.date)}</td>
+                    <td className="text-xs font-medium text-[var(--text-secondary)]">{r.block}</td>
+                    <td className="text-xs font-bold text-[var(--text-primary)]">{r.studentName} <span className="text-[10px] font-normal text-[var(--text-muted)]">({r.roomNo})</span></td>
+                    <td className="text-xs text-[var(--text-secondary)] max-w-[200px] truncate" title={r.remark}><strong className="mr-1">{`[${r.category}]`}</strong>{r.remark}</td>
+                    <td className="text-right"><Badge label={r.rectified ? 'Rectified' : 'Pending'} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* ── System Audit & Master Controls ── */}
