@@ -259,29 +259,34 @@ export default function Navbar() {
 
               {/* User Session Profile Box in Left Mobile Drawer */}
               {user ? (
-                <div className="m-4 p-3.5 rounded-2xl bg-[#164350] border border-[#245767] flex items-center justify-between shadow-md">
-                  <div className="flex items-center gap-3">
+                <div className="m-4 p-3 rounded-2xl bg-[#164350] border border-[#245767] flex items-center justify-between gap-2 shadow-md">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black text-white shadow-sm"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black text-white shadow-sm flex-shrink-0"
                       style={{ backgroundColor: user.avatarBg }}
                     >
                       {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
                     </div>
-                    <div>
-                      <span className="text-xs font-extrabold block text-white">{user.name}</span>
-                      <span className="text-[10px] font-semibold text-[#52B74A] block">{user.roleTitle}</span>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-xs font-extrabold block text-white truncate" title={user.name}>
+                        {user.name}
+                      </span>
+                      <span className="text-[10px] font-semibold text-[#52B74A] block truncate">
+                        {user.roleTitle}
+                      </span>
                     </div>
                   </div>
                   <button
+                    type="button"
                     onClick={() => {
                       closeDrawer();
                       logout();
                     }}
-                    className="px-2.5 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-bold flex items-center gap-1.5 transition-colors border border-red-500/30"
-                    title="Logout"
+                    className="px-2.5 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-bold flex items-center gap-1 transition-colors border border-red-500/30 flex-shrink-0"
+                    title="Sign Out"
                   >
-                    <LogOut size={14} />
-                    <span>Sign Out</span>
+                    <LogOut size={13} />
+                    <span className="text-[11px] font-bold">Sign Out</span>
                   </button>
                 </div>
               ) : (
