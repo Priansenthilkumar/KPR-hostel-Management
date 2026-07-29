@@ -105,20 +105,20 @@ export default function Navbar() {
 
             {/* Brand Logo & Title */}
             <div
-              className="flex items-center gap-2.5 cursor-pointer flex-shrink-0 select-none group"
+              className="flex items-center gap-2 sm:gap-2.5 cursor-pointer flex-shrink-0 select-none group mr-1 lg:mr-3"
               onClick={() => navigate(user?.role === 'super_admin' ? '/admin-home' : user?.role === 'warden' ? '/hostel-dashboard' : '/')}
             >
               <img
                 src={kprLogo}
                 alt="KPR Logo"
-                className="h-9 sm:h-10.5 w-auto object-contain flex-shrink-0 bg-white/95 p-1 sm:p-1.5 rounded-lg shadow-md group-hover:scale-105 transition-transform"
+                className="h-8.5 sm:h-10 w-auto object-contain flex-shrink-0 bg-white/95 p-1 sm:p-1.5 rounded-lg shadow-md group-hover:scale-105 transition-transform"
               />
               <div className="flex flex-col text-left justify-center">
-                <h1 className="text-xs sm:text-sm md:text-base font-extrabold text-white leading-tight tracking-tight whitespace-nowrap">
+                <h1 className="text-xs sm:text-sm font-extrabold text-white leading-tight tracking-tight whitespace-nowrap">
                   KPR HOSTELS & MESS
                 </h1>
-                <span className="text-[10px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider">
-                  {user ? (user.role === 'super_admin' ? 'Super Admin Command Center' : user.role === 'warden' ? 'Hostel Warden Portal' : 'Mess Operations') : 'Management Suite'}
+                <span className="text-[9.5px] sm:text-[10px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider">
+                  {user ? (user.role === 'super_admin' ? 'Super Admin Portal' : user.role === 'warden' ? 'Hostel Warden Portal' : 'Mess Operations') : 'Management Suite'}
                 </span>
               </div>
             </div>
@@ -180,68 +180,29 @@ export default function Navbar() {
 
             {/* Auth User Profile Badge - Desktop Full Pill */}
             {user ? (
-              <>
-                {/* Desktop View Profile Badge */}
-                <div className="hidden md:flex items-center gap-1.5 sm:gap-2 bg-[#123843] border border-[#235868] px-2 sm:px-2.5 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
-                  <div
-                    className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full flex items-center justify-center text-[10px] sm:text-[10.5px] font-extrabold text-white flex-shrink-0"
-                    style={{ backgroundColor: user.avatarBg }}
-                  >
-                    {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
-                  </div>
-                  <span className="font-bold text-[11px] sm:text-xs max-w-[140px] truncate">
-                    {user.name}
-                  </span>
-                  {user.role === 'super_admin' && (
-                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-purple-600 text-white uppercase">
-                      Admin
-                    </span>
-                  )}
-                  <button
-                    onClick={logout}
-                    className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 ml-0.5 flex-shrink-0"
-                    title="Sign Out"
-                  >
-                    <LogOut size={14} />
-                  </button>
+              <div className="hidden md:flex items-center gap-1.5 sm:gap-2 bg-[#123843] border border-[#235868] px-2.5 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
+                <div
+                  className="w-6.5 h-6.5 rounded-full flex items-center justify-center text-[10.5px] font-extrabold text-white flex-shrink-0"
+                  style={{ backgroundColor: user.avatarBg }}
+                >
+                  {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
                 </div>
-
-                {/* Super Admin Quick Switcher Bar on Desktop */}
+                <span className="font-bold text-xs max-w-[130px] truncate">
+                  {user.name}
+                </span>
                 {user.role === 'super_admin' && (
-                  <div className="hidden xl:flex items-center gap-1 bg-purple-950/80 p-1 rounded-xl border border-purple-500/40">
-                    <button
-                      onClick={() => navigate('/admin-home')}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
-                        location.pathname === '/admin-home'
-                          ? 'bg-purple-600 text-white shadow-xs'
-                          : 'text-purple-300 hover:text-white'
-                      }`}
-                    >
-                      Master Home
-                    </button>
-                    <button
-                      onClick={() => navigate('/mess-dashboard')}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
-                        location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/add-entry')
-                          ? 'bg-[#52B74A] text-white shadow-xs'
-                          : 'text-purple-300 hover:text-white'
-                      }`}
-                    >
-                      Mess Hub
-                    </button>
-                    <button
-                      onClick={() => navigate('/hostel-dashboard')}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all ${
-                        location.pathname.startsWith('/hostel')
-                          ? 'bg-sky-600 text-white shadow-xs'
-                          : 'text-purple-300 hover:text-white'
-                      }`}
-                    >
-                      Hostel Hub
-                    </button>
-                  </div>
+                  <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-purple-600 text-white uppercase">
+                    Admin
+                  </span>
                 )}
-              </>
+                <button
+                  onClick={logout}
+                  className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 ml-0.5 flex-shrink-0"
+                  title="Sign Out"
+                >
+                  <LogOut size={14} />
+                </button>
+              </div>
             ) : (
               <NavLink
                 to="/login"
