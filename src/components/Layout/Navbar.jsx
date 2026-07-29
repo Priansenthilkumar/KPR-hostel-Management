@@ -1,5 +1,5 @@
 // src/components/Layout/Navbar.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   RotateCw,
