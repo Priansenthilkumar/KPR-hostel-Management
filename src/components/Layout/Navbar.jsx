@@ -115,10 +115,10 @@ export default function Navbar() {
               />
               <div className="flex flex-col text-left justify-center">
                 <h1 className="text-xs sm:text-sm md:text-base font-extrabold text-white leading-tight tracking-tight whitespace-nowrap">
-                  {user ? (user.role === 'super_admin' ? 'KPR SUPER ADMIN' : user.role === 'warden' ? 'KPR HOSTELS' : 'KPR MESS') : 'KPR HOSTELS & MESS'}
+                  KPR HOSTELS & MESS
                 </h1>
                 <span className="text-[10px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider">
-                  {user ? (user.role === 'super_admin' ? 'Command Center' : user.role === 'warden' ? 'Warden Portal' : 'Mess Operations') : 'Management Suite'}
+                  {user ? (user.role === 'super_admin' ? 'Super Admin Command Center' : user.role === 'warden' ? 'Hostel Warden Portal' : 'Mess Operations') : 'Management Suite'}
                 </span>
               </div>
             </div>
@@ -277,12 +277,15 @@ export default function Navbar() {
                   />
                   <div>
                     <h2 className="text-sm font-extrabold text-white leading-tight">
-                      {user?.role === 'super_admin'
-                        ? 'SUPER ADMIN PORTAL'
-                        : user?.role === 'warden'
-                        ? 'KPR HOSTELS WARDEN'
-                        : 'KPR MESS MANAGEMENT'}
+                      KPR HOSTELS & MESS
                     </h2>
+                    <span className="text-[10px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider block mt-0.5">
+                      {user?.role === 'super_admin'
+                        ? 'Super Admin Portal'
+                        : user?.role === 'warden'
+                        ? 'Hostel Warden Portal'
+                        : 'Mess Operations'}
+                    </span>
                   </div>
                 </div>
 
