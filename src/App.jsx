@@ -6,13 +6,14 @@ import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
 import { useDarkMode } from './hooks/useDarkMode';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ErrorBoundary } from './components/UI/ErrorBoundary';
+import Login from './pages/Login';
 import kprLogo from './assets/kprLogo.png';
 
 const Dashboard        = lazy(() => import('./pages/Dashboard'));
 const Overview         = lazy(() => import('./pages/Overview'));
 const FoodMenu         = lazy(() => import('./pages/FoodMenu'));
 const AddEntry         = lazy(() => import('./pages/AddEntry'));
-const Login            = lazy(() => import('./pages/Login'));
 
 // Parallel Hostel Management Suite
 const HostelDashboard  = lazy(() => import('./pages/HostelDashboard'));
@@ -107,34 +108,36 @@ export default function App() {
   const { isDark, toggle } = useDarkMode();
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <MainAppLayout />
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3500,
-            style: {
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '13.5px',
-              fontWeight: 500,
-              borderRadius: '10px',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
-              border: '1px solid var(--border)',
-              background: 'var(--toast-bg)',
-              color: 'var(--text-primary)',
-            },
-            success: {
-              iconTheme: { primary: '#52B74A', secondary: '#fff' },
-              style: { borderLeft: '4px solid #52B74A' },
-            },
-            error: {
-              iconTheme: { primary: '#D32F2F', secondary: '#fff' },
-              style: { borderLeft: '4px solid #D32F2F' },
-            },
-          }}
-        />
-      </BrowserRouter>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <MainAppLayout />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3500,
+              style: {
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '13.5px',
+                fontWeight: 500,
+                borderRadius: '10px',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
+                border: '1px solid var(--border)',
+                background: 'var(--toast-bg)',
+                color: 'var(--text-primary)',
+              },
+              success: {
+                iconTheme: { primary: '#52B74A', secondary: '#fff' },
+                style: { borderLeft: '4px solid #52B74A' },
+              },
+              error: {
+                iconTheme: { primary: '#D32F2F', secondary: '#fff' },
+                style: { borderLeft: '4px solid #D32F2F' },
+              },
+            }}
+          />
+        </BrowserRouter>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
