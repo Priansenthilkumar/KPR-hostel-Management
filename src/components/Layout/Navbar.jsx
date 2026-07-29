@@ -117,35 +117,35 @@ export default function Navbar() {
     <>
       <nav className="navbar w-full flex flex-col justify-center bg-[#164350] border-b border-[#245767] shadow-md sticky top-0 z-50">
         {/* ── Main Header Bar ── */}
-        <div className="max-w-[1280px] w-full mx-auto px-3.5 sm:px-6 min-h-16 sm:h-18 flex items-center justify-between gap-3">
+        <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 lg:px-6 min-h-16 flex items-center justify-between gap-1.5 sm:gap-3">
           
           {/* Left: Mobile Hamburger Toggle + Brand Logo & Title */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {/* Mobile Hamburger Menu Button */}
             <button
               type="button"
               onClick={() => setIsMobileDrawerOpen(true)}
-              className="md:hidden w-9.5 h-9.5 rounded-xl bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center border border-[#2B6F82] shadow-xs active:scale-95 transition-all"
+              className="md:hidden w-9 h-9 rounded-xl bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center border border-[#2B6F82] shadow-xs active:scale-95 transition-all"
               aria-label="Open Mobile Drawer"
             >
-              <Menu size={22} strokeWidth={2.2} />
+              <Menu size={20} strokeWidth={2.2} />
             </button>
 
             {/* Brand Logo & Title */}
             <div
-              className="flex items-center gap-2 sm:gap-2.5 cursor-pointer flex-shrink-0 select-none group mr-1 lg:mr-3"
+              className="flex items-center gap-2 cursor-pointer flex-shrink-0 select-none group mr-1 lg:mr-2"
               onClick={() => navigate(user?.role === 'super_admin' ? '/admin-home' : user?.role === 'warden' ? '/hostel-dashboard' : '/')}
             >
               <img
                 src={kprLogo}
                 alt="KPR Logo"
-                className="h-8.5 sm:h-10 w-auto object-contain flex-shrink-0 bg-white/95 p-1 sm:p-1.5 rounded-lg shadow-md group-hover:scale-105 transition-transform"
+                className="h-8 sm:h-9 w-auto object-contain flex-shrink-0 bg-white/95 p-1 rounded-lg shadow-md group-hover:scale-105 transition-transform"
               />
-              <div className="flex flex-col text-left justify-center">
-                <h1 className="text-xs sm:text-sm font-extrabold text-white leading-tight tracking-tight whitespace-nowrap">
+              <div className="flex flex-col text-left justify-center min-w-0">
+                <h1 className="text-xs sm:text-sm font-black text-white leading-tight tracking-tight whitespace-nowrap">
                   KPR HOSTELS & MESS
                 </h1>
-                <span className="text-[9.5px] sm:text-[10px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider">
+                <span className="text-[9px] sm:text-[9.5px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider hidden sm:block">
                   {user ? (user.role === 'super_admin' ? 'Super Admin Portal' : user.role === 'warden' ? 'Hostel Warden Portal' : 'Mess Operations') : 'Management Suite'}
                 </span>
               </div>
@@ -153,21 +153,21 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-1.5 p-1 rounded-xl bg-[#123843] border border-[#235868] shadow-inner">
+          <div className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-[#123843] border border-[#235868] shadow-inner flex-shrink">
             {activeNavLinks.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={to === '/' || to === '/hostel-management' || to === '/admin-home'}
                 className={({ isActive }) =>
-                  `inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition-all duration-150 leading-none ${
+                  `inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[12px] lg:text-[12.5px] font-semibold transition-all duration-150 leading-none whitespace-nowrap ${
                     isActive
                       ? 'bg-[#52B74A] text-white shadow-sm font-bold'
                       : 'text-[#B0D0D8] hover:bg-[#1D5060] hover:text-white'
                   }`
                 }
               >
-                <Icon size={15} strokeWidth={2.2} />
+                <Icon size={14} strokeWidth={2.2} />
                 <span>{label}</span>
               </NavLink>
             ))}
@@ -177,16 +177,16 @@ export default function Navbar() {
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             <button
               onClick={handleRefresh}
-              className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-all border border-[#2B6F82] shadow-xs active:scale-95 flex-shrink-0"
+              className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-all border border-[#2B6F82] shadow-xs active:scale-95 flex-shrink-0"
               title="Refresh Data"
               aria-label="Refresh Data"
             >
-              <RotateCw size={14} strokeWidth={2.2} />
+              <RotateCw size={13} strokeWidth={2.2} />
             </button>
 
             {/* Notification Bell — Super Admin Only */}
             {user?.role === 'super_admin' && (
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsNotifOpen(true)}
@@ -194,13 +194,13 @@ export default function Navbar() {
                   title="Super Admin Notifications"
                 >
                   {unreadNotifCount > 0 ? (
-                    <BellRing size={16} className="text-amber-400 animate-bounce" />
+                    <BellRing size={15} className="text-amber-400 animate-bounce" />
                   ) : (
-                    <Bell size={16} />
+                    <Bell size={15} />
                   )}
                 </button>
                 {unreadNotifCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-black flex items-center justify-center shadow-md pointer-events-none ring-2 ring-[#123843]">
+                  <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[8.5px] font-black flex items-center justify-center shadow-md pointer-events-none ring-2 ring-[#123843]">
                     {unreadNotifCount > 9 ? '9+' : unreadNotifCount}
                   </span>
                 )}
@@ -209,48 +209,48 @@ export default function Navbar() {
 
             <button
               onClick={handleExport}
-              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white text-[12.5px] font-bold shadow-sm transition-all active:scale-95 leading-none flex-shrink-0"
+              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white text-[11.5px] lg:text-xs font-bold shadow-sm transition-all active:scale-95 leading-none flex-shrink-0"
             >
-              <Download size={14} strokeWidth={2.2} />
+              <Download size={13} strokeWidth={2.2} />
               <span>Export Excel</span>
             </button>
 
             {/* Auth User Profile Badge - Desktop Full Pill */}
             {user ? (
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                 {user.role === 'super_admin' && (
                   <button
                     type="button"
                     onClick={() => setIsComplaintOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-xs font-extrabold transition-all shadow-xs"
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-[11px] font-extrabold transition-all shadow-xs whitespace-nowrap"
                     title="View App Complaints & Bug Desk"
                   >
-                    <Bug size={14} />
+                    <Bug size={13} />
                     <span>App Complaints</span>
                   </button>
                 )}
 
-                <div className="flex items-center gap-1.5 sm:gap-2 bg-[#123843] border border-[#235868] px-2.5 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
+                <div className="flex items-center gap-1 sm:gap-1.5 bg-[#123843] border border-[#235868] px-2 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
                   <div
-                    className="w-6.5 h-6.5 rounded-full flex items-center justify-center text-[10.5px] font-extrabold text-white flex-shrink-0"
+                    className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white flex-shrink-0"
                     style={{ backgroundColor: user.avatarBg }}
                   >
                     {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
                   </div>
-                  <span className="font-bold text-xs max-w-[130px] truncate">
+                  <span className="font-bold text-[11px] sm:text-xs max-w-[75px] sm:max-w-[100px] lg:max-w-[120px] truncate" title={user.name}>
                     {user.name}
                   </span>
                   {user.role === 'super_admin' && (
-                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-purple-600 text-white uppercase">
+                    <span className="text-[8.5px] font-black px-1 py-0.5 rounded bg-purple-600 text-white uppercase flex-shrink-0">
                       Admin
                     </span>
                   )}
                   <button
                     onClick={logout}
-                    className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 ml-0.5 flex-shrink-0"
+                    className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 flex-shrink-0 ml-0.5"
                     title="Sign Out"
                   >
-                    <LogOut size={14} />
+                    <LogOut size={13} />
                   </button>
                 </div>
               </div>
