@@ -1,5 +1,5 @@
 // src/pages/AddEntry.jsx
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, PlusCircle, Edit3, ShieldCheck } from 'lucide-react';
 import EntryForm from '../components/Entry/EntryForm';

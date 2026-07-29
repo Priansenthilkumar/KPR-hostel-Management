@@ -1,5 +1,5 @@
 // src/pages/Dashboard.jsx
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   PlusCircle,

@@ -1,6 +1,6 @@
 // src/components/Dashboard/SummaryCards.jsx
 import { Users, AlertTriangle, ClipboardList, Calendar } from 'lucide-react';
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { isDateToday, formatKg } from '../../utils/dateUtils';
 
 const CARDS = [
