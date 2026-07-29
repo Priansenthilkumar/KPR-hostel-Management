@@ -15,7 +15,7 @@ import {
   Save,
   RotateCcw,
 } from 'lucide-react';
-import { getCustomMenu, saveCustomMenu, menuData as defaultMenuData, days } from '../data/menuData';
+import { getCustomMenu, saveCustomMenu, menuData, days } from '../data/menuData';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import Button from '../components/UI/Button';
@@ -98,8 +98,8 @@ export default function FoodMenu() {
 
   const handleResetToDefault = () => {
     if (window.confirm('Reset all menu items to default campus menu?')) {
-      saveCustomMenu(defaultMenuData);
-      setActiveMenu(defaultMenuData);
+      saveCustomMenu(menuData);
+      setActiveMenu(menuData);
       toast.success('Food menu reset to default schedule!');
       setIsEditModalOpen(false);
     }
@@ -267,7 +267,7 @@ export default function FoodMenu() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {['Breakfast', 'Lunch', 'Dinner'].map((meal) => {
                 const Icon = MEAL_ICONS[meal] || Utensils;
-                const items = menuData[todayDayName]?.[meal] || [];
+                const items = (activeMenu || menuData)[todayDayName]?.[meal] || [];
                 return (
                   <div
                     key={meal}
@@ -474,7 +474,7 @@ export default function FoodMenu() {
               {days.map((dayName) => {
                 const isToday = dayName === todayDayName;
                 const isSelected = dayName === selectedDay;
-                const dayMenu = menuData[dayName] || {};
+                const dayMenu = (activeMenu || menuData)[dayName] || {};
 
                 return (
                   <div
