@@ -18,7 +18,6 @@ const Login            = lazy(() => import('./pages/Login'));
 const HostelDashboard  = lazy(() => import('./pages/HostelDashboard'));
 const HostelManagement = lazy(() => import('./pages/HostelManagement'));
 const HostelSchedule   = lazy(() => import('./pages/HostelSchedule'));
-const HostelGatePass   = lazy(() => import('./pages/HostelGatePass'));
 const AddHostelEntry   = lazy(() => import('./pages/AddHostelEntry'));
 const SuperAdminHome   = lazy(() => import('./pages/SuperAdminHome'));
 
@@ -92,7 +91,6 @@ function MainAppLayout() {
             {/* Hostel Management Suite Routes (Wardens & Super Admin) */}
             <Route path="/hostel-dashboard"  element={<ProtectedRoute allowedRole="warden"><HostelDashboard /></ProtectedRoute>} />
             <Route path="/hostel-overview"   element={<ProtectedRoute allowedRole="warden"><HostelManagement /></ProtectedRoute>} />
-            <Route path="/hostel-pass"       element={<ProtectedRoute allowedRole="warden"><HostelGatePass /></ProtectedRoute>} />
             <Route path="/hostel-add-entry"  element={<ProtectedRoute allowedRole="warden"><AddHostelEntry /></ProtectedRoute>} />
 
             <Route path="*"                  element={<Navigate to="/" replace />} />

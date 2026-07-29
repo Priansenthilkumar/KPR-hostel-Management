@@ -60,7 +60,7 @@ export default function HostelDashboard() {
             </h1>
 
             <p className="mt-2.5 text-xs sm:text-sm text-[#B0D0D8] leading-relaxed">
-              Monitor student strength across 9 hostel blocks, track warden duty check-ins, inspect student remarks, and issue outing gate passes.
+              Monitor student strength across 9 hostel blocks, track warden duty check-ins, and inspect student remarks.
             </p>
 
             {/* Quick Action Complaint Box Button */}
@@ -92,7 +92,7 @@ export default function HostelDashboard() {
       </div>
 
       {/* ── Quick Access Launcher Grid ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         
         <div
           onClick={() => navigate('/hostel-overview')}
@@ -107,22 +107,6 @@ export default function HostelDashboard() {
           <div>
             <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Hostel Overview</h4>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">View duty logs & remarks table</p>
-          </div>
-        </div>
-
-        <div
-          onClick={() => navigate('/hostel-pass')}
-          className="card p-5 rounded-2xl border border-[var(--border)] hover:border-amber-500 cursor-pointer transition-all group flex flex-col justify-between gap-4"
-        >
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Ticket size={20} />
-            </div>
-            <ArrowRight size={16} className="text-[var(--text-muted)] group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
-          </div>
-          <div>
-            <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Manual Gate Pass</h4>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">Print manual outing slip PDF</p>
           </div>
         </div>
 

@@ -35,7 +35,6 @@ const messNavLinks = [
 const wardenNavLinks = [
   { to: '/hostel-dashboard', label: 'Home', icon: Home, desc: 'Hostel Dashboard Hub' },
   { to: '/hostel-overview', label: 'Overview', icon: BarChart2, desc: 'Analytics & Duty Logs' },
-  { to: '/hostel-pass', label: 'Gate Pass', icon: Ticket, desc: 'Generate Outing Pass PDF' },
   { to: '/hostel-add-entry', label: 'Add Entry', icon: PlusCircle, desc: 'Log Duty / Remarks' },
 ];
 
@@ -45,7 +44,6 @@ const superAdminNavLinks = [
   { to: '/hostel-dashboard', label: 'Hostel Hub', icon: ShieldCheck, desc: 'Hostel Warden Dashboard' },
   { to: '/overview', label: 'Mess Logs', icon: BarChart2, desc: 'Mess Analytics & Entries' },
   { to: '/hostel-overview', label: 'Hostel Logs', icon: BarChart2, desc: 'Duty Logs & Student Remarks' },
-  { to: '/hostel-pass', label: 'Gate Pass', icon: Ticket, desc: 'Outing Gate Pass Generator' },
 ];
 
 export default function Navbar() {

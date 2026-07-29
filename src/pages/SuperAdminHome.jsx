@@ -319,7 +319,7 @@ export default function SuperAdminHome() {
             </div>
 
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">
-              Monitor student headcount across 9 hostel blocks, register warden duty logs, track student discipline remarks, and issue outing gate passes.
+              Monitor student headcount across 9 hostel blocks, register warden duty logs, and track student discipline remarks.
             </p>
 
             {/* Quick Action Grid */}
@@ -334,18 +334,6 @@ export default function SuperAdminHome() {
                   <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
                 </div>
                 <span className="text-xs font-bold text-[var(--text-primary)]">Log Duty / Remark</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => navigate('/hostel-pass')}
-                className="p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-sky-500 text-left flex flex-col gap-1 transition-all group"
-              >
-                <div className="flex items-center justify-between text-amber-600">
-                  <Ticket size={16} />
-                  <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-                </div>
-                <span className="text-xs font-bold text-[var(--text-primary)]">Manual Gate Pass</span>
               </button>
 
               <button
@@ -403,7 +391,7 @@ export default function SuperAdminHome() {
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="text-xs text-[var(--text-secondary)] font-medium max-w-xl leading-relaxed">
-            As Super Admin, any changes, meal logs, student remarks, or gate pass receipts you generate or edit are stored directly to the official KPRIET database with full edit privileges.
+            As Super Admin, any changes, meal logs, or student remarks you generate or edit are stored directly to the official KPRIET database with full edit privileges.
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
