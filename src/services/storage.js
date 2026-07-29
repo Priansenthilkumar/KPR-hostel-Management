@@ -2,11 +2,11 @@
 // Abstracted storage service — swap localStorage for Firebase/Supabase here
 // without touching any other file.
 
-const STORAGE_KEY = 'kpr_food_entries_v5';
+const STORAGE_KEY = 'kpr_food_entries_v6';
 
 function getAll() {
   try {
-    ['kpr_food_entries', 'kpr_food_entries_v1', 'kpr_food_entries_v2', 'kpr_food_entries_v3', 'kpr_food_entries_v4'].forEach((k) => {
+    ['kpr_food_entries', 'kpr_food_entries_v1', 'kpr_food_entries_v2', 'kpr_food_entries_v3', 'kpr_food_entries_v4', 'kpr_food_entries_v5'].forEach((k) => {
       localStorage.removeItem(k);
     });
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -63,5 +63,9 @@ export const storageService = {
   /** Clear all entries (use with caution) */
   clearAll() {
     localStorage.removeItem(STORAGE_KEY);
+    ['kpr_food_entries', 'kpr_food_entries_v1', 'kpr_food_entries_v2', 'kpr_food_entries_v3', 'kpr_food_entries_v4', 'kpr_food_entries_v5'].forEach((k) => {
+      localStorage.removeItem(k);
+    });
+    save([]);
   },
 };

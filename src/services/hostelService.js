@@ -3,8 +3,8 @@
  * KPR HOSTELS MANAGEMENT - Backend Storage & Data Service
  */
 
-const STORAGE_DUTY_KEY = 'kpr_warden_duty_logs_v5';
-const STORAGE_REMARKS_KEY = 'kpr_student_remarks_v5';
+const STORAGE_DUTY_KEY = 'kpr_warden_duty_logs_v6';
+const STORAGE_REMARKS_KEY = 'kpr_student_remarks_v6';
 
 function notifyChange() {
   try {
@@ -14,9 +14,21 @@ function notifyChange() {
   }
 }
 
+function purgeLegacyHostelKeys() {
+  try {
+    ['v1', 'v2', 'v3', 'v4', 'v5'].forEach((v) => {
+      localStorage.removeItem(`kpr_warden_duty_logs_${v}`);
+      localStorage.removeItem(`kpr_student_remarks_${v}`);
+    });
+  } catch (e) {
+    console.error('Purge legacy keys error:', e);
+  }
+}
+
 export const hostelService = {
   // ── Warden Duty Logs ──
   getDutyLogs() {
+    purgeLegacyHostelKeys();
     try {
       const raw = localStorage.getItem(STORAGE_DUTY_KEY);
       return raw ? JSON.parse(raw) : [];
@@ -55,6 +67,7 @@ export const hostelService = {
 
   // ── Student Remarks & Rectification Tracker ──
   getStudentRemarks() {
+    purgeLegacyHostelKeys();
     try {
       const raw = localStorage.getItem(STORAGE_REMARKS_KEY);
       return raw ? JSON.parse(raw) : [];

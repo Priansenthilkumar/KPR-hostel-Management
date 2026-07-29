@@ -62,23 +62,19 @@ export default function HostelManagement() {
   const [filterTab, setFilterTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Save Duty Logs
+  // Sync with hostelService and listen for live data update events
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_DUTY_KEY, JSON.stringify(dutyLogs));
-    } catch (e) {
-      console.error('Failed to save duty logs:', e);
-    }
-  }, [dutyLogs]);
-
-  // Save Student Remarks
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_REMARKS_KEY, JSON.stringify(remarks));
-    } catch (e) {
-      console.error('Failed to save student remarks:', e);
-    }
-  }, [remarks]);
+    const handleDataUpdate = () => {
+      setDutyLogs(hostelService.getDutyLogs());
+      setRemarks(hostelService.getStudentRemarks());
+    };
+    window.addEventListener('kpr_data_updated', handleDataUpdate);
+    window.addEventListener('storage', handleDataUpdate);
+    return () => {
+      window.removeEventListener('kpr_data_updated', handleDataUpdate);
+      window.removeEventListener('storage', handleDataUpdate);
+    };
+  }, []);
 
   // Add Duty Entry
   const handleAddDuty = (e) => {
@@ -88,8 +84,7 @@ export default function HostelManagement() {
       return;
     }
 
-    const newLog = {
-      id: Date.now(),
+    hostelService.addDutyLog({
       name: staffName.trim(),
       designation,
       block: hostelBlock,
@@ -97,9 +92,8 @@ export default function HostelManagement() {
       inTime: inTime.trim(),
       outTime: outTime.trim() || 'On Duty',
       status: outTime.trim() ? 'Completed' : 'On Duty',
-    };
+    });
 
-    setDutyLogs([newLog, ...dutyLogs]);
     setStaffName('');
     toast.success('Warden duty in/out log added!');
   };
@@ -112,8 +106,7 @@ export default function HostelManagement() {
       return;
     }
 
-    const newRemark = {
-      id: Date.now(),
+    hostelService.addStudentRemark({
       studentName: studentName.trim(),
       rollNo: rollNo.trim() || 'N/A',
       roomNo: roomNo.trim() || 'Hostel',
@@ -122,12 +115,8 @@ export default function HostelManagement() {
       session: 'Daily Feedback',
       category,
       remark: remarkText.trim(),
-      rectified: false,
-      resolutionNote: '',
-      rectifiedAt: null,
-    };
+    });
 
-    setRemarks([newRemark, ...remarks]);
     setStudentName('');
     setRollNo('');
     setRoomNo('');
@@ -137,26 +126,15 @@ export default function HostelManagement() {
 
   // Mark Remark as Rectified
   const handleConfirmRectified = (id) => {
-    const updated = remarks.map((r) => {
-      if (r.id === id) {
-        return {
-          ...r,
-          rectified: true,
-          resolutionNote: resolutionText.trim() || 'Issue inspected & rectified by Warden Committee.',
-          rectifiedAt: new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }),
-        };
-      }
-      return r;
-    });
-
-    setRemarks(updated);
+    const note = resolutionText.trim() || 'Issue inspected & rectified by Warden Committee.';
+    hostelService.toggleRectified(id, note);
     setResolvingId(null);
     setResolutionText('');
     toast.success('Remark marked as RECTIFIED! ✅');
   };
 
   const handleDeleteRemark = (id) => {
-    setRemarks(remarks.filter((r) => r.id !== id));
+    hostelService.deleteStudentRemark(id);
     toast.success('Remark deleted.');
   };
 
