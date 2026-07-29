@@ -44,7 +44,7 @@ const wardenNavLinks = [
 ];
 
 const superAdminNavLinks = [
-  { to: '/admin-home', label: 'Master Home', icon: Crown, desc: 'Common Admin Command Center' },
+  { to: '/admin-home', label: 'Home', icon: Crown, desc: 'Common Admin Command Center' },
   { to: '/mess-dashboard', label: 'Mess Hub', icon: Home, desc: 'Mess Management Dashboard' },
   { to: '/hostel-dashboard', label: 'Hostel Hub', icon: ShieldCheck, desc: 'Hostel Warden Dashboard' },
   { to: '/overview', label: 'Mess Logs', icon: BarChart2, desc: 'Mess Analytics & Entries' },
@@ -151,37 +151,36 @@ export default function Navbar() {
               </div>
             </div>
           </div>
-
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-[#123843] border border-[#235868] shadow-inner flex-shrink">
+          <div className="hidden md:flex items-center gap-0.5 lg:gap-1 p-1 rounded-xl bg-[#123843] border border-[#235868] shadow-inner flex-shrink min-w-0">
             {activeNavLinks.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={to === '/' || to === '/hostel-management' || to === '/admin-home'}
                 className={({ isActive }) =>
-                  `inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[12px] lg:text-[12.5px] font-semibold transition-all duration-150 leading-none whitespace-nowrap ${
+                  `inline-flex items-center gap-1 sm:gap-1.5 px-2 lg:px-2.5 xl:px-3 py-1.5 rounded-lg text-[11.5px] lg:text-[12px] xl:text-[12.5px] font-semibold transition-all duration-150 leading-none whitespace-nowrap ${
                     isActive
                       ? 'bg-[#52B74A] text-white shadow-sm font-bold'
                       : 'text-[#B0D0D8] hover:bg-[#1D5060] hover:text-white'
                   }`
                 }
               >
-                <Icon size={14} strokeWidth={2.2} />
+                <Icon size={13.5} strokeWidth={2.2} />
                 <span>{label}</span>
               </NavLink>
             ))}
           </div>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
             <button
               onClick={handleRefresh}
-              className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-all border border-[#2B6F82] shadow-xs active:scale-95 flex-shrink-0"
+              className="w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-all border border-[#2B6F82] shadow-xs active:scale-95 flex-shrink-0"
               title="Refresh Data"
               aria-label="Refresh Data"
             >
-              <RotateCw size={13} strokeWidth={2.2} />
+              <RotateCw size={12.5} strokeWidth={2.2} />
             </button>
 
             {/* Notification Bell — Super Admin Only */}
@@ -190,17 +189,17 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setIsNotifOpen(true)}
-                  className="p-1.5 sm:p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/35 transition-all shadow-xs"
+                  className="p-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/35 transition-all shadow-xs"
                   title="Super Admin Notifications"
                 >
                   {unreadNotifCount > 0 ? (
-                    <BellRing size={15} className="text-amber-400 animate-bounce" />
+                    <BellRing size={14} className="text-amber-400 animate-bounce" />
                   ) : (
-                    <Bell size={15} />
+                    <Bell size={14} />
                   )}
                 </button>
                 {unreadNotifCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[8.5px] font-black flex items-center justify-center shadow-md pointer-events-none ring-2 ring-[#123843]">
+                  <span className="absolute -top-1.5 -right-1.5 min-w-3.5 h-3.5 px-0.5 rounded-full bg-red-500 text-white text-[8px] font-black flex items-center justify-center shadow-md pointer-events-none ring-1.5 ring-[#123843]">
                     {unreadNotifCount > 9 ? '9+' : unreadNotifCount}
                   </span>
                 )}
@@ -209,7 +208,7 @@ export default function Navbar() {
 
             <button
               onClick={handleExport}
-              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white text-[11.5px] lg:text-xs font-bold shadow-sm transition-all active:scale-95 leading-none flex-shrink-0"
+              className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white text-[11.5px] font-bold shadow-sm transition-all active:scale-95 leading-none flex-shrink-0"
             >
               <Download size={13} strokeWidth={2.2} />
               <span>Export Excel</span>
@@ -217,31 +216,31 @@ export default function Navbar() {
 
             {/* Auth User Profile Badge - Desktop Full Pill */}
             {user ? (
-              <div className="hidden md:flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <div className="hidden md:flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
                 {user.role === 'super_admin' && (
                   <button
                     type="button"
                     onClick={() => setIsComplaintOpen(true)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-[11px] font-extrabold transition-all shadow-xs whitespace-nowrap"
+                    className="inline-flex items-center gap-1 px-2 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-[11px] font-extrabold transition-all shadow-xs whitespace-nowrap"
                     title="View App Complaints & Bug Desk"
                   >
                     <Bug size={13} />
-                    <span>App Complaints</span>
+                    <span className="hidden xl:inline">App Complaints</span>
                   </button>
                 )}
 
                 <div className="flex items-center gap-1 sm:gap-1.5 bg-[#123843] border border-[#235868] px-2 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
                   <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white flex-shrink-0"
+                    className="w-5.5 h-5.5 rounded-full flex items-center justify-center text-[9.5px] font-extrabold text-white flex-shrink-0"
                     style={{ backgroundColor: user.avatarBg }}
                   >
                     {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
                   </div>
-                  <span className="font-bold text-[11px] sm:text-xs max-w-[75px] sm:max-w-[100px] lg:max-w-[120px] truncate" title={user.name}>
+                  <span className="font-bold text-[11px] sm:text-xs max-w-[55px] lg:max-w-[80px] xl:max-w-[120px] truncate" title={user.name}>
                     {user.name}
                   </span>
                   {user.role === 'super_admin' && (
-                    <span className="text-[8.5px] font-black px-1 py-0.5 rounded bg-purple-600 text-white uppercase flex-shrink-0">
+                    <span className="text-[8px] font-black px-1 py-0.5 rounded bg-purple-600 text-white uppercase flex-shrink-0">
                       Admin
                     </span>
                   )}
@@ -250,7 +249,7 @@ export default function Navbar() {
                     className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 flex-shrink-0 ml-0.5"
                     title="Sign Out"
                   >
-                    <LogOut size={13} />
+                    <LogOut size={12.5} />
                   </button>
                 </div>
               </div>
