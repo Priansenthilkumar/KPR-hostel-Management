@@ -402,10 +402,21 @@ export const authService = {
         };
       }
 
-      // Upgrade role to super_admin if requested by an authorized admin
+      // Sync role with selected tab on login
       if (isSuperAdminRequest && registeredUser.role !== 'super_admin') {
         registeredUser.role = 'super_admin';
         registeredUser.roleTitle = 'Super Admin (Full Access)';
+        registeredUser.avatarBg = '#8B5CF6';
+        this.saveRegisteredUser(registeredUser);
+      } else if (selectedRole === 'warden' && registeredUser.role !== 'super_admin') {
+        registeredUser.role = 'warden';
+        registeredUser.roleTitle = 'Hostel Deputy Warden';
+        registeredUser.avatarBg = '#3DA1D1';
+        this.saveRegisteredUser(registeredUser);
+      } else if (selectedRole === 'mess_staff' && registeredUser.role !== 'super_admin') {
+        registeredUser.role = 'mess_staff';
+        registeredUser.roleTitle = 'Mess Coordinator';
+        registeredUser.avatarBg = '#52B74A';
         this.saveRegisteredUser(registeredUser);
       }
 
@@ -422,8 +433,8 @@ export const authService = {
     }
 
     // 5. FIRST-TIME LOGIN FOR INSTANT AUTO-SETUP
-    const isWarden = selectedRole === 'warden' || inputEmail.includes('warden') || inputEmail.includes('hostel');
     const isSuperAdmin = isSuperAdminRequest || AUTHORIZED_SUPER_ADMINS.includes(inputEmail);
+    const isWarden = !isSuperAdmin && (selectedRole === 'warden' || inputEmail.includes('warden') || inputEmail.includes('hostel'));
 
     const salt = generateSalt();
     const passwordHash = await hashPasswordWithSalt(password, salt);
@@ -438,7 +449,7 @@ export const authService = {
         : isWarden
         ? 'Hostel Deputy Warden'
         : 'Mess Coordinator',
-      avatarBg: isSuperAdmin ? '#8B5CF6' : '#52B74A',
+      avatarBg: isSuperAdmin ? '#8B5CF6' : isWarden ? '#3DA1D1' : '#52B74A',
       salt,
       passwordHash,
       isVerified: true,

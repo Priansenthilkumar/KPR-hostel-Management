@@ -95,13 +95,8 @@ export default function Login() {
     try {
       const res = await login(emailVal.fullEmail, targetPassword, activeTab);
       if (res.success && res.user) {
-        if (res.user.role === 'super_admin') {
-          navigate('/admin-home', { replace: true });
-        } else if (res.user.role === 'warden') {
-          navigate('/hostel-dashboard', { replace: true });
-        } else {
-          navigate('/mess-dashboard', { replace: true });
-        }
+        const targetPath = res.redirectPath || (res.user.role === 'super_admin' ? '/admin-home' : res.user.role === 'warden' ? '/hostel-dashboard' : '/mess-dashboard');
+        navigate(targetPath, { replace: true });
       }
     } catch (err) {
       console.error('Login error:', err);
@@ -128,13 +123,8 @@ export default function Login() {
 
       const res = await login(targetEmail, 'sso_google_valid_token', activeTab);
       if (res.success && res.user) {
-        if (res.user.role === 'super_admin') {
-          navigate('/admin-home', { replace: true });
-        } else if (res.user.role === 'warden') {
-          navigate('/hostel-dashboard', { replace: true });
-        } else {
-          navigate('/mess-dashboard', { replace: true });
-        }
+        const targetPath = res.redirectPath || (res.user.role === 'super_admin' ? '/admin-home' : res.user.role === 'warden' ? '/hostel-dashboard' : '/mess-dashboard');
+        navigate(targetPath, { replace: true });
       }
     }, 800);
   };
