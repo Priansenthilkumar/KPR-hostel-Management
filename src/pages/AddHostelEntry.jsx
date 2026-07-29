@@ -168,80 +168,116 @@ export default function AddHostelEntry() {
               <span>Log Supervisory Staff Duty Shift</span>
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4.5 text-xs">
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Staff Name *</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Dr. Arunkumar / Mrs. Jayanthi"
-                  value={staffName}
-                  onChange={(e) => setStaffName(e.target.value)}
-                  className="form-input h-11 text-xs"
-                  required
-                />
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <User size={14} className="text-[#3DA1D1]" />
+                  <span>Staff Name *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="e.g. Dr. Arunkumar / Mrs. Jayanthi"
+                    value={staffName}
+                    onChange={(e) => setStaffName(e.target.value)}
+                    className="form-input pl-10"
+                    required
+                  />
+                  <User size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Designation *</label>
-                <select
-                  value={designation}
-                  onChange={(e) => setDesignation(e.target.value)}
-                  className="form-input h-11 text-xs font-medium"
-                >
-                  <option value="Chief Warden">Chief Warden</option>
-                  <option value="Deputy Warden">Deputy Warden</option>
-                  <option value="Resident Tutor">Resident Tutor</option>
-                  <option value="Floor Tutor">Floor Tutor</option>
-                </select>
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <ShieldCheck size={14} className="text-[#3DA1D1]" />
+                  <span>Designation *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <select
+                    value={designation}
+                    onChange={(e) => setDesignation(e.target.value)}
+                    className="form-select pl-10 font-semibold"
+                  >
+                    <option value="Chief Warden">Chief Warden</option>
+                    <option value="Deputy Warden">Deputy Warden</option>
+                    <option value="Resident Tutor">Resident Tutor</option>
+                    <option value="Floor Tutor">Floor Tutor</option>
+                  </select>
+                  <ShieldCheck size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Hostel Block *</label>
-                <select
-                  value={hostelBlock}
-                  onChange={(e) => setHostelBlock(e.target.value)}
-                  className="form-input h-11 text-xs font-medium"
-                >
-                  {HOSTEL_BLOCKS.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </select>
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <Building size={14} className="text-[#3DA1D1]" />
+                  <span>Hostel Block *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <select
+                    value={hostelBlock}
+                    onChange={(e) => setHostelBlock(e.target.value)}
+                    className="form-select pl-10 font-semibold"
+                  >
+                    {HOSTEL_BLOCKS.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
+                  </select>
+                  <Building size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Duty Date *</label>
-                <input
-                  type="date"
-                  value={dutyDate}
-                  onChange={(e) => setDutyDate(e.target.value)}
-                  className="form-input h-11 text-xs"
-                  required
-                />
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <Calendar size={14} className="text-[#3DA1D1]" />
+                  <span>Duty Date *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="date"
+                    value={dutyDate}
+                    onChange={(e) => setDutyDate(e.target.value)}
+                    className="form-input pl-10"
+                    required
+                  />
+                  <Calendar size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">In Time *</label>
-                <input
-                  type="text"
-                  placeholder="e.g. 07:30 PM"
-                  value={inTime}
-                  onChange={(e) => setInTime(e.target.value)}
-                  className="form-input h-11 text-xs"
-                  required
-                />
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <Clock size={14} className="text-[#3DA1D1]" />
+                  <span>In Time *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="e.g. 07:30 PM"
+                    value={inTime}
+                    onChange={(e) => setInTime(e.target.value)}
+                    className="form-input pl-10"
+                    required
+                  />
+                  <Clock size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Out Time</label>
-                <input
-                  type="text"
-                  placeholder="e.g. 10:00 PM (or leave empty if On Duty)"
-                  value={outTime}
-                  onChange={(e) => setOutTime(e.target.value)}
-                  className="form-input h-11 text-xs"
-                />
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <Clock size={14} className="text-[#3DA1D1]" />
+                  <span>Out Time</span>
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="e.g. 10:00 PM (or empty if On Duty)"
+                    value={outTime}
+                    onChange={(e) => setOutTime(e.target.value)}
+                    className="form-input pl-10"
+                  />
+                  <Clock size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                </div>
               </div>
             </div>
 
@@ -263,84 +299,120 @@ export default function AddHostelEntry() {
               <span>Record New Student Remark / Grievance</span>
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5 text-xs">
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Student Name *</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Rahul K."
-                  value={studentName}
-                  onChange={(e) => setStudentName(e.target.value)}
-                  className="form-input h-11 text-xs"
-                  required
-                />
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <User size={14} className="text-[#52B74A]" />
+                  <span>Student Name *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="e.g. Rahul K."
+                    value={studentName}
+                    onChange={(e) => setStudentName(e.target.value)}
+                    className="form-input pl-10"
+                    required
+                  />
+                  <User size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Roll No / ID</label>
-                <input
-                  type="text"
-                  placeholder="e.g. 21CS042"
-                  value={rollNo}
-                  onChange={(e) => setRollNo(e.target.value)}
-                  className="form-input h-11 text-xs"
-                />
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <FileText size={14} className="text-[#52B74A]" />
+                  <span>Roll No / ID</span>
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="e.g. 21CS042"
+                    value={rollNo}
+                    onChange={(e) => setRollNo(e.target.value)}
+                    className="form-input pl-10"
+                  />
+                  <FileText size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Room No</label>
-                <input
-                  type="text"
-                  placeholder="e.g. R-204"
-                  value={roomNo}
-                  onChange={(e) => setRoomNo(e.target.value)}
-                  className="form-input h-11 text-xs"
-                />
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <Building size={14} className="text-[#52B74A]" />
+                  <span>Room No</span>
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="e.g. R-204"
+                    value={roomNo}
+                    onChange={(e) => setRoomNo(e.target.value)}
+                    className="form-input pl-10"
+                  />
+                  <Building size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-bold text-[var(--text-primary)]">Hostel Block *</label>
-                <select
-                  value={remarkBlock}
-                  onChange={(e) => setRemarkBlock(e.target.value)}
-                  className="form-input h-11 text-xs font-medium"
-                >
-                  {HOSTEL_BLOCKS.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </select>
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <Building size={14} className="text-[#52B74A]" />
+                  <span>Hostel Block *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <select
+                    value={remarkBlock}
+                    onChange={(e) => setRemarkBlock(e.target.value)}
+                    className="form-select pl-10 font-semibold"
+                  >
+                    {HOSTEL_BLOCKS.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
+                  </select>
+                  <Building size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4.5 text-xs">
               <div className="flex flex-col gap-1.5 sm:col-span-1">
-                <label className="font-bold text-[var(--text-primary)]">Category *</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="form-input h-11 text-xs font-medium"
-                >
-                  <option value="Water & Plumbing">Water & Plumbing</option>
-                  <option value="Electricity & Lighting">Electricity & Lighting</option>
-                  <option value="Room Maintenance">Room Furniture & Maintenance</option>
-                  <option value="Cleanliness">Hygiene & Cleanliness</option>
-                  <option value="Discipline/Noise">Discipline & Quiet Hours</option>
-                  <option value="General Query">General Hostel Query</option>
-                </select>
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <Wrench size={14} className="text-[#52B74A]" />
+                  <span>Category *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="form-select pl-10 font-semibold"
+                  >
+                    <option value="Water & Plumbing">Water & Plumbing</option>
+                    <option value="Electricity & Lighting">Electricity & Lighting</option>
+                    <option value="Room Maintenance">Room Furniture & Maintenance</option>
+                    <option value="Cleanliness">Hygiene & Cleanliness</option>
+                    <option value="Discipline/Noise">Discipline & Quiet Hours</option>
+                    <option value="General Query">General Hostel Query</option>
+                  </select>
+                  <Wrench size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5 sm:col-span-2">
-                <label className="font-bold text-[var(--text-primary)]">Student Remark Details *</label>
-                <input
-                  type="text"
-                  placeholder="What remark or complaint was asked/reported by the student?"
-                  value={remarkText}
-                  onChange={(e) => setRemarkText(e.target.value)}
-                  className="form-input h-11 text-xs px-3"
-                  required
-                />
+                <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <MessageSquare size={14} className="text-[#52B74A]" />
+                  <span>Student Remark Details *</span>
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="What remark or complaint was asked/reported by the student?"
+                    value={remarkText}
+                    onChange={(e) => setRemarkText(e.target.value)}
+                    className="form-input pl-10"
+                    required
+                  />
+                  <MessageSquare size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                </div>
               </div>
             </div>
 

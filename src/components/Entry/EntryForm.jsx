@@ -144,19 +144,22 @@ export default function EntryForm({ editEntry = null }) {
             </h3>
             <p className="text-xs text-[var(--text-muted)] mt-0.5">Select date, day of week & meal session using the sliding controls</p>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-5">
+                <div className="grid grid-cols-1 gap-5">
           {/* Date Picker */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
-              Entry Date <span className="text-red-500">*</span>
+            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
+              <CalendarDays size={14} className="text-[#52B74A]" />
+              <span>Entry Date</span>
+              <span className="text-red-500">*</span>
             </label>
-            <input
-              type="date"
-              className="form-input text-xs h-10"
-              {...register('date', { required: 'Date is required' })}
-            />
+            <div className="relative flex items-center">
+              <input
+                type="date"
+                className="form-input pl-10"
+                {...register('date', { required: 'Date is required' })}
+              />
+              <CalendarDays size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+            </div>
             <FieldError message={errors.date?.message} />
           </div>
         </div>
@@ -254,35 +257,43 @@ export default function EntryForm({ editEntry = null }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {/* Main Course */}
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
-              Main Course Menu <span className="text-red-500">*</span>
+            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
+              <Utensils size={14} className="text-[#3DA1D1]" />
+              <span>Main Course Menu</span>
+              <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              placeholder="e.g. Idli & Sambar, Veg Biryani, Chapati & Kurma"
-              className="form-input text-xs h-10"
-              {...register('mainCourse', { required: 'Main course menu is required' })}
-            />
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="e.g. Idli & Sambar, Veg Biryani, Chapati & Kurma"
+                className="form-input pl-10"
+                {...register('mainCourse', { required: 'Main course menu is required' })}
+              />
+              <Utensils size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+            </div>
             <FieldError message={errors.mainCourse?.message} />
           </div>
 
           {/* Raw Material (KG) */}
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1">
+            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
               <Scale size={14} className="text-[#52B74A]" />
               <span>Raw Material Weight (KG)</span>
               <span className="text-red-500">*</span>
             </label>
-            <input
-              type="number"
-              step="0.1"
-              placeholder="e.g. 45.5"
-              className="form-input text-xs h-10"
-              {...register('rawMaterial', {
-                required: 'Raw material weight is required',
-                min: { value: 0.1, message: 'Weight must be greater than 0' },
-              })}
-            />
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                step="0.1"
+                placeholder="e.g. 45.5"
+                className="form-input pl-10"
+                {...register('rawMaterial', {
+                  required: 'Raw material weight is required',
+                  min: { value: 0.1, message: 'Weight must be greater than 0' },
+                })}
+              />
+              <Scale size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+            </div>
             <FieldError message={errors.rawMaterial?.message} />
           </div>
         </div>
@@ -378,27 +389,30 @@ export default function EntryForm({ editEntry = null }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {/* Headcount Strength */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1">
+            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
               <Users size={14} className="text-[#52B74A]" />
               <span>Student Headcount Served</span>
               <span className="text-red-500">*</span>
             </label>
-            <input
-              type="number"
-              placeholder="e.g. 450"
-              className="form-input text-xs h-10"
-              {...register('strength', {
-                required: 'Student headcount strength is required',
-                min: { value: 1, message: 'Strength must be at least 1' },
-              })}
-            />
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                placeholder="e.g. 450"
+                className="form-input pl-10"
+                {...register('strength', {
+                  required: 'Student headcount strength is required',
+                  min: { value: 1, message: 'Strength must be at least 1' },
+                })}
+              />
+              <Users size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+            </div>
             <FieldError message={errors.strength?.message} />
           </div>
 
           {/* Wastage KG with Live Indicator */}
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1">
+              <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
                 <AlertTriangle size={14} className="text-amber-500" />
                 <span>Food Wastage (KG)</span>
                 <span className="text-red-500">*</span>
@@ -410,31 +424,37 @@ export default function EntryForm({ editEntry = null }) {
                 </div>
               )}
             </div>
-            <input
-              type="number"
-              step="0.1"
-              placeholder="e.g. 3.2"
-              className="form-input text-xs h-10"
-              {...register('wastage', {
-                required: 'Wastage weight is required',
-                min: { value: 0, message: 'Wastage cannot be negative' },
-              })}
-            />
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                step="0.1"
+                placeholder="e.g. 3.2"
+                className="form-input pl-10"
+                {...register('wastage', {
+                  required: 'Wastage weight is required',
+                  min: { value: 0, message: 'Wastage cannot be negative' },
+                })}
+              />
+              <AlertTriangle size={16} className="absolute left-3 text-amber-500 pointer-events-none" />
+            </div>
             <FieldError message={errors.wastage?.message} />
           </div>
 
           {/* Remarks Notes */}
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1">
+            <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
               <FileText size={14} className="text-[#52B74A]" />
               <span>Remarks / Observations</span>
             </label>
-            <textarea
-              rows={3}
-              placeholder="Optional notes regarding food quality, delay, or special events..."
-              className="form-textarea text-xs p-3 rounded-xl"
-              {...register('remarks')}
-            />
+            <div className="relative flex items-start">
+              <textarea
+                rows={3}
+                placeholder="Optional notes regarding food quality, delay, or special events..."
+                className="form-textarea pl-10 pt-2.5"
+                {...register('remarks')}
+              />
+              <FileText size={16} className="absolute left-3 top-3 text-[#52B74A] pointer-events-none" />
+            </div>
           </div>
         </div>
       </div>
