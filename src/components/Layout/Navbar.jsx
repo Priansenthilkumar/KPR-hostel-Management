@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   RotateCw,
-  Bell,
   Home,
   BarChart2,
   PlusCircle,
@@ -19,11 +18,15 @@ import {
   User,
   Crown,
   Bug,
+  Bell,
+  BellRing,
 } from 'lucide-react';
 import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';
 import { useAuth } from '../../context/AuthContext';
 import ComplaintBox from '../Dashboard/ComplaintBox';
+import NotificationCenter from '../Notification/NotificationCenter';
+import { notificationService } from '../../services/notificationService';
 import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
 
@@ -54,6 +57,30 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isComplaintOpen, setIsComplaintOpen] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [unreadNotifCount, setUnreadNotifCount] = useState(() => {
+    try {
+      return notificationService.getNotifications().filter((n) => !n.read).length;
+    } catch {
+      return 0;
+    }
+  });
+
+  useEffect(() => {
+    const updateUnread = () => {
+      try {
+        setUnreadNotifCount(notificationService.getNotifications().filter((n) => !n.read).length);
+      } catch {
+        setUnreadNotifCount(0);
+      }
+    };
+    window.addEventListener('kpr_notification_updated', updateUnread);
+    window.addEventListener('storage', updateUnread);
+    return () => {
+      window.removeEventListener('kpr_notification_updated', updateUnread);
+      window.removeEventListener('storage', updateUnread);
+    };
+  }, []);
 
   if (location.pathname === '/login') {
     return null;
@@ -157,18 +184,24 @@ export default function Navbar() {
               <RotateCw size={14} strokeWidth={2.2} />
             </button>
 
-            <div className="relative flex-shrink-0 pr-1 sm:pr-0">
+            <div className="relative">
               <button
-                onClick={() => toast('No new system notifications', { icon: '🔔' })}
-                className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-all border border-[#2B6F82] shadow-xs active:scale-95"
-                title="Notifications"
-                aria-label="Notifications"
+                type="button"
+                onClick={() => setIsNotifOpen(true)}
+                className="p-1.5 sm:p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/35 transition-all shadow-xs"
+                title="Super Admin Notifications"
               >
-                <Bell size={14} strokeWidth={2.2} />
+                {unreadNotifCount > 0 ? (
+                  <BellRing size={16} className="text-amber-400 animate-bounce" />
+                ) : (
+                  <Bell size={16} />
+                )}
               </button>
-              <span className="absolute top-0 right-1 sm:right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#52B74A] text-white text-[8px] sm:text-[9px] font-extrabold flex items-center justify-center shadow-xs pointer-events-none ring-1.5 ring-[#164350]">
-                0
-              </span>
+              {unreadNotifCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-black flex items-center justify-center shadow-md pointer-events-none ring-2 ring-[#123843]">
+                  {unreadNotifCount > 9 ? '9+' : unreadNotifCount}
+                </span>
+              )}
             </div>
 
             <button
@@ -432,6 +465,12 @@ export default function Navbar() {
       <ComplaintBox
         isOpen={isComplaintOpen}
         onClose={() => setIsComplaintOpen(false)}
+      />
+
+      {/* ── Super Admin Notification Center Drawer ── */}
+      <NotificationCenter
+        isOpen={isNotifOpen}
+        onClose={() => setIsNotifOpen(false)}
       />
     </>
   );

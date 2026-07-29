@@ -1,6 +1,7 @@
 // src/services/storage.js
 import { db } from './firebaseConfig';
 import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { notificationService } from './notificationService';
 
 const STORAGE_KEY = 'kpr_food_entries_v6';
 const MESS_COLLECTION = 'mess_entries';
@@ -61,15 +62,16 @@ export const storageService = {
       createdAt: new Date().toISOString(),
     };
     entries.unshift(newEntry);
-    save(entries);
-
-    // Sync to Firestore Cloud DB
+    // Trigger Super Admin Real-Time Notification
     try {
-      setDoc(doc(db, MESS_COLLECTION, newEntry.id), newEntry).catch((err) =>
-        console.warn('Firestore setDoc warning:', err)
-      );
+      notificationService.addNotification({
+        title: 'New Mess Meal Entry Logged',
+        message: `Meal entry logged for ${newEntry.meal} (${newEntry.mainCourse || 'Special Menu'}) with ${newEntry.strength || 0} headcount.`,
+        type: 'mess',
+        link: '/overview',
+      });
     } catch (e) {
-      console.warn('Cloud sync error:', e);
+      console.warn('Notif dispatch warning:', e);
     }
 
     return newEntry;

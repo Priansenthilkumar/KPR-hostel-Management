@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from '../UI/Button';
+import { notificationService } from '../../services/notificationService';
 
 const FAULT_CATEGORIES = [
   'PDF Export / Print Fault',
@@ -80,6 +81,18 @@ export default function ComplaintBox({ isOpen, onClose }) {
     setFaults([newFault, ...faults]);
     setReporterName('');
     setDescription('');
+
+    // Trigger Super Admin Notification
+    try {
+      notificationService.addNotification({
+        title: 'App Fault Complaint Received',
+        message: `New complaint filed under [${category}] by ${newFault.name}.`,
+        type: 'bug',
+        link: '/admin-home',
+      });
+    } catch (e) {
+      console.warn('Notif bug warning:', e);
+    }
 
     toast.success('App fault reported! Our dev team will solve it shortly.', {
       icon: '🛠️',

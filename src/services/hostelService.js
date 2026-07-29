@@ -4,6 +4,7 @@
  */
 import { db } from './firebaseConfig';
 import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { notificationService } from './notificationService';
 
 const STORAGE_DUTY_KEY = 'kpr_warden_duty_logs_v6';
 const STORAGE_REMARKS_KEY = 'kpr_student_remarks_v6';
@@ -91,6 +92,18 @@ export const hostelService = {
       console.warn('Cloud duty sync error:', e);
     }
 
+    // Trigger Super Admin Notification
+    try {
+      notificationService.addNotification({
+        title: 'Hostel Warden Duty Check-in',
+        message: `${newLog.name} (${newLog.designation}) checked in at ${newLog.block}.`,
+        type: 'hostel',
+        link: '/hostel-overview',
+      });
+    } catch (e) {
+      console.warn('Notif duty warning:', e);
+    }
+
     return newLog;
   },
 
@@ -152,6 +165,18 @@ export const hostelService = {
       );
     } catch (e) {
       console.warn('Cloud remark sync error:', e);
+    }
+
+    // Trigger Super Admin Notification
+    try {
+      notificationService.addNotification({
+        title: 'Student Grievance Logged',
+        message: `[${newRemark.category}] Remark filed for ${newRemark.studentName} (${newRemark.roomNo}) at ${newRemark.block}.`,
+        type: 'remark',
+        link: '/hostel-overview',
+      });
+    } catch (e) {
+      console.warn('Notif remark warning:', e);
     }
 
     return newRemark;
