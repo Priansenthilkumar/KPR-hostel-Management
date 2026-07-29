@@ -19,6 +19,8 @@ import {
   Wrench,
   UserCheck,
   MessageSquare,
+  Edit3,
+  Trash2,
 } from 'lucide-react';
 import { storageService } from '../services/storage';
 import { hostelService } from '../services/hostelService';
@@ -432,6 +434,7 @@ export default function SuperAdminHome() {
                   <th>Cook</th>
                   <th className="text-right">Headcount</th>
                   <th className="text-right">Wastage (KG)</th>
+                  <th className="text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -460,6 +463,31 @@ export default function SuperAdminHome() {
                             {formatKg(e.wastage)}
                           </span>
                           <Badge label={wastageSeverity} />
+                        </div>
+                      </td>
+                      <td className="text-center whitespace-nowrap">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => navigate('/add-entry', { state: { editEntry: e } })}
+                            className="p-1 rounded-lg bg-blue-500/15 hover:bg-blue-500/30 text-blue-500 transition-colors"
+                            title="Edit Mess Entry"
+                          >
+                            <Edit3 size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm('Delete this mess record?')) {
+                                storageService.deleteEntry(e.id);
+                                toast.success('Mess entry deleted!');
+                              }
+                            }}
+                            className="p-1 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-500 transition-colors"
+                            title="Delete Entry"
+                          >
+                            <Trash2 size={14} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -511,6 +539,7 @@ export default function SuperAdminHome() {
                   <th>Staff / Student Name</th>
                   <th>Details / Category</th>
                   <th className="text-right">Status</th>
+                  <th className="text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -522,6 +551,31 @@ export default function SuperAdminHome() {
                     <td className="text-xs font-bold text-[var(--text-primary)]">{d.name} <span className="text-[10px] font-normal text-[var(--text-muted)]">({d.designation})</span></td>
                     <td className="text-xs text-[var(--text-secondary)]">In: {d.inTime} | Out: {d.outTime}</td>
                     <td className="text-right"><Badge label={d.status || 'Completed'} /></td>
+                    <td className="text-center whitespace-nowrap">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => navigate('/hostel-overview')}
+                          className="p-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/30 text-sky-500 transition-colors"
+                          title="Edit Hostel Log"
+                        >
+                          <Edit3 size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm('Delete this duty log?')) {
+                              hostelService.deleteDutyLog(d.id);
+                              toast.success('Duty log deleted!');
+                            }
+                          }}
+                          className="p-1 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-500 transition-colors"
+                          title="Delete Duty Log"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
                 {remarksList.slice(0, 3).map((r) => (
@@ -532,6 +586,31 @@ export default function SuperAdminHome() {
                     <td className="text-xs font-bold text-[var(--text-primary)]">{r.studentName} <span className="text-[10px] font-normal text-[var(--text-muted)]">({r.roomNo})</span></td>
                     <td className="text-xs text-[var(--text-secondary)] max-w-[200px] truncate" title={r.remark}><strong className="mr-1">{`[${r.category}]`}</strong>{r.remark}</td>
                     <td className="text-right"><Badge label={r.rectified ? 'Rectified' : 'Pending'} /></td>
+                    <td className="text-center whitespace-nowrap">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => navigate('/hostel-overview')}
+                          className="p-1 rounded-lg bg-purple-500/15 hover:bg-purple-500/30 text-purple-500 transition-colors"
+                          title="Edit Student Remark"
+                        >
+                          <Edit3 size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm('Delete this student remark?')) {
+                              hostelService.deleteStudentRemark(r.id);
+                              toast.success('Student remark deleted!');
+                            }
+                          }}
+                          className="p-1 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-500 transition-colors"
+                          title="Delete Remark"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -57,7 +57,28 @@ export const menuData = {
 export const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 export const mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
 
+const MENU_STORAGE_KEY = 'kpr_custom_food_menu_v1';
+
+export function getCustomMenu() {
+  try {
+    const raw = localStorage.getItem(MENU_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : menuData;
+  } catch {
+    return menuData;
+  }
+}
+
+export function saveCustomMenu(newMenu) {
+  try {
+    localStorage.setItem(MENU_STORAGE_KEY, JSON.stringify(newMenu));
+    window.dispatchEvent(new CustomEvent('kpr_menu_updated'));
+  } catch (e) {
+    console.error('Failed to save custom menu:', e);
+  }
+}
+
 export function getMenuItems(day, meal) {
   if (!day || !meal) return [];
-  return menuData[day]?.[meal] || [];
+  const activeMenu = getCustomMenu();
+  return activeMenu[day]?.[meal] || [];
 }

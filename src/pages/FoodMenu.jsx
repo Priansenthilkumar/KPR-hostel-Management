@@ -1,5 +1,4 @@
-// src/pages/FoodMenu.jsx
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Utensils,
   Search,
@@ -11,8 +10,15 @@ import {
   Clock,
   ChevronRight,
   Flame,
+  Edit3,
+  X,
+  Save,
+  RotateCcw,
 } from 'lucide-react';
-import { menuData, days } from '../data/menuData';
+import { getCustomMenu, saveCustomMenu, menuData as defaultMenuData, days } from '../data/menuData';
+import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
+import Button from '../components/UI/Button';
 
 const MEAL_ICONS = {
   Breakfast: Sun,
@@ -33,6 +39,7 @@ const MEAL_COLORS = {
 };
 
 export default function FoodMenu() {
+  const { user } = useAuth();
   const todayDayName = useMemo(() => {
     const d = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     return days.includes(d) ? d : 'Monday';
@@ -40,6 +47,63 @@ export default function FoodMenu() {
 
   const [selectedDay, setSelectedDay] = useState(todayDayName);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeMenu, setActiveMenu] = useState(() => getCustomMenu());
+
+  // Edit Menu Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editDay, setEditDay] = useState('Monday');
+  const [editMeal, setEditMeal] = useState('Breakfast');
+  const [editDishesText, setEditDishesText] = useState('');
+
+  const refreshMenu = useCallback(() => {
+    setActiveMenu(getCustomMenu());
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('kpr_menu_updated', refreshMenu);
+    return () => window.removeEventListener('kpr_menu_updated', refreshMenu);
+  }, [refreshMenu]);
+
+  // Update edit input text when editDay or editMeal changes
+  useEffect(() => {
+    const items = activeMenu[editDay]?.[editMeal] || [];
+    setEditDishesText(items.join(', '));
+  }, [editDay, editMeal, activeMenu]);
+
+  const handleSaveMenuChanges = (e) => {
+    e.preventDefault();
+    const newItems = editDishesText
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    if (newItems.length === 0) {
+      toast.error('Please enter at least one dish name.');
+      return;
+    }
+
+    const updatedMenu = {
+      ...activeMenu,
+      [editDay]: {
+        ...activeMenu[editDay],
+        [editMeal]: newItems,
+      },
+    };
+
+    saveCustomMenu(updatedMenu);
+    setActiveMenu(updatedMenu);
+    toast.success(`Updated ${editDay} ${editMeal} Menu!`);
+    setIsEditModalOpen(false);
+  };
+
+  const handleResetToDefault = () => {
+    if (window.confirm('Reset all menu items to default campus menu?')) {
+      saveCustomMenu(defaultMenuData);
+      setActiveMenu(defaultMenuData);
+      toast.success('Food menu reset to default schedule!');
+      setIsEditModalOpen(false);
+    }
+  };
 
   // Search matching across all days & meals
   const searchResults = useMemo(() => {
@@ -48,7 +112,7 @@ export default function FoodMenu() {
     const results = [];
 
     days.forEach((d) => {
-      const dayMeals = menuData[d] || {};
+      const dayMeals = activeMenu[d] || {};
       Object.entries(dayMeals).forEach(([meal, items]) => {
         const matchingItems = items.filter((item) => item.toLowerCase().includes(q));
         if (matchingItems.length > 0) {
@@ -58,9 +122,9 @@ export default function FoodMenu() {
     });
 
     return results;
-  }, [searchQuery]);
+  }, [searchQuery, activeMenu]);
 
-  const currentDayMenu = menuData[selectedDay] || {};
+  const currentDayMenu = activeMenu[selectedDay] || {};
 
   return (
     <div className="max-w-[1280px] w-full mx-auto px-6 pt-8 pb-12 page-enter">
@@ -84,24 +148,35 @@ export default function FoodMenu() {
           </div>
         </div>
 
-        {/* Dish Search Input */}
-        <div className="relative w-full md:w-72 flex-shrink-0">
-          <input
-            type="text"
-            placeholder="Search dish (e.g. Briyani, Dosa)..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white/10 text-white placeholder-white/60 text-xs rounded-xl pl-9 pr-4 py-2.5 border border-white/20 focus:outline-none focus:border-[#52B74A]"
-          />
-          <Search size={14} className="absolute left-3 top-3 text-white/60" />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-2.5 text-xs text-white/60 hover:text-white"
-            >
-              ✕
-            </button>
-          )}
+        {/* Action Controls: Search & Edit Menu Button */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full sm:w-64 flex-shrink-0">
+            <input
+              type="text"
+              placeholder="Search dish (e.g. Briyani, Dosa)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white/10 text-white placeholder-white/60 text-xs rounded-xl pl-9 pr-4 py-2.5 border border-white/20 focus:outline-none focus:border-[#52B74A]"
+            />
+            <Search size={14} className="absolute left-3 top-3 text-white/60" />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-2.5 text-xs text-white/60 hover:text-white"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsEditModalOpen(true)}
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-extrabold shadow-sm flex items-center justify-center gap-2 transition-all flex-shrink-0"
+          >
+            <Edit3 size={15} />
+            <span>Edit Weekly Menu</span>
+          </button>
         </div>
       </div>
 
@@ -470,6 +545,112 @@ export default function FoodMenu() {
             </div>
           </div>
         </>
+      )}
+
+      {/* ── EDIT WEEKLY MENU MODAL ── */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="card w-full max-w-lg p-6 rounded-3xl bg-[var(--bg-card)] border border-[var(--border)] shadow-2xl flex flex-col gap-5">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold">
+                  <Edit3 size={18} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-[var(--text-primary)] leading-none">
+                    Edit Hostel Weekly Food Menu
+                  </h3>
+                  <p className="text-xs text-[var(--text-muted)] mt-1">Select day and meal session to update dishes</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditModalOpen(false)}
+                className="w-8 h-8 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[var(--text-primary)] flex items-center justify-center transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveMenuChanges} className="flex flex-col gap-4 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-bold text-[var(--text-primary)]">Select Day *</label>
+                  <select
+                    value={editDay}
+                    onChange={(e) => setEditDay(e.target.value)}
+                    className="form-select text-xs font-semibold"
+                  >
+                    {days.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-bold text-[var(--text-primary)]">Meal Session *</label>
+                  <select
+                    value={editMeal}
+                    onChange={(e) => setEditMeal(e.target.value)}
+                    className="form-select text-xs font-semibold"
+                  >
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="font-bold text-[var(--text-primary)]">
+                  Dishes Served (Comma-separated) *
+                </label>
+                <textarea
+                  rows={4}
+                  value={editDishesText}
+                  onChange={(e) => setEditDishesText(e.target.value)}
+                  placeholder="e.g. Idly, Sambar, Coconut Chutney, Samba Rava Upma, Kesari"
+                  className="form-textarea text-xs"
+                  required
+                />
+                <p className="text-[11px] text-[var(--text-muted)] italic">
+                  Separate dish items with commas. Example: Idly, Sambar, Chutney
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between gap-3 pt-2 border-t border-[var(--border)]">
+                <button
+                  type="button"
+                  onClick={handleResetToDefault}
+                  className="px-3 py-2 rounded-xl bg-gray-500/15 hover:bg-gray-500/25 text-[var(--text-secondary)] text-xs font-bold flex items-center gap-1.5 transition-colors"
+                >
+                  <RotateCcw size={14} />
+                  <span>Reset Default</span>
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[var(--text-primary)] text-xs font-bold transition-colors"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors"
+                  >
+                    <Save size={14} />
+                    <span>Save Menu</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
