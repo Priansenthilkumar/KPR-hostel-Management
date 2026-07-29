@@ -10,17 +10,17 @@ import { ErrorBoundary } from './components/UI/ErrorBoundary';
 import Login from './pages/Login';
 import kprLogo from './assets/kprLogo.png';
 
-const Dashboard        = lazy(() => import('./pages/Dashboard'));
-const Overview         = lazy(() => import('./pages/Overview'));
-const FoodMenu         = lazy(() => import('./pages/FoodMenu'));
-const AddEntry         = lazy(() => import('./pages/AddEntry'));
+import Dashboard from './pages/Dashboard';
+import Overview from './pages/Overview';
+import FoodMenu from './pages/FoodMenu';
+import AddEntry from './pages/AddEntry';
 
 // Parallel Hostel Management Suite
-const HostelDashboard  = lazy(() => import('./pages/HostelDashboard'));
-const HostelManagement = lazy(() => import('./pages/HostelManagement'));
-const HostelSchedule   = lazy(() => import('./pages/HostelSchedule'));
-const AddHostelEntry   = lazy(() => import('./pages/AddHostelEntry'));
-const SuperAdminHome   = lazy(() => import('./pages/SuperAdminHome'));
+import HostelDashboard from './pages/HostelDashboard';
+import HostelManagement from './pages/HostelManagement';
+import HostelSchedule from './pages/HostelSchedule';
+import AddHostelEntry from './pages/AddHostelEntry';
+import SuperAdminHome from './pages/SuperAdminHome';
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">

@@ -14,9 +14,21 @@ export class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('KPR Hostel App ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Auto-recover from stale deployment chunk errors
+    const isChunkError =
+      error?.message?.includes('dynamically imported module') ||
+      error?.message?.includes('Failed to fetch') ||
+      error?.message?.includes('importing a module script failed');
+
+    if (isChunkError && !sessionStorage.getItem('kpr_chunk_reloaded')) {
+      sessionStorage.setItem('kpr_chunk_reloaded', 'true');
+      window.location.reload();
+    }
   }
 
   handleReload = () => {
+    sessionStorage.removeItem('kpr_chunk_reloaded');
     window.location.reload();
   };
 
