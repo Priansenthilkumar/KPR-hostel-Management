@@ -58,6 +58,9 @@ export default function Login() {
     setConfirmPassword('');
     setShowPassword(false);
     setShowNewPassword(false);
+    if (mode === 'signup' && activeTab === 'super_admin') {
+      setActiveTab('mess_staff');
+    }
   };
 
   // ── Standard Password Login ──
@@ -341,21 +344,25 @@ export default function Login() {
             <button
               type="button"
               onClick={() => handleTabChange('warden')}
-              className={`flex-1 py-2.5 px-0.5 text-[10.5px] sm:text-xs font-extrabold transition-all text-center leading-tight border-x border-gray-300 ${
+              className={`flex-1 py-2.5 px-0.5 text-[10.5px] sm:text-xs font-extrabold transition-all text-center leading-tight ${
+                authMode === 'signup' ? '' : 'border-x border-gray-300'
+              } ${
                 activeTab === 'warden' ? 'bg-[#1C5362] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
               Hostel Warden
             </button>
-            <button
-              type="button"
-              onClick={() => handleTabChange('super_admin')}
-              className={`flex-1 py-2.5 px-0.5 text-[10.5px] sm:text-xs font-extrabold transition-all text-center leading-tight ${
-                activeTab === 'super_admin' ? 'bg-purple-800 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Super Admin
-            </button>
+            {authMode !== 'signup' && (
+              <button
+                type="button"
+                onClick={() => handleTabChange('super_admin')}
+                className={`flex-1 py-2.5 px-0.5 text-[10.5px] sm:text-xs font-extrabold transition-all text-center leading-tight ${
+                  activeTab === 'super_admin' ? 'bg-purple-800 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                Super Admin
+              </button>
+            )}
           </div>
         )}
 
