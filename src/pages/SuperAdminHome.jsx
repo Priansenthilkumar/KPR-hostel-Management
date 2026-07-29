@@ -21,6 +21,7 @@ import {
   MessageSquare,
   Edit3,
   Trash2,
+  Bug,
 } from 'lucide-react';
 import { storageService } from '../services/storage';
 import { hostelService } from '../services/hostelService';
@@ -40,11 +41,25 @@ export default function SuperAdminHome() {
   const [messEntries, setMessEntries] = useState(() => storageService.getEntries());
   const [dutyLogs, setDutyLogs] = useState(() => hostelService.getDutyLogs());
   const [remarksList, setRemarksList] = useState(() => hostelService.getStudentRemarks());
+  const [complaintCount, setComplaintCount] = useState(() => {
+    try {
+      const saved = localStorage.getItem('kpr_app_fault_complaints_v5');
+      return saved ? JSON.parse(saved).length : 0;
+    } catch {
+      return 0;
+    }
+  });
 
   const refreshAllData = useCallback(() => {
     setMessEntries(storageService.getEntries());
     setDutyLogs(hostelService.getDutyLogs());
     setRemarksList(hostelService.getStudentRemarks());
+    try {
+      const saved = localStorage.getItem('kpr_app_fault_complaints_v5');
+      setComplaintCount(saved ? JSON.parse(saved).length : 0);
+    } catch {
+      setComplaintCount(0);
+    }
   }, []);
 
   useEffect(() => {
@@ -159,7 +174,7 @@ export default function SuperAdminHome() {
       />
 
       {/* ── Live Master Metrics Summary Cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {/* Metric 1 */}
         <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between gap-2">
           <div className="flex items-center justify-between">
@@ -236,6 +251,29 @@ export default function SuperAdminHome() {
             </span>
             <p className="text-[11px] text-[var(--text-muted)] font-semibold mt-0.5">
               Awaiting warden rectification
+            </p>
+          </div>
+        </div>
+
+        {/* Metric 5: User App Complaints & Bug Desk */}
+        <div
+          onClick={() => setIsComplaintModalOpen(true)}
+          className="card p-5 rounded-2xl border border-red-500/40 bg-red-500/5 hover:bg-red-500/10 shadow-xs flex flex-col justify-between gap-2 cursor-pointer transition-all col-span-2 sm:col-span-1"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-extrabold uppercase text-red-400 tracking-wider">
+              App Complaints
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center font-bold">
+              <Bug size={16} />
+            </div>
+          </div>
+          <div>
+            <span className="text-2xl sm:text-3xl font-black text-red-500 tabular-nums">
+              {complaintCount}
+            </span>
+            <p className="text-[11px] text-red-400 font-semibold mt-0.5">
+              Click to view user reported complaints
             </p>
           </div>
         </div>

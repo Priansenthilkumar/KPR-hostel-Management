@@ -18,10 +18,12 @@ import {
   LogOut,
   User,
   Crown,
+  Bug,
 } from 'lucide-react';
 import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';
 import { useAuth } from '../../context/AuthContext';
+import ComplaintBox from '../Dashboard/ComplaintBox';
 import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
 
@@ -51,6 +53,7 @@ export default function Navbar() {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [isComplaintOpen, setIsComplaintOpen] = useState(false);
 
   if (location.pathname === '/login') {
     return null;
@@ -178,28 +181,40 @@ export default function Navbar() {
 
             {/* Auth User Profile Badge - Desktop Full Pill */}
             {user ? (
-              <div className="hidden md:flex items-center gap-1.5 sm:gap-2 bg-[#123843] border border-[#235868] px-2.5 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
-                <div
-                  className="w-6.5 h-6.5 rounded-full flex items-center justify-center text-[10.5px] font-extrabold text-white flex-shrink-0"
-                  style={{ backgroundColor: user.avatarBg }}
-                >
-                  {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
-                </div>
-                <span className="font-bold text-xs max-w-[130px] truncate">
-                  {user.name}
-                </span>
-                {user.role === 'super_admin' && (
-                  <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-purple-600 text-white uppercase">
-                    Admin
-                  </span>
-                )}
+              <div className="hidden md:flex items-center gap-2">
                 <button
-                  onClick={logout}
-                  className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 ml-0.5 flex-shrink-0"
-                  title="Sign Out"
+                  type="button"
+                  onClick={() => setIsComplaintOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-xs font-extrabold transition-all shadow-xs"
+                  title="View App Complaints & Bug Desk"
                 >
-                  <LogOut size={14} />
+                  <Bug size={14} />
+                  <span>App Complaints</span>
                 </button>
+
+                <div className="flex items-center gap-1.5 sm:gap-2 bg-[#123843] border border-[#235868] px-2.5 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
+                  <div
+                    className="w-6.5 h-6.5 rounded-full flex items-center justify-center text-[10.5px] font-extrabold text-white flex-shrink-0"
+                    style={{ backgroundColor: user.avatarBg }}
+                  >
+                    {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
+                  </div>
+                  <span className="font-bold text-xs max-w-[130px] truncate">
+                    {user.name}
+                  </span>
+                  {user.role === 'super_admin' && (
+                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-purple-600 text-white uppercase">
+                      Admin
+                    </span>
+                  )}
+                  <button
+                    onClick={logout}
+                    className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 ml-0.5 flex-shrink-0"
+                    title="Sign Out"
+                  >
+                    <LogOut size={14} />
+                  </button>
+                </div>
               </div>
             ) : (
               <NavLink
@@ -381,6 +396,27 @@ export default function Navbar() {
                     <ChevronRight size={16} opacity={0.6} />
                   </NavLink>
                 ))}
+
+                {/* App Complaints & Bug Desk Drawer Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeDrawer();
+                    setIsComplaintOpen(true);
+                  }}
+                  className="flex items-center justify-between p-3 rounded-xl transition-all text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/25 w-full mt-1"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400">
+                      <Bug size={18} />
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-sm font-extrabold text-white">App Complaints Desk</span>
+                      <span className="text-[10px] text-red-300 opacity-90">View & Resolve User Reported Bugs</span>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} opacity={0.6} />
+                </button>
               </div>
             </div>
 
@@ -391,6 +427,12 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* ── App Fault & Bug Resolution Desk Modal ── */}
+      <ComplaintBox
+        isOpen={isComplaintOpen}
+        onClose={() => setIsComplaintOpen(false)}
+      />
     </>
   );
 }
