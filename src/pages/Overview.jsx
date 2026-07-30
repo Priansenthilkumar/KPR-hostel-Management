@@ -8,6 +8,7 @@ import {
   Activity,
   Layers,
   Database,
+  Sparkles,
 } from 'lucide-react';
 import SummaryCards from '../components/Dashboard/SummaryCards';
 import ChartSection from '../components/Dashboard/ChartSection';
@@ -92,18 +93,33 @@ export default function Overview() {
         {entries.length > 0 ? (
           <ChartSection entries={entries} />
         ) : (
-          <div className="card p-12 text-center rounded-2xl border border-dashed border-[var(--border)]">
-            <div className="w-14 h-14 rounded-2xl bg-[var(--bg-subtle)] flex items-center justify-center mx-auto mb-4">
-              <TrendingUp size={28} strokeWidth={2} className="text-[#52B74A]" />
+          <div className="relative overflow-hidden card p-8 sm:p-14 text-center rounded-3xl border border-dashed border-[#52B74A]/40 bg-gradient-to-b from-[#52B74A]/5 via-sky-500/5 to-transparent flex flex-col items-center justify-center shadow-xs">
+            {/* Background Glow Orbs */}
+            <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-[#52B74A]/10 blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-[#3DA1D1]/10 blur-2xl pointer-events-none" />
+
+            {/* Icon Badge */}
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#52B74A]/20 to-[#3DA1D1]/20 border border-[#52B74A]/30 flex items-center justify-center mx-auto mb-4 shadow-md backdrop-blur-xs">
+              <TrendingUp size={30} strokeWidth={2.2} className="text-[#52B74A]" />
             </div>
-            <h3 className="font-bold text-base text-[var(--text-primary)]">No Meal Data Available Yet</h3>
-            <p className="text-[var(--text-secondary)] font-medium text-xs mt-1 max-w-sm mx-auto">
+
+            <h3 className="font-extrabold text-lg text-[var(--text-primary)]">No Meal Data Available Yet</h3>
+            <p className="text-[var(--text-secondary)] font-medium text-xs sm:text-sm mt-1.5 max-w-md mx-auto leading-relaxed">
               Charts will automatically calculate meal distribution, daily wastage trends, and cook performance once you add food entries.
             </p>
-            <Button variant="success" className="mt-5 mx-auto" onClick={() => navigate('/add-entry')}>
-              <PlusCircle size={16} strokeWidth={2.2} />
-              Add First Entry
-            </Button>
+
+            {/* Super Attractive Action Button */}
+            <button
+              type="button"
+              onClick={() => navigate('/add-entry')}
+              className="mt-6 inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#52B74A] via-emerald-500 to-[#3DA1D1] text-white text-sm font-extrabold shadow-lg shadow-[#52B74A]/25 hover:shadow-xl hover:shadow-[#52B74A]/40 hover:scale-[1.04] active:scale-95 transition-all duration-200 cursor-pointer border border-white/20 group"
+            >
+              <div className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300">
+                <PlusCircle size={18} strokeWidth={2.5} className="text-white" />
+              </div>
+              <span className="tracking-wide">Add First Entry</span>
+              <Sparkles size={16} className="text-amber-300 animate-pulse" />
+            </button>
           </div>
         )}
       </div>
