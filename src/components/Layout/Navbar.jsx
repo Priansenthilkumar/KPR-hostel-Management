@@ -20,6 +20,12 @@ import {
   Bug,
   Bell,
   BellRing,
+  ChevronDown,
+  UserCheck,
+  Activity,
+  Sliders,
+  ArrowRightLeft,
+  Sparkles,
 } from 'lucide-react';
 import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';
@@ -58,6 +64,12 @@ export default function Navbar() {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isComplaintOpen, setIsComplaintOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  // Close profile dropdown on route change
+  useEffect(() => {
+    setIsProfileDropdownOpen(false);
+  }, [location.pathname]);
   const [unreadNotifCount, setUnreadNotifCount] = useState(() => {
     try {
       return notificationService.getNotifications().filter((n) => !n.read).length;
@@ -214,44 +226,196 @@ export default function Navbar() {
               <span>Export Excel</span>
             </button>
 
-            {/* Auth User Profile Badge - Desktop Full Pill */}
+            {/* SaaS Dashboard User Profile Card & Dropdown */}
             {user ? (
-              <div className="hidden md:flex items-center gap-1 flex-shrink-0">
-                {user.role === 'super_admin' && (
-                  <button
-                    type="button"
-                    onClick={() => setIsComplaintOpen(true)}
-                    className="hidden 2xl:inline-flex items-center gap-1 px-2 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-[11px] font-extrabold transition-all shadow-xs whitespace-nowrap"
-                    title="View App Complaints & Bug Desk"
-                  >
-                    <Bug size={13} />
-                    <span>App Complaints</span>
-                  </button>
-                )}
-
-                <div className="flex items-center gap-1 sm:gap-1.5 bg-[#123843] border border-[#235868] px-2 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs max-w-[150px] lg:max-w-[180px] xl:max-w-[210px]">
-                  <div
-                    className="w-5.5 h-5.5 rounded-full flex items-center justify-center text-[9.5px] font-extrabold text-white flex-shrink-0"
-                    style={{ backgroundColor: user.avatarBg }}
-                  >
-                    {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
+              <div className="relative hidden md:block flex-shrink-0">
+                {/* Rectangular User Card */}
+                <div
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  className="bg-[#123843]/90 hover:bg-[#184856] border border-[#235868]/80 hover:border-[#3A7E91] px-2.5 py-1.5 rounded-[15px] shadow-md hover:shadow-emerald-500/10 transition-all duration-200 hover:scale-[1.02] cursor-pointer flex items-center gap-2 select-none"
+                  title="Account Settings & Options"
+                >
+                  {/* Left Minimalist Geometric Avatar Tile */}
+                  <div className="relative w-7 h-7 rounded-xl bg-gradient-to-br from-[#52B74A]/25 via-emerald-600/30 to-teal-700/30 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-xs">
+                    {user.role === 'super_admin' ? (
+                      <Crown size={15} className="text-purple-300" />
+                    ) : user.role === 'warden' ? (
+                      <ShieldCheck size={15} className="text-sky-300" />
+                    ) : (
+                      <UtensilsCrossed size={14} className="text-[#52B74A]" />
+                    )}
+                    {/* Green Online Status Indicator */}
+                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#123843] animate-pulse" />
                   </div>
-                  <span className="font-bold text-[11px] sm:text-xs max-w-[50px] sm:max-w-[70px] lg:max-w-[90px] xl:max-w-[110px] truncate" title={user.name}>
-                    {user.name}
-                  </span>
-                  {user.role === 'super_admin' && (
-                    <span className="text-[8px] font-black px-1 py-0.5 rounded bg-purple-600 text-white uppercase flex-shrink-0">
-                      Admin
-                    </span>
-                  )}
-                  <button
-                    onClick={logout}
-                    className="text-[#B0D0D8] hover:text-red-400 transition-colors p-0.5 flex-shrink-0 ml-0.5"
-                    title="Sign Out"
-                  >
-                    <LogOut size={12.5} />
-                  </button>
+
+                  {/* Name & Role Badge */}
+                  <div className="flex flex-col text-left justify-center min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-extrabold text-[11.5px] lg:text-xs text-white truncate max-w-[70px] lg:max-w-[100px] xl:max-w-[125px] leading-tight">
+                        {user.name}
+                      </span>
+                      {user.role === 'super_admin' ? (
+                        <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md bg-purple-600/30 text-purple-300 border border-purple-500/40 whitespace-nowrap flex-shrink-0">
+                          Super Admin
+                        </span>
+                      ) : user.role === 'warden' ? (
+                        <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md bg-sky-500/25 text-sky-300 border border-sky-500/40 whitespace-nowrap flex-shrink-0">
+                          Warden
+                        </span>
+                      ) : (
+                        <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 whitespace-nowrap flex-shrink-0">
+                          Mess Staff
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Subtle Dropdown Chevron Arrow */}
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 flex-shrink-0 ${
+                      isProfileDropdownOpen ? 'rotate-180 text-[#52B74A]' : 'text-[#B0D0D8]'
+                    }`}
+                  />
                 </div>
+
+                {/* Dropdown Menu Popover */}
+                {isProfileDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    />
+                    <div className="absolute top-full right-0 mt-2 w-64 bg-[var(--bg-card)] text-[var(--text-primary)] rounded-2xl shadow-2xl border border-[var(--border)] p-2 z-50 animate-slide-up select-none">
+                      
+                      {/* Header User Card inside Dropdown */}
+                      <div className="p-3 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border)] mb-1.5 flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#52B74A]/20 to-purple-600/20 text-[#52B74A] border border-[#52B74A]/30 flex items-center justify-center flex-shrink-0">
+                          {user.role === 'super_admin' ? (
+                            <Crown size={18} className="text-purple-400" />
+                          ) : (
+                            <UserCheck size={18} className="text-[#52B74A]" />
+                          )}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-extrabold text-xs text-[var(--text-primary)] truncate">
+                            {user.name}
+                          </span>
+                          <span className="text-[10px] text-[var(--text-muted)] truncate mt-0.5">
+                            {user.email || (user.role === 'super_admin' ? 'admin@kpriet.ac.in' : `${user.role}@kpriet.ac.in`)}
+                          </span>
+                          <div className="flex items-center gap-1 mt-1">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-[9.5px] text-emerald-500 font-extrabold uppercase tracking-wider">
+                              Active Online
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Menu Actions List */}
+                      <div className="flex flex-col gap-0.5 text-xs font-semibold">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            toast.success(`Active Session: ${user.name} (${user.role})`, { icon: '👤' });
+                          }}
+                          className="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-[var(--bg-subtle)] transition-colors text-left text-[var(--text-primary)]"
+                        >
+                          <User size={15} className="text-emerald-500" />
+                          <span>Profile & Account Info</span>
+                        </button>
+
+                        {user?.role === 'super_admin' && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsProfileDropdownOpen(false);
+                              setIsNotifOpen(true);
+                            }}
+                            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-[var(--bg-subtle)] transition-colors text-left text-[var(--text-primary)]"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <Bell size={15} className="text-purple-400" />
+                              <span>Live Notifications</span>
+                            </div>
+                            {unreadNotifCount > 0 && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-black">
+                                {unreadNotifCount}
+                              </span>
+                            )}
+                          </button>
+                        )}
+
+                        {user?.role === 'super_admin' && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsProfileDropdownOpen(false);
+                              setIsComplaintOpen(true);
+                            }}
+                            className="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-[var(--bg-subtle)] transition-colors text-left text-red-400 hover:bg-red-500/10"
+                          >
+                            <Bug size={15} />
+                            <span>App Complaints Desk</span>
+                          </button>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            navigate(user.role === 'super_admin' ? '/admin-home' : user.role === 'warden' ? '/hostel-overview' : '/overview');
+                          }}
+                          className="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-[var(--bg-subtle)] transition-colors text-left text-[var(--text-primary)]"
+                        >
+                          <Activity size={15} className="text-sky-400" />
+                          <span>System Activity Log</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            toast.success('App Theme & Preferences Active', { icon: '⚙️' });
+                          }}
+                          className="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-[var(--bg-subtle)] transition-colors text-left text-[var(--text-primary)]"
+                        >
+                          <Sliders size={15} className="text-amber-400" />
+                          <span>Preferences & Settings</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            navigate('/login');
+                          }}
+                          className="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-[var(--bg-subtle)] transition-colors text-left text-sky-400 hover:bg-sky-500/10"
+                        >
+                          <ArrowRightLeft size={15} />
+                          <span>Switch Role / Portal</span>
+                        </button>
+
+                        <div className="my-1 border-t border-[var(--border)]" />
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            logout();
+                          }}
+                          className="flex items-center gap-2.5 p-2.5 rounded-xl text-red-500 hover:bg-red-500/10 transition-colors text-left font-bold"
+                        >
+                          <LogOut size={15} />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <NavLink
