@@ -12,7 +12,14 @@ export default function Footer() {
     return null;
   }
 
+  const isSuperAdmin = user?.role === 'super_admin' || location.pathname.startsWith('/admin');
   const isHostel = user?.role === 'warden' || location.pathname.startsWith('/hostel');
+
+  const footerEmail = isSuperAdmin
+    ? 'superadmin@kpriet.ac.in'
+    : isHostel
+      ? 'hostel.committee@kpr.edu'
+      : 'mess.committee@kpr.edu';
 
   return (
     <footer className="w-full bg-[#164350] border-t border-[#245767] text-white py-5 mt-auto shadow-inner">
@@ -29,12 +36,18 @@ export default function Footer() {
             />
             <div>
               <h2 className="text-sm sm:text-base font-extrabold text-white leading-tight">
-                {isHostel ? 'KPR HOSTELS MANAGEMENT' : 'KPR MESS MANAGEMENT'}
+                {isSuperAdmin
+                  ? 'KPR EXECUTIVE ADMINISTRATION'
+                  : isHostel
+                    ? 'KPR HOSTELS MANAGEMENT'
+                    : 'KPR MESS MANAGEMENT'}
               </h2>
               <p className="text-[11px] text-[#B0D0D8]">
-                {isHostel
-                  ? 'Hostel Block Administration & Warden Operations Portal'
-                  : 'Hostel Mess Operations & Maintenance Portal'}
+                {isSuperAdmin
+                  ? 'Super Admin Master Control & Executive Operations Portal'
+                  : isHostel
+                    ? 'Hostel Block Administration & Warden Operations Portal'
+                    : 'Hostel Mess Operations & Maintenance Portal'}
               </p>
             </div>
           </div>
@@ -47,11 +60,17 @@ export default function Footer() {
             </span>
             <span className="flex items-center gap-1.5">
               <Mail size={13} className="text-[#52B74A]" />
-              <span>{isHostel ? 'hostel.committee@kpr.edu' : 'mess.committee@kpr.edu'}</span>
+              <span>{footerEmail}</span>
             </span>
             <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#52B74A]/15 border border-[#52B74A]/30 text-[10.5px] font-bold text-[#52B74A]">
               <ShieldCheck size={12} />
-              <span>{isHostel ? 'Hostel Warden Verified' : 'Hostel Mess Verified'}</span>
+              <span>
+                {isSuperAdmin
+                  ? 'Super Admin Verified'
+                  : isHostel
+                    ? 'Hostel Warden Verified'
+                    : 'Hostel Mess Verified'}
+              </span>
             </span>
           </div>
         </div>
@@ -61,14 +80,17 @@ export default function Footer() {
           {/* Gold Accent Badge Box */}
           <div className="px-3 py-1 rounded-xl bg-[#0F2D36] border border-amber-400/35 shadow-xs">
             <p className="text-[11px] font-bold text-amber-300 tracking-wide uppercase">
-              {isHostel
-                ? 'Created for KPR Hostels by Hostel Committee'
-                : 'Created for Hostel Mess by Hostel Committee'}
+              {isSuperAdmin
+                ? 'Created for Executive Admin by Super Admin Team'
+                : isHostel
+                  ? 'Created for KPR Hostels by Hostel Committee'
+                  : 'Created for Hostel Mess by Hostel Committee'}
             </p>
           </div>
 
           <p className="text-[11px] text-[#8BB2BC] font-medium">
-            © {new Date().getFullYear()} {isHostel ? 'KPR HOSTELS' : 'KPR MESS'}. All rights reserved.
+            © {new Date().getFullYear()}{' '}
+            {isSuperAdmin ? 'KPR SUPER ADMIN' : isHostel ? 'KPR HOSTELS' : 'KPR MESS'}. All rights reserved.
           </p>
         </div>
 

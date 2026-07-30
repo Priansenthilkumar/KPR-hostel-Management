@@ -689,16 +689,16 @@ export default function SuperAdminHome() {
             <button
               type="button"
               onClick={() => {
-                if (window.confirm('Are you sure you want to purge all old records from Mess and Hostel pages?')) {
+                if (window.confirm('Are you sure you want to Clear all old records from Mess and Hostel pages?')) {
                   storageService.clearAll();
                   hostelService.clearAllHostelRecords();
-                  toast.success('All old records purged successfully from all pages!');
+                  toast.success('All old records cleared successfully from all pages!');
                 }
               }}
               className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-extrabold shadow-sm flex items-center gap-2"
             >
               <Wrench size={15} />
-              <span>Purge All Old Records</span>
+              <span>Clear Old Records</span>
             </button>
 
             <button
