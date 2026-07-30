@@ -1,5 +1,6 @@
 // src/pages/HostelManagement.jsx
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
   UserCheck,
@@ -21,40 +22,14 @@ import toast from 'react-hot-toast';
 import Button from '../components/UI/Button';
 import { hostelService } from '../services/hostelService';
 
-const HOSTEL_BLOCKS = [
-  'Pallavan Hostel',
-  'Cheran Hostel',
-  'Thiruvalluvar Ground Floor',
-  'Thiruvalluvar 1st Floor',
-  'Thiruvalluvar 2nd Floor',
-  'Thiruvalluvar 3rd Floor',
-  'Thiruvalluvar 4th Floor',
-  'Bharathi Dorm',
-  'Bharathi International',
-];
-
 export default function HostelManagement() {
+  const navigate = useNavigate();
+
   // Duty Logs State connected to backend service
   const [dutyLogs, setDutyLogs] = useState(() => hostelService.getDutyLogs());
 
   // Student Remarks State connected to backend service
   const [remarks, setRemarks] = useState(() => hostelService.getStudentRemarks());
-
-  // Form States for Duty Log
-  const [staffName, setStaffName] = useState('');
-  const [designation, setDesignation] = useState('Deputy Warden');
-  const [hostelBlock, setHostelBlock] = useState(HOSTEL_BLOCKS[0]);
-  const [dutyDate, setDutyDate] = useState(new Date().toISOString().split('T')[0]);
-  const [inTime, setInTime] = useState('07:30 PM');
-  const [outTime, setOutTime] = useState('10:00 PM');
-
-  // Form States for Student Remark
-  const [studentName, setStudentName] = useState('');
-  const [rollNo, setRollNo] = useState('');
-  const [roomNo, setRoomNo] = useState('');
-  const [remarkBlock, setRemarkBlock] = useState(HOSTEL_BLOCKS[0]);
-  const [category, setCategory] = useState('Water & Plumbing');
-  const [remarkText, setRemarkText] = useState('');
 
   // Rectification Modal Input State
   const [resolvingId, setResolvingId] = useState(null);
@@ -75,54 +50,6 @@ export default function HostelManagement() {
       window.removeEventListener('storage', handleDataUpdate);
     };
   }, []);
-
-  // Add Duty Entry
-  const handleAddDuty = (e) => {
-    e.preventDefault();
-    if (!staffName.trim()) {
-      toast.error('Please enter Staff Name.');
-      return;
-    }
-
-    hostelService.addDutyLog({
-      name: staffName.trim(),
-      designation,
-      block: hostelBlock,
-      date: dutyDate,
-      inTime: inTime.trim(),
-      outTime: outTime.trim() || 'On Duty',
-      status: outTime.trim() ? 'Completed' : 'On Duty',
-    });
-
-    setStaffName('');
-    toast.success('Warden duty in/out log added!');
-  };
-
-  // Add Student Remark
-  const handleAddRemark = (e) => {
-    e.preventDefault();
-    if (!studentName.trim() || !remarkText.trim()) {
-      toast.error('Please fill in Student Name and Remark details.');
-      return;
-    }
-
-    hostelService.addStudentRemark({
-      studentName: studentName.trim(),
-      rollNo: rollNo.trim() || 'N/A',
-      roomNo: roomNo.trim() || 'Hostel',
-      block: remarkBlock,
-      date: new Date().toISOString().split('T')[0],
-      session: 'Daily Feedback',
-      category,
-      remark: remarkText.trim(),
-    });
-
-    setStudentName('');
-    setRollNo('');
-    setRoomNo('');
-    setRemarkText('');
-    toast.success('Student remark recorded!');
-  };
 
   // Mark Remark as Rectified
   const handleConfirmRectified = (id) => {
@@ -176,8 +103,20 @@ export default function HostelManagement() {
             </h1>
 
             <p className="mt-2.5 text-xs sm:text-sm text-[#B0D0D8] leading-relaxed max-w-xl">
-              Track Warden, Deputy Warden, & Tutor in/out duty hours, log student remarks, and verify issue rectifications.
+              Track Warden, Deputy Warden, & Resident Tutor in/out duty hours, log student remarks, and verify issue rectifications.
             </p>
+
+            <div className="mt-4 flex items-center gap-3">
+              <Button
+                variant="success"
+                size="md"
+                onClick={() => navigate('/hostel-add-entry')}
+                className="shadow-md text-xs font-bold flex items-center gap-1.5"
+              >
+                <PlusCircle size={15} />
+                <span>Log New Duty Shift / Entry</span>
+              </Button>
+            </div>
           </div>
 
           {/* Quick Stats Pill */}
@@ -195,7 +134,7 @@ export default function HostelManagement() {
         </div>
       </div>
 
-      {/* ── SECTION 1: Warden, Deputy Warden & Tutor Duty In/Out Log ── */}
+      {/* ── SECTION 1: Wardens, Deputy Wardens & Tutors Duty Log Overview ── */}
       <div className="card p-5 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs border border-[var(--border)]">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
           <div className="flex items-center gap-2.5">
@@ -204,161 +143,97 @@ export default function HostelManagement() {
             </div>
             <div>
               <h3 className="font-extrabold text-base text-[var(--text-primary)] leading-tight">
-                Wardens, Deputy Wardens & Tutors Duty Log
+                Wardens, Deputy Wardens & Tutors Duty Log Overview
               </h3>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                Record check-in date, in-time, and out-time for hostel supervisory staff
+                Overview of check-in dates, in-times, and out-times for supervisory hostel staff ({dutyLogs.length} shifts recorded)
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Add Duty Log Form */}
-        <form onSubmit={handleAddDuty} className="bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border)] flex flex-col gap-4">
-          <h4 className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => navigate('/hostel-add-entry')}
+            className="text-xs font-bold flex items-center gap-1.5 self-end sm:self-auto"
+          >
             <PlusCircle size={14} className="text-[#3DA1D1]" />
-            <span>Log Staff Duty Shift (In / Out Time)</span>
-          </h4>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs">
-            {/* Staff Name */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Staff Name *</label>
-              <input
-                type="text"
-                placeholder="e.g. Dr. Arunkumar / Mrs. Jayanthi"
-                value={staffName}
-                onChange={(e) => setStaffName(e.target.value)}
-                className="form-input h-10 text-xs"
-                required
-              />
-            </div>
-
-            {/* Designation */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Designation *</label>
-              <select
-                value={designation}
-                onChange={(e) => setDesignation(e.target.value)}
-                className="form-input h-10 text-xs font-medium"
-              >
-                <option value="Chief Warden">Chief Warden</option>
-                <option value="Deputy Warden">Deputy Warden</option>
-                <option value="Resident Tutor">Resident Tutor</option>
-                <option value="Floor Tutor">Floor Tutor</option>
-              </select>
-            </div>
-
-            {/* Hostel Block */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Hostel Block *</label>
-              <select
-                value={hostelBlock}
-                onChange={(e) => setHostelBlock(e.target.value)}
-                className="form-input h-10 text-xs font-medium"
-              >
-                {HOSTEL_BLOCKS.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Date */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Duty Date *</label>
-              <input
-                type="date"
-                value={dutyDate}
-                onChange={(e) => setDutyDate(e.target.value)}
-                className="form-input h-10 text-xs"
-                required
-              />
-            </div>
-
-            {/* In Time */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">In Time *</label>
-              <input
-                type="text"
-                placeholder="e.g. 07:30 PM"
-                value={inTime}
-                onChange={(e) => setInTime(e.target.value)}
-                className="form-input h-10 text-xs"
-                required
-              />
-            </div>
-
-            {/* Out Time */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Out Time</label>
-              <input
-                type="text"
-                placeholder="e.g. 10:00 PM (or leave empty if On Duty)"
-                value={outTime}
-                onChange={(e) => setOutTime(e.target.value)}
-                className="form-input h-10 text-xs"
-              />
-            </div>
-          </div>
-
-          <Button type="submit" variant="success" size="md" className="self-start text-xs shadow-xs mt-1">
-            <PlusCircle size={15} />
-            <span>Add Staff Duty Record</span>
+            <span>Log Staff Duty Shift</span>
           </Button>
-        </form>
+        </div>
 
         {/* Duty Logs Table */}
-        <div className="overflow-x-auto w-full border border-[var(--border)] rounded-xl">
-          <table className="data-table w-full text-xs">
-            <thead>
-              <tr>
-                <th>Staff Name</th>
-                <th>Designation</th>
-                <th>Hostel Block</th>
-                <th>Date</th>
-                <th>In Time</th>
-                <th>Out Time</th>
-                <th className="text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dutyLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
-                  <td className="font-bold text-[var(--text-primary)]">{log.name}</td>
-                  <td>
-                    <span className="px-2 py-0.5 rounded-full bg-sky-500/15 text-[#3DA1D1] font-bold text-[10.5px]">
-                      {log.designation}
-                    </span>
-                  </td>
-                  <td className="text-[var(--text-secondary)] font-semibold">{log.block}</td>
-                  <td className="whitespace-nowrap font-semibold">{log.date}</td>
-                  <td className="font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
-                    {log.inTime}
-                  </td>
-                  <td className="font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap">
-                    {log.outTime}
-                  </td>
-                  <td className="text-center">
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
-                        log.status === 'Completed'
-                          ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/30'
-                          : 'bg-amber-500/15 text-amber-600 border border-amber-500/30 animate-pulse'
-                      }`}
-                    >
-                      {log.status}
-                    </span>
-                  </td>
+        {dutyLogs.length === 0 ? (
+          <div className="p-8 text-center text-xs text-[var(--text-muted)] font-medium bg-[var(--bg-subtle)] rounded-xl border border-dashed border-[var(--border)]">
+            No warden duty logs recorded yet. Click <strong className="text-sky-500 cursor-pointer underline" onClick={() => navigate('/hostel-add-entry')}>Log Staff Duty Shift</strong> to record a duty shift.
+          </div>
+        ) : (
+          <div className="overflow-x-auto w-full border border-[var(--border)] rounded-xl">
+            <table className="data-table w-full text-xs">
+              <thead>
+                <tr>
+                  <th>Staff Name</th>
+                  <th>Designation</th>
+                  <th>Hostel Block</th>
+                  <th>Date</th>
+                  <th>In Time</th>
+                  <th>Out Time</th>
+                  <th className="text-center">Status</th>
+                  <th className="text-center">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {dutyLogs.map((log) => (
+                  <tr key={log.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                    <td className="font-bold text-[var(--text-primary)]">{log.name}</td>
+                    <td>
+                      <span className="px-2 py-0.5 rounded-full bg-sky-500/15 text-[#3DA1D1] font-bold text-[10.5px]">
+                        {log.designation}
+                      </span>
+                    </td>
+                    <td className="text-[var(--text-secondary)] font-semibold">{log.block}</td>
+                    <td className="whitespace-nowrap font-semibold">{log.date}</td>
+                    <td className="font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                      {log.inTime}
+                    </td>
+                    <td className="font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap">
+                      {log.outTime}
+                    </td>
+                    <td className="text-center">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+                          log.status === 'Completed'
+                            ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/30'
+                            : 'bg-amber-500/15 text-amber-600 border border-amber-500/30 animate-pulse'
+                        }`}
+                      >
+                        {log.status || (log.outTime === 'On Duty' ? 'On Duty' : 'Completed')}
+                      </span>
+                    </td>
+                    <td className="text-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm(`Delete duty log for ${log.name}?`)) {
+                            hostelService.deleteDutyLog(log.id);
+                            toast.success('Duty log deleted!');
+                          }
+                        }}
+                        className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-500 transition-colors"
+                        title="Delete Duty Log"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      {/* ── SECTION 2 & 3: Student Remarks & Rectification Tracker ── */}
+      {/* ── SECTION 2 & 3: Student Remarks & Rectification Tracker Overview ── */}
       <div className="card p-5 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs border border-[var(--border)]">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
           <div className="flex items-center gap-2.5">
@@ -367,7 +242,7 @@ export default function HostelManagement() {
             </div>
             <div>
               <h3 className="font-extrabold text-base text-[var(--text-primary)] leading-tight">
-                Student Remarks & Rectification Board
+                Student Remarks & Rectification Board Overview
               </h3>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                 Track remarks asked from students and verify whether they are rectified or pending
@@ -375,8 +250,18 @@ export default function HostelManagement() {
             </div>
           </div>
 
-          {/* Search & Filter Tabs */}
+          {/* Search, Filter Tabs & Add Remark Link */}
           <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => navigate('/hostel-add-entry')}
+              className="text-xs font-bold flex items-center gap-1.5 mr-1"
+            >
+              <PlusCircle size={14} className="text-[#52B74A]" />
+              <span>Add Remark</span>
+            </Button>
+
             <div className="relative flex-1 md:w-48">
               <input
                 type="text"
@@ -406,105 +291,6 @@ export default function HostelManagement() {
             </div>
           </div>
         </div>
-
-        {/* Add Student Remark Form */}
-        <form onSubmit={handleAddRemark} className="bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border)] flex flex-col gap-4">
-          <h4 className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
-            <PlusCircle size={14} className="text-[#52B74A]" />
-            <span>Record New Student Remark / Feedback</span>
-          </h4>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-            {/* Student Name */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Student Name *</label>
-              <input
-                type="text"
-                placeholder="e.g. Rahul K."
-                value={studentName}
-                onChange={(e) => setStudentName(e.target.value)}
-                className="form-input h-10 text-xs"
-                required
-              />
-            </div>
-
-            {/* Roll No */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Roll No / ID</label>
-              <input
-                type="text"
-                placeholder="e.g. 21CS042"
-                value={rollNo}
-                onChange={(e) => setRollNo(e.target.value)}
-                className="form-input h-10 text-xs"
-              />
-            </div>
-
-            {/* Room No */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Room No</label>
-              <input
-                type="text"
-                placeholder="e.g. R-204"
-                value={roomNo}
-                onChange={(e) => setRoomNo(e.target.value)}
-                className="form-input h-10 text-xs"
-              />
-            </div>
-
-            {/* Hostel Block Dropdown */}
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[var(--text-primary)]">Hostel Block *</label>
-              <select
-                value={remarkBlock}
-                onChange={(e) => setRemarkBlock(e.target.value)}
-                className="form-input h-10 text-xs font-medium"
-              >
-                {HOSTEL_BLOCKS.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Remark Details & Category */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div className="flex flex-col gap-1 sm:col-span-1">
-              <label className="font-bold text-[var(--text-primary)]">Remark Category *</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="form-input h-10 text-xs font-medium"
-              >
-                <option value="Water & Plumbing">Water & Plumbing</option>
-                <option value="Electricity & Lighting">Electricity & Lighting</option>
-                <option value="Room Maintenance">Room Furniture & Maintenance</option>
-                <option value="Cleanliness">Hygiene & Cleanliness</option>
-                <option value="Discipline/Noise">Discipline & Quiet Hours</option>
-                <option value="General Query">General Hostel Query</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1 sm:col-span-2">
-              <label className="font-bold text-[var(--text-primary)] text-xs">Student Remark Details *</label>
-              <input
-                type="text"
-                placeholder="What remark or complaint was asked/reported by the student?"
-                value={remarkText}
-                onChange={(e) => setRemarkText(e.target.value)}
-                className="form-input h-10 text-xs px-3"
-                required
-              />
-            </div>
-          </div>
-
-          <Button type="submit" variant="success" size="md" className="self-start text-xs shadow-xs mt-1">
-            <PlusCircle size={15} />
-            <span>Record Student Remark</span>
-          </Button>
-        </form>
 
         {/* Remarks & Rectification Cards */}
         {filteredRemarks.length === 0 ? (
