@@ -11,6 +11,9 @@ import {
   ShieldCheck,
   CheckCircle2,
   ArrowRight,
+  User,
+  FileText,
+  Wrench,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from '../components/UI/Button';

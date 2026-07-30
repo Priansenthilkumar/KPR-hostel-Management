@@ -48,8 +48,8 @@ function ProtectedRoute({ children, allowedRole }) {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  if (allowedRole && user.role !== 'super_admin' && user.role !== allowedRole) {
-    return <Navigate to={user.role === 'super_admin' ? '/admin-home' : user.role === 'warden' ? '/hostel-dashboard' : '/'} replace />;
+  if (allowedRole && user?.role !== 'super_admin' && user?.role !== allowedRole) {
+    return <Navigate to={user?.role === 'super_admin' ? '/admin-home' : user?.role === 'warden' ? '/hostel-dashboard' : '/'} replace />;
   }
   return children;
 }

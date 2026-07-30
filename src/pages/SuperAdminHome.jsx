@@ -537,77 +537,137 @@ export default function SuperAdminHome() {
         )}
       </div>
 
-      {/* ── LIVE HOSTEL WARDEN & STUDENT REMARKS DATATABLE ── */}
-      <div className="card overflow-hidden p-0 rounded-3xl flex flex-col shadow-xs border border-sky-500/30">
-        <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between bg-[var(--bg-subtle)]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-500 flex items-center justify-center font-bold">
-              <ShieldCheck size={15} />
+      {/* ── DEDICATED SECTION: HOSTEL WARDEN DUTY OVERSIGHT & SHIFT OVERVIEW ── */}
+      <div className="card overflow-hidden p-0 rounded-3xl flex flex-col shadow-xs border border-sky-500/40">
+        {/* Section Header */}
+        <div className="px-6 py-4 border-b border-[var(--border)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-gradient-to-r from-sky-950/20 via-sky-900/10 to-transparent">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center font-bold flex-shrink-0 border border-sky-500/30">
+              <UserCheck size={18} />
             </div>
             <div>
-              <h3 className="font-extrabold text-[var(--text-primary)] text-sm leading-none">
-                Live Hostel Warden Duty & Student Remarks Logs
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-extrabold text-[var(--text-primary)] text-base leading-none">
+                  Hostel Warden Duty Oversight & Shift Overview
+                </h3>
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30 uppercase">
+                  Live Duty Oversight
+                </span>
+              </div>
               <p className="text-xs text-[var(--text-muted)] mt-1">
-                Real-time hostel logs ({dutyLogs.length} duty check-ins, {remarksList.length} student remarks)
+                Real-time tracking of Wardens, Deputy Wardens & Resident Tutors shift check-in logs across 9 hostel blocks.
               </p>
             </div>
           </div>
-          <button
-            onClick={() => navigate('/hostel-overview')}
-            className="inline-flex items-center gap-1 text-xs text-sky-500 hover:text-sky-600 font-bold transition-colors"
-          >
-            Full Hostel Log
-            <ChevronRight size={14} strokeWidth={2.2} />
-          </button>
+
+          <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto">
+            <button
+              onClick={() => navigate('/hostel-add-entry')}
+              className="px-3 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 text-xs font-bold transition-all border border-sky-500/30 flex items-center gap-1.5"
+            >
+              <PlusCircle size={14} />
+              <span>Log Duty Shift</span>
+            </button>
+            <button
+              onClick={() => navigate('/hostel-overview')}
+              className="inline-flex items-center gap-1 text-xs text-sky-400 hover:text-sky-300 font-bold transition-colors px-2 py-1"
+            >
+              <span>Full Warden Desk</span>
+              <ChevronRight size={14} strokeWidth={2.2} />
+            </button>
+          </div>
         </div>
 
-        {dutyLogs.length === 0 && remarksList.length === 0 ? (
+        {/* Quick KPI Strip for Warden Duty */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[var(--bg-subtle)] border-b border-[var(--border)] text-xs">
+          <div className="p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] flex flex-col gap-0.5">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Total Duty Logs</span>
+            <strong className="text-lg font-extrabold text-sky-400">{dutyLogs.length}</strong>
+          </div>
+          <div className="p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] flex flex-col gap-0.5">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Currently On Duty</span>
+            <strong className="text-lg font-extrabold text-amber-400 flex items-center gap-1.5">
+              <span>{dutyLogs.filter((d) => d.status === 'On Duty' || d.outTime === 'On Duty').length}</span>
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping inline-block" />
+            </strong>
+          </div>
+          <div className="p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] flex flex-col gap-0.5">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Completed Shifts</span>
+            <strong className="text-lg font-extrabold text-emerald-400">
+              {dutyLogs.filter((d) => d.status === 'Completed' || (d.outTime && d.outTime !== 'On Duty')).length}
+            </strong>
+          </div>
+          <div className="p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] flex flex-col gap-0.5">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Latest Duty Check-in</span>
+            <span className="text-xs font-bold text-[var(--text-primary)] truncate" title={dutyLogs[0]?.name || 'None'}>
+              {dutyLogs[0]?.name ? `${dutyLogs[0].name} (${dutyLogs[0].block})` : 'No Check-ins Yet'}
+            </span>
+          </div>
+        </div>
+
+        {/* Dedicated Warden Duty Datatable */}
+        {dutyLogs.length === 0 ? (
           <div className="p-8 text-center text-xs text-[var(--text-secondary)] font-medium">
-            No Hostel duty logs or student remarks recorded yet. Click <strong className="text-sky-500 cursor-pointer" onClick={() => navigate('/hostel-add-entry')}>Log Duty / Remark</strong> to record your first entry.
+            No Warden duty check-in logs recorded yet. Click <strong className="text-sky-400 cursor-pointer underline" onClick={() => navigate('/hostel-add-entry')}>Log Duty Shift</strong> to register warden check-ins.
           </div>
         ) : (
           <div className="overflow-x-auto w-full">
             <table className="data-table dashboard-data-table w-full">
               <thead>
                 <tr>
-                  <th>Type</th>
-                  <th>Date</th>
-                  <th>Block</th>
-                  <th>Staff / Student Name</th>
-                  <th>Details / Category</th>
-                  <th className="text-right">Status</th>
+                  <th>Staff Name & Role</th>
+                  <th>Hostel Block</th>
+                  <th>Duty Date</th>
+                  <th>In Time</th>
+                  <th>Out Time</th>
+                  <th className="text-center">Duty Status</th>
                   <th className="text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {dutyLogs.slice(0, 3).map((d) => (
+                {dutyLogs.map((d) => (
                   <tr key={d.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
-                    <td><span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-600 uppercase">Duty Log</span></td>
+                    <td>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-xs text-[var(--text-primary)]">{d.name}</span>
+                        <span className="text-[10px] font-semibold text-sky-400">{d.designation}</span>
+                      </div>
+                    </td>
+                    <td className="text-xs font-semibold text-[var(--text-secondary)]">{d.block}</td>
                     <td className="font-semibold text-xs text-[var(--text-primary)] whitespace-nowrap">{formatDisplayDate(d.date)}</td>
-                    <td className="text-xs font-medium text-[var(--text-secondary)]">{d.block}</td>
-                    <td className="text-xs font-bold text-[var(--text-primary)]">{d.name} <span className="text-[10px] font-normal text-[var(--text-muted)]">({d.designation})</span></td>
-                    <td className="text-xs text-[var(--text-secondary)]">In: {d.inTime} | Out: {d.outTime}</td>
-                    <td className="text-right"><Badge label={d.status || 'Completed'} /></td>
+                    <td className="font-bold text-emerald-400 whitespace-nowrap text-xs">{d.inTime}</td>
+                    <td className="font-bold text-amber-400 whitespace-nowrap text-xs">{d.outTime}</td>
+                    <td className="text-center">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold ${
+                          d.status === 'Completed' || (d.outTime && d.outTime !== 'On Duty')
+                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse'
+                        }`}
+                      >
+                        <ShieldCheck size={12} />
+                        <span>{d.status || (d.outTime === 'On Duty' ? 'On Duty' : 'Completed')}</span>
+                      </span>
+                    </td>
                     <td className="text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => navigate('/hostel-overview')}
-                          className="p-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/30 text-sky-500 transition-colors"
-                          title="Edit Hostel Log"
+                          className="p-1.5 rounded-lg bg-sky-500/15 hover:bg-sky-500/30 text-sky-400 transition-colors"
+                          title="Manage Hostel Duty"
                         >
                           <Edit3 size={14} />
                         </button>
                         <button
                           type="button"
                           onClick={() => {
-                            if (window.confirm('Delete this duty log?')) {
+                            if (window.confirm(`Delete duty log for ${d.name}?`)) {
                               hostelService.deleteDutyLog(d.id);
-                              toast.success('Duty log deleted!');
+                              toast.success('Warden duty log deleted!');
                             }
                           }}
-                          className="p-1 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-500 transition-colors"
+                          className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400 transition-colors"
                           title="Delete Duty Log"
                         >
                           <Trash2 size={14} />
@@ -616,21 +676,89 @@ export default function SuperAdminHome() {
                     </td>
                   </tr>
                 ))}
-                {remarksList.slice(0, 3).map((r) => (
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* ── DEDICATED SECTION: HOSTEL STUDENT REMARKS & ISSUE LOGS ── */}
+      <div className="card overflow-hidden p-0 rounded-3xl flex flex-col shadow-xs border border-purple-500/30">
+        <div className="px-6 py-4 border-b border-[var(--border)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-gradient-to-r from-purple-950/20 via-purple-900/10 to-transparent">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center font-bold flex-shrink-0 border border-purple-500/30">
+              <MessageSquare size={18} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-extrabold text-[var(--text-primary)] text-base leading-none">
+                  Hostel Student Remarks & Facility Issue Logs
+                </h3>
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/30 uppercase">
+                  Maintenance Desk
+                </span>
+              </div>
+              <p className="text-xs text-[var(--text-muted)] mt-1">
+                Student reported hostel facility remarks ({remarksList.length} total, {pendingRemarksCount} pending resolution).
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto">
+            <button
+              onClick={() => navigate('/hostel-add-entry')}
+              className="px-3 py-1.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-400 text-xs font-bold transition-all border border-purple-500/30 flex items-center gap-1.5"
+            >
+              <PlusCircle size={14} />
+              <span>Add Student Remark</span>
+            </button>
+          </div>
+        </div>
+
+        {remarksList.length === 0 ? (
+          <div className="p-8 text-center text-xs text-[var(--text-secondary)] font-medium">
+            No student remarks recorded yet. Click <strong className="text-purple-400 cursor-pointer underline" onClick={() => navigate('/hostel-add-entry')}>Add Student Remark</strong> to file a maintenance remark.
+          </div>
+        ) : (
+          <div className="overflow-x-auto w-full">
+            <table className="data-table dashboard-data-table w-full">
+              <thead>
+                <tr>
+                  <th>Student & Room</th>
+                  <th>Hostel Block</th>
+                  <th>Date</th>
+                  <th>Category & Remark</th>
+                  <th className="text-right">Rectification Status</th>
+                  <th className="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {remarksList.map((r) => (
                   <tr key={r.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
-                    <td><span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-600 uppercase">Remark</span></td>
+                    <td>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-xs text-[var(--text-primary)]">{r.studentName}</span>
+                        <span className="text-[10px] text-[var(--text-muted)]">Room #{r.roomNo} ({r.rollNo || 'N/A'})</span>
+                      </div>
+                    </td>
+                    <td className="text-xs font-semibold text-[var(--text-secondary)]">{r.block}</td>
                     <td className="font-semibold text-xs text-[var(--text-primary)] whitespace-nowrap">{formatDisplayDate(r.date)}</td>
-                    <td className="text-xs font-medium text-[var(--text-secondary)]">{r.block}</td>
-                    <td className="text-xs font-bold text-[var(--text-primary)]">{r.studentName} <span className="text-[10px] font-normal text-[var(--text-muted)]">({r.roomNo})</span></td>
-                    <td className="text-xs text-[var(--text-secondary)] max-w-[200px] truncate" title={r.remark}><strong className="mr-1">{`[${r.category}]`}</strong>{r.remark}</td>
-                    <td className="text-right"><Badge label={r.rectified ? 'Rectified' : 'Pending'} /></td>
+                    <td className="text-xs text-[var(--text-secondary)] max-w-[280px]">
+                      <span className="px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-400 text-[10px] font-extrabold mr-1.5 uppercase">
+                        {r.category}
+                      </span>
+                      <span>{r.remark}</span>
+                    </td>
+                    <td className="text-right">
+                      <Badge label={r.rectified ? 'Rectified' : 'Pending'} />
+                    </td>
                     <td className="text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => navigate('/hostel-overview')}
-                          className="p-1 rounded-lg bg-purple-500/15 hover:bg-purple-500/30 text-purple-500 transition-colors"
-                          title="Edit Student Remark"
+                          className="p-1.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/30 text-purple-400 transition-colors"
+                          title="Manage Remarks"
                         >
                           <Edit3 size={14} />
                         </button>
@@ -642,7 +770,7 @@ export default function SuperAdminHome() {
                               toast.success('Student remark deleted!');
                             }
                           }}
-                          className="p-1 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-500 transition-colors"
+                          className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400 transition-colors"
                           title="Delete Remark"
                         >
                           <Trash2 size={14} />
