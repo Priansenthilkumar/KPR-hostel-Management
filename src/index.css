@@ -127,6 +127,18 @@ html.dark {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Explicit class & utility override when an icon is inside the input box */
+.form-input-has-icon,
+.form-select-has-icon,
+.form-input.pl-10,
+.form-select.pl-10,
+.form-input.pl-11,
+.form-select.pl-11,
+.form-input.pl-12,
+.form-select.pl-12 {
+  padding-left: 2.75rem !important; /* 44px left space ensures zero icon-text overlap */
+}
+
 .form-textarea {
   height: auto;
   padding-top: 0.75rem;

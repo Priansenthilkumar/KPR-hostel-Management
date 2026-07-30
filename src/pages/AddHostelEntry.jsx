@@ -183,10 +183,10 @@ export default function AddHostelEntry() {
                     placeholder="e.g. Dr. Arunkumar / Mrs. Jayanthi"
                     value={staffName}
                     onChange={(e) => setStaffName(e.target.value)}
-                    className="form-input pl-10"
+                    className="form-input form-input-has-icon"
                     required
                   />
-                  <User size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                  <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
                 </div>
               </div>
 
@@ -199,14 +199,14 @@ export default function AddHostelEntry() {
                   <select
                     value={designation}
                     onChange={(e) => setDesignation(e.target.value)}
-                    className="form-select pl-10 font-semibold"
+                    className="form-select form-select-has-icon font-semibold"
                   >
                     <option value="Chief Warden">Chief Warden</option>
                     <option value="Deputy Warden">Deputy Warden</option>
                     <option value="Resident Tutor">Resident Tutor</option>
                     <option value="Floor Tutor">Floor Tutor</option>
                   </select>
-                  <ShieldCheck size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                  <ShieldCheck size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
                 </div>
               </div>
 
@@ -219,7 +219,7 @@ export default function AddHostelEntry() {
                   <select
                     value={hostelBlock}
                     onChange={(e) => setHostelBlock(e.target.value)}
-                    className="form-select pl-10 font-semibold"
+                    className="form-select form-select-has-icon font-semibold"
                   >
                     {HOSTEL_BLOCKS.map((b) => (
                       <option key={b} value={b}>
@@ -227,7 +227,7 @@ export default function AddHostelEntry() {
                       </option>
                     ))}
                   </select>
-                  <Building size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
                 </div>
               </div>
 
@@ -241,10 +241,10 @@ export default function AddHostelEntry() {
                     type="date"
                     value={dutyDate}
                     onChange={(e) => setDutyDate(e.target.value)}
-                    className="form-input pl-10"
+                    className="form-input form-input-has-icon"
                     required
                   />
-                  <Calendar size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                  <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
                 </div>
               </div>
 
@@ -259,10 +259,10 @@ export default function AddHostelEntry() {
                     placeholder="e.g. 07:30 PM"
                     value={inTime}
                     onChange={(e) => setInTime(e.target.value)}
-                    className="form-input pl-10"
+                    className="form-input form-input-has-icon"
                     required
                   />
-                  <Clock size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                  <Clock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
                 </div>
               </div>
 
@@ -277,9 +277,9 @@ export default function AddHostelEntry() {
                     placeholder="e.g. 10:00 PM (or empty if On Duty)"
                     value={outTime}
                     onChange={(e) => setOutTime(e.target.value)}
-                    className="form-input pl-10"
+                    className="form-input form-input-has-icon"
                   />
-                  <Clock size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+                  <Clock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -314,10 +314,10 @@ export default function AddHostelEntry() {
                     placeholder="e.g. Rahul K."
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
-                    className="form-input pl-10"
+                    className="form-input form-input-has-icon"
                     required
                   />
-                  <User size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                  <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
                 </div>
               </div>
 
@@ -332,9 +332,9 @@ export default function AddHostelEntry() {
                     placeholder="e.g. 21CS042"
                     value={rollNo}
                     onChange={(e) => setRollNo(e.target.value)}
-                    className="form-input pl-10"
+                    className="form-input form-input-has-icon"
                   />
-                  <FileText size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                  <FileText size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
                 </div>
               </div>
 
@@ -349,9 +349,9 @@ export default function AddHostelEntry() {
                     placeholder="e.g. R-204"
                     value={roomNo}
                     onChange={(e) => setRoomNo(e.target.value)}
-                    className="form-input pl-10"
+                    className="form-input form-input-has-icon"
                   />
-                  <Building size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
                 </div>
               </div>
 
@@ -364,7 +364,7 @@ export default function AddHostelEntry() {
                   <select
                     value={remarkBlock}
                     onChange={(e) => setRemarkBlock(e.target.value)}
-                    className="form-select pl-10 font-semibold"
+                    className="form-select form-select-has-icon font-semibold"
                   >
                     {HOSTEL_BLOCKS.map((b) => (
                       <option key={b} value={b}>
@@ -372,7 +372,7 @@ export default function AddHostelEntry() {
                       </option>
                     ))}
                   </select>
-                  <Building size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -387,7 +387,7 @@ export default function AddHostelEntry() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="form-select pl-10 font-semibold"
+                    className="form-select form-select-has-icon font-semibold"
                   >
                     <option value="Water & Plumbing">Water & Plumbing</option>
                     <option value="Electricity & Lighting">Electricity & Lighting</option>
@@ -396,7 +396,7 @@ export default function AddHostelEntry() {
                     <option value="Discipline/Noise">Discipline & Quiet Hours</option>
                     <option value="General Query">General Hostel Query</option>
                   </select>
-                  <Wrench size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                  <Wrench size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
                 </div>
               </div>
 
@@ -411,10 +411,10 @@ export default function AddHostelEntry() {
                     placeholder="What remark or complaint was asked/reported by the student?"
                     value={remarkText}
                     onChange={(e) => setRemarkText(e.target.value)}
-                    className="form-input pl-10"
+                    className="form-input form-input-has-icon"
                     required
                   />
-                  <MessageSquare size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+                  <MessageSquare size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
                 </div>
               </div>
             </div>
