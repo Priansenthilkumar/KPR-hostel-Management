@@ -152,21 +152,21 @@ export default function Navbar() {
             </div>
           </div>
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-0.5 lg:gap-1 p-1 rounded-xl bg-[#123843] border border-[#235868] shadow-inner flex-shrink min-w-0">
+          <div className="hidden md:flex items-center gap-0.5 lg:gap-1 p-0.5 sm:p-1 rounded-xl bg-[#123843] border border-[#235868] shadow-inner flex-shrink min-w-0">
             {activeNavLinks.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={to === '/' || to === '/hostel-management' || to === '/admin-home'}
                 className={({ isActive }) =>
-                  `inline-flex items-center gap-1 sm:gap-1.5 px-2 lg:px-2.5 xl:px-3 py-1.5 rounded-lg text-[11.5px] lg:text-[12px] xl:text-[12.5px] font-semibold transition-all duration-150 leading-none whitespace-nowrap ${
+                  `inline-flex items-center gap-1 px-2 lg:px-2.5 xl:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] lg:text-[12px] xl:text-[12.5px] font-semibold transition-all duration-150 leading-none whitespace-nowrap ${
                     isActive
                       ? 'bg-[#52B74A] text-white shadow-sm font-bold'
                       : 'text-[#B0D0D8] hover:bg-[#1D5060] hover:text-white'
                   }`
                 }
               >
-                <Icon size={13.5} strokeWidth={2.2} />
+                <Icon size={13} strokeWidth={2.2} />
                 <span>{label}</span>
               </NavLink>
             ))}
@@ -208,7 +208,7 @@ export default function Navbar() {
 
             <button
               onClick={handleExport}
-              className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white text-[11.5px] font-bold shadow-sm transition-all active:scale-95 leading-none flex-shrink-0"
+              className="hidden 2xl:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white text-[11.5px] font-bold shadow-sm transition-all active:scale-95 leading-none flex-shrink-0"
             >
               <Download size={13} strokeWidth={2.2} />
               <span>Export Excel</span>
@@ -216,27 +216,27 @@ export default function Navbar() {
 
             {/* Auth User Profile Badge - Desktop Full Pill */}
             {user ? (
-              <div className="hidden md:flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+              <div className="hidden md:flex items-center gap-1 flex-shrink-0">
                 {user.role === 'super_admin' && (
                   <button
                     type="button"
                     onClick={() => setIsComplaintOpen(true)}
-                    className="inline-flex items-center gap-1 px-2 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-[11px] font-extrabold transition-all shadow-xs whitespace-nowrap"
+                    className="hidden 2xl:inline-flex items-center gap-1 px-2 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/35 text-[11px] font-extrabold transition-all shadow-xs whitespace-nowrap"
                     title="View App Complaints & Bug Desk"
                   >
                     <Bug size={13} />
-                    <span className="hidden xl:inline">App Complaints</span>
+                    <span>App Complaints</span>
                   </button>
                 )}
 
-                <div className="flex items-center gap-1 sm:gap-1.5 bg-[#123843] border border-[#235868] px-2 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs">
+                <div className="flex items-center gap-1 sm:gap-1.5 bg-[#123843] border border-[#235868] px-2 py-1 rounded-xl text-xs text-white flex-shrink-0 shadow-xs max-w-[150px] lg:max-w-[180px] xl:max-w-[210px]">
                   <div
                     className="w-5.5 h-5.5 rounded-full flex items-center justify-center text-[9.5px] font-extrabold text-white flex-shrink-0"
                     style={{ backgroundColor: user.avatarBg }}
                   >
                     {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
                   </div>
-                  <span className="font-bold text-[11px] sm:text-xs max-w-[55px] lg:max-w-[80px] xl:max-w-[120px] truncate" title={user.name}>
+                  <span className="font-bold text-[11px] sm:text-xs max-w-[50px] sm:max-w-[70px] lg:max-w-[90px] xl:max-w-[110px] truncate" title={user.name}>
                     {user.name}
                   </span>
                   {user.role === 'super_admin' && (
