@@ -92,38 +92,21 @@ export default function HostelDashboard() {
       </div>
 
       {/* ── Quick Access Launcher Grid ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        
-        <div
-          onClick={() => navigate('/hostel-overview')}
-          className="card p-5 rounded-2xl border border-[var(--border)] hover:border-[#3DA1D1] cursor-pointer transition-all group flex flex-col justify-between gap-4"
-        >
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-[#3DA1D1] flex items-center justify-center group-hover:scale-110 transition-transform">
-              <BarChart2 size={20} />
-            </div>
-            <ArrowRight size={16} className="text-[var(--text-muted)] group-hover:text-[#3DA1D1] group-hover:translate-x-1 transition-all" />
-          </div>
-          <div>
-            <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Hostel Overview</h4>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">View duty logs & remarks table</p>
-          </div>
-        </div>
-
+      <div className="grid grid-cols-1 gap-4">
         <div
           onClick={() => navigate('/hostel-add-entry')}
-          className="card p-5 rounded-2xl border border-[var(--border)] hover:border-[#3DA1D1] cursor-pointer transition-all group flex flex-col justify-between gap-4"
+          className="card p-6 rounded-2xl border border-[var(--border)] hover:border-[#3DA1D1] cursor-pointer transition-all group flex items-center justify-between gap-4 shadow-sm"
         >
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-[#3DA1D1] flex items-center justify-center group-hover:scale-110 transition-transform">
-              <PlusCircle size={20} />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-[#3DA1D1] flex items-center justify-center group-hover:scale-110 transition-transform">
+              <PlusCircle size={24} />
             </div>
-            <ArrowRight size={16} className="text-[var(--text-muted)] group-hover:text-[#3DA1D1] group-hover:translate-x-1 transition-all" />
+            <div>
+              <h4 className="font-extrabold text-base text-[var(--text-primary)]">Add Hostel Entry</h4>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">Log Warden / Tutor duty shifts or student maintenance remarks</p>
+            </div>
           </div>
-          <div>
-            <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Add Hostel Entry</h4>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">Log duty shifts or remarks</p>
-          </div>
+          <ArrowRight size={20} className="text-[var(--text-muted)] group-hover:text-[#3DA1D1] group-hover:translate-x-1 transition-all" />
         </div>
       </div>
 
