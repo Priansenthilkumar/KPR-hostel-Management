@@ -475,34 +475,50 @@ export default function Navbar() {
 
               {/* User Session Profile Box in Left Mobile Drawer */}
               {user ? (
-                <div className="m-4 p-3 rounded-2xl bg-[#164350] border border-[#245767] flex items-center justify-between gap-2 shadow-md">
+                <div className="m-4 p-3 rounded-[15px] bg-[#164350] border border-[#245767] flex items-center justify-between gap-2 shadow-md">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black text-white shadow-sm flex-shrink-0"
-                      style={{ backgroundColor: user.avatarBg }}
-                    >
-                      {user.role === 'super_admin' ? 'SA' : user.role === 'warden' ? 'W' : 'M'}
+                    <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[#52B74A]/25 via-emerald-600/30 to-teal-700/30 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-xs">
+                      {user.role === 'super_admin' ? (
+                        <Crown size={18} className="text-purple-300" />
+                      ) : user.role === 'warden' ? (
+                        <ShieldCheck size={18} className="text-sky-300" />
+                      ) : (
+                        <UtensilsCrossed size={17} className="text-[#52B74A]" />
+                      )}
+                      <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#164350] animate-pulse" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-xs font-extrabold block text-white truncate" title={user.name}>
-                        {user.name}
-                      </span>
-                      <span className="text-[10px] font-semibold text-[#52B74A] block truncate">
-                        {user.roleTitle}
+                    <div className="flex flex-col min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-extrabold text-xs text-white truncate">{user.name}</span>
+                        {user.role === 'super_admin' ? (
+                          <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-purple-600/30 text-purple-300 border border-purple-500/40">
+                            Admin
+                          </span>
+                        ) : user.role === 'warden' ? (
+                          <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-sky-500/25 text-sky-300 border border-sky-500/40">
+                            Warden
+                          </span>
+                        ) : (
+                          <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-emerald-500/25 text-emerald-300 border border-emerald-500/40">
+                            Mess
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-[#B0D0D8] truncate font-medium mt-0.5">
+                        {user.role === 'super_admin' ? 'Super Admin' : user.role === 'warden' ? 'Hostel Warden' : 'Mess Operations'}
                       </span>
                     </div>
                   </div>
+
                   <button
-                    type="button"
                     onClick={() => {
                       closeDrawer();
                       logout();
                     }}
-                    className="px-2.5 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-bold flex items-center gap-1 transition-colors border border-red-500/30 flex-shrink-0"
+                    className="p-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 transition-colors flex-shrink-0"
                     title="Sign Out"
                   >
-                    <LogOut size={13} />
-                    <span className="text-[11px] font-bold">Sign Out</span>
+                    <LogOut size={16} />
                   </button>
                 </div>
               ) : (
