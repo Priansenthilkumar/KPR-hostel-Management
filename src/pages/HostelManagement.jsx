@@ -1,5 +1,5 @@
 // src/pages/HostelManagement.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -17,10 +17,15 @@ import {
   MessageSquare,
   Wrench,
   Search,
+  Ticket,
+  Printer,
+  X,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from '../components/UI/Button';
 import { hostelService } from '../services/hostelService';
+import { gatepassService } from '../services/gatepassService';
+import GatePassReceipt from '../components/Hostel/GatePassReceipt';
 
 export default function HostelManagement() {
   const navigate = useNavigate();
@@ -31,25 +36,33 @@ export default function HostelManagement() {
   // Student Remarks State connected to backend service
   const [remarks, setRemarks] = useState(() => hostelService.getStudentRemarks());
 
+  // Gate Passes State connected to gatepassService
+  const [gatePasses, setGatePasses] = useState(() => gatepassService.getGatePasses());
+  const [selectedPass, setSelectedPass] = useState(null);
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+
   // Rectification Modal Input State
   const [resolvingId, setResolvingId] = useState(null);
   const [resolutionText, setResolutionText] = useState('');
   const [filterTab, setFilterTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Sync with hostelService and listen for live data update events
-  useEffect(() => {
-    const handleDataUpdate = () => {
-      setDutyLogs(hostelService.getDutyLogs());
-      setRemarks(hostelService.getStudentRemarks());
-    };
-    window.addEventListener('kpr_data_updated', handleDataUpdate);
-    window.addEventListener('storage', handleDataUpdate);
-    return () => {
-      window.removeEventListener('kpr_data_updated', handleDataUpdate);
-      window.removeEventListener('storage', handleDataUpdate);
-    };
+  const refreshData = useCallback(() => {
+    setDutyLogs(hostelService.getDutyLogs());
+    setRemarks(hostelService.getStudentRemarks());
+    setGatePasses(gatepassService.getGatePasses());
   }, []);
+
+  useEffect(() => {
+    window.addEventListener('kpr_data_updated', refreshData);
+    window.addEventListener('kpr_gatepass_updated', refreshData);
+    window.addEventListener('storage', refreshData);
+    return () => {
+      window.removeEventListener('kpr_data_updated', refreshData);
+      window.removeEventListener('kpr_gatepass_updated', refreshData);
+      window.removeEventListener('storage', refreshData);
+    };
+  }, [refreshData]);
 
   // Mark Remark as Rectified
   const handleConfirmRectified = (id) => {
@@ -85,7 +98,7 @@ export default function HostelManagement() {
   const rectifiedCount = remarks.filter((r) => r.rectified).length;
 
   return (
-    <div className="hostel-management-page max-w-[1280px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-12 flex flex-col gap-8 page-enter">
+    <div className="hostel-management-page max-w-[1500px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-12 flex flex-col gap-8 page-enter">
       
       {/* ── Page Hero Header ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-6 sm:p-8 shadow-xl border border-[#245767]">
@@ -99,22 +112,32 @@ export default function HostelManagement() {
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
-              KPR Hostels Management & Warden Duty Oversight
+              KPR Hostels Management & Gate Pass Audit Logs
             </h1>
 
             <p className="mt-2.5 text-xs sm:text-sm text-[#B0D0D8] leading-relaxed max-w-xl">
-              Track Warden, Deputy Warden, & Resident Tutor in/out duty hours, log student remarks, and verify issue rectifications.
+              Track Warden duty check-ins, student discipline remarks, and verify approved gate pass receipts.
             </p>
 
-            <div className="mt-4 flex items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center gap-3">
               <Button
                 variant="success"
                 size="md"
-                onClick={() => navigate('/hostel-add-entry')}
+                onClick={() => navigate('/hostel-gatepass')}
                 className="shadow-md text-xs font-bold flex items-center gap-1.5"
               >
-                <PlusCircle size={15} />
-                <span>Log New Duty Shift / Entry</span>
+                <Ticket size={15} />
+                <span>Create Manual Gate Pass</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="md"
+                onClick={() => navigate('/gatepass-review')}
+                className="shadow-md text-xs font-bold border-white/20 text-white hover:bg-white/10 flex items-center gap-1.5"
+              >
+                <ShieldCheck size={15} />
+                <span>Gate Pass Review System</span>
               </Button>
             </div>
           </div>
@@ -122,19 +145,124 @@ export default function HostelManagement() {
           {/* Quick Stats Pill */}
           <div className="flex flex-row sm:flex-col items-center gap-3 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 shadow-inner">
             <div className="text-center px-3">
-              <span className="text-[10px] font-bold uppercase text-[#B0D0D8] block">Pending Issues</span>
-              <strong className="text-xl font-extrabold text-amber-400">{pendingCount}</strong>
+              <span className="text-[10px] font-bold uppercase text-[#B0D0D8] block">Gate Passes</span>
+              <strong className="text-xl font-extrabold text-[#3DA1D1]">{gatePasses.length}</strong>
             </div>
             <div className="h-8 w-px sm:w-full sm:h-px bg-white/15" />
             <div className="text-center px-3">
-              <span className="text-[10px] font-bold uppercase text-[#B0D0D8] block">Rectified Issues</span>
-              <strong className="text-xl font-extrabold text-emerald-400">{rectifiedCount}</strong>
+              <span className="text-[10px] font-bold uppercase text-[#B0D0D8] block">Pending Issues</span>
+              <strong className="text-xl font-extrabold text-amber-400">{pendingCount}</strong>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── SECTION 1: Wardens, Deputy Wardens & Tutors Duty Log Overview ── */}
+      {/* ── SECTION 1: Hostel Gate Passes Audit Table ── */}
+      <div className="card p-5 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs border border-[var(--border)]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#52B74A]/10 text-[#52B74A] flex items-center justify-center flex-shrink-0">
+              <Ticket size={20} strokeWidth={2.2} />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-base text-[var(--text-primary)] leading-tight">
+                Hostel Gate Passes Log Overview
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                Official record of student gate passes, departure schedules, warden approvals, and receipts ({gatePasses.length} passes recorded)
+              </p>
+            </div>
+          </div>
+
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => navigate('/gatepass-review')}
+            className="text-xs font-bold flex items-center gap-1.5"
+          >
+            <ShieldCheck size={14} className="text-[#52B74A]" />
+            <span>Manage Approvals</span>
+          </Button>
+        </div>
+
+        {/* Gate Passes Table */}
+        <div className="overflow-x-auto w-full border border-[var(--border)] rounded-xl">
+          <table className="data-table w-full text-xs">
+            <thead>
+              <tr className="bg-[var(--bg-subtle)] text-[11px] uppercase font-extrabold text-[var(--text-muted)] border-b border-[var(--border)]">
+                <th className="py-3 px-4">Gate Pass ID</th>
+                <th className="py-3 px-4">Student</th>
+                <th className="py-3 px-4">Hostel / Block</th>
+                <th className="py-3 px-4">Department</th>
+                <th className="py-3 px-4">Departure</th>
+                <th className="py-3 px-4">Arrival</th>
+                <th className="py-3 px-4">Warden</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border)]">
+              {gatePasses.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="text-center py-6 text-xs text-[var(--text-muted)]">
+                    No gate passes logged yet. Click <strong className="text-[#52B74A] cursor-pointer underline" onClick={() => navigate('/hostel-gatepass')}>Create Manual Gate Pass</strong> to create one.
+                  </td>
+                </tr>
+              ) : (
+                gatePasses.map((pass) => (
+                  <tr key={pass.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                    <td className="font-mono font-bold text-sky-500 py-3 px-4">{pass.id}</td>
+                    <td className="font-extrabold text-[var(--text-primary)] py-3 px-4">{pass.studentName}</td>
+                    <td className="font-bold text-[var(--text-secondary)] py-3 px-4">{pass.block}</td>
+                    <td className="text-[var(--text-muted)] font-medium py-3 px-4">{pass.department}</td>
+                    <td className="font-semibold text-amber-500 py-3 px-4">{pass.depDate} {pass.depTime}</td>
+                    <td className="font-semibold text-sky-500 py-3 px-4">{pass.arrDate} {pass.arrTime}</td>
+                    <td className="font-bold text-[var(--text-secondary)] py-3 px-4">{pass.wardenName}</td>
+                    <td className="py-3 px-4">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
+                          pass.status === 'Approved'
+                            ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
+                            : pass.status === 'Pending'
+                            ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
+                            : 'bg-red-500/15 text-red-500 border border-red-500/30'
+                        }`}
+                      >
+                        {pass.status}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      {pass.status === 'Approved' ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedPass(pass);
+                            setIsReceiptModalOpen(true);
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 text-sky-500 font-extrabold text-[11px] border border-sky-500/30 transition-all inline-flex items-center gap-1"
+                        >
+                          <Printer size={13} />
+                          <span>Receipt</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => navigate('/gatepass-review')}
+                          className="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-500 font-extrabold text-[11px] border border-amber-500/30"
+                        >
+                          Review
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ── SECTION 2: Wardens Duty Log Overview ── */}
       <div className="card p-5 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs border border-[var(--border)]">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
           <div className="flex items-center gap-2.5">
@@ -233,7 +361,7 @@ export default function HostelManagement() {
         )}
       </div>
 
-      {/* ── SECTION 2 & 3: Student Remarks & Rectification Tracker Overview ── */}
+      {/* ── SECTION 3: Student Remarks & Rectification Tracker Overview ── */}
       <div className="card p-5 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs border border-[var(--border)]">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
           <div className="flex items-center gap-2.5">
@@ -250,7 +378,6 @@ export default function HostelManagement() {
             </div>
           </div>
 
-          {/* Search, Filter Tabs & Add Remark Link */}
           <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <Button
               variant="secondary"
@@ -292,7 +419,7 @@ export default function HostelManagement() {
           </div>
         </div>
 
-        {/* Remarks & Rectification Cards */}
+        {/* Remarks Cards */}
         {filteredRemarks.length === 0 ? (
           <div className="p-8 text-center text-xs text-[var(--text-muted)] font-medium bg-[var(--bg-subtle)] rounded-xl border border-dashed border-[var(--border)]">
             No student remarks found for filter "{filterTab}".
@@ -308,7 +435,6 @@ export default function HostelManagement() {
                     : 'bg-amber-500/5 border-amber-500/30'
                 }`}
               >
-                {/* Top Info Header */}
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-2.5">
                   <div className="flex items-center gap-2">
                     <span className="font-extrabold text-[var(--text-primary)] text-sm">
@@ -319,7 +445,6 @@ export default function HostelManagement() {
                     </span>
                   </div>
 
-                  {/* Rectification Status Badge */}
                   <span
                     className={`px-3 py-1 rounded-full text-[10.5px] font-extrabold flex items-center gap-1.5 ${
                       item.rectified
@@ -332,7 +457,6 @@ export default function HostelManagement() {
                   </span>
                 </div>
 
-                {/* Remark Text */}
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] bg-white/60 dark:bg-black/20 text-[var(--text-muted)] px-2 py-0.5 rounded-md font-bold uppercase border border-[var(--border)]">
@@ -347,7 +471,6 @@ export default function HostelManagement() {
                   </p>
                 </div>
 
-                {/* Rectification Note if Rectified */}
                 {item.rectified && item.resolutionNote && (
                   <div className="flex items-start gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-300 font-semibold text-xs leading-relaxed">
                     <Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600" />
@@ -365,7 +488,6 @@ export default function HostelManagement() {
                   </div>
                 )}
 
-                {/* Actions Row */}
                 <div className="flex items-center justify-between pt-2 border-t border-[var(--border)]">
                   <div>
                     {!item.rectified && (
@@ -374,7 +496,7 @@ export default function HostelManagement() {
                           <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
                             <input
                               type="text"
-                              placeholder="Enter resolution notes (e.g., Plumber repaired tap)..."
+                              placeholder="Enter resolution notes..."
                               value={resolutionText}
                               onChange={(e) => setResolutionText(e.target.value)}
                               className="form-input text-xs h-9 py-1"
@@ -424,6 +546,31 @@ export default function HostelManagement() {
         )}
 
       </div>
+
+      {/* ── Official Gate Pass Receipt Modal Popup ── */}
+      {isReceiptModalOpen && selectedPass && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-fade-in">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] w-full max-w-2xl rounded-3xl shadow-2xl p-6 flex flex-col gap-4 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border)] print:hidden">
+              <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                Official Gate Pass & Barcode Receipt
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsReceiptModalOpen(false)}
+                className="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <GatePassReceipt
+              gatePass={selectedPass}
+              onClose={() => setIsReceiptModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
 
     </div>
   );

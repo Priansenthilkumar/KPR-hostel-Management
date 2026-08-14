@@ -22,6 +22,8 @@ import HostelDashboard from './pages/HostelDashboard';
 import HostelManagement from './pages/HostelManagement';
 import AddHostelEntry from './pages/AddHostelEntry';
 import SuperAdminHome from './pages/SuperAdminHome';
+import GatePassForm from './pages/GatePassForm';
+import GatePassReview from './pages/GatePassReview';
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -147,6 +149,8 @@ function MainAppLayout({ isDark, toggle }) {
               <Route path="/hostel-dashboard" element={<ProtectedRoute allowedRole="warden"><HostelDashboard /></ProtectedRoute>} />
               <Route path="/hostel-overview" element={<ProtectedRoute allowedRole="warden"><HostelManagement /></ProtectedRoute>} />
               <Route path="/hostel-add-entry" element={<ProtectedRoute allowedRole="warden"><AddHostelEntry /></ProtectedRoute>} />
+              <Route path="/hostel-gatepass" element={<ProtectedRoute allowedRole="warden"><GatePassForm /></ProtectedRoute>} />
+              <Route path="/gatepass-review" element={<ProtectedRoute allowedRole="warden"><GatePassReview /></ProtectedRoute>} />
 
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

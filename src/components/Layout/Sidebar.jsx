@@ -25,6 +25,7 @@ import {
   PanelLeft,
   Crown,
   ChefHat,
+  Ticket,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';
@@ -144,8 +145,9 @@ export default function Sidebar({
             icon: Building,
             items: [
               { label: 'Hostel Blocks', to: '/hostel-dashboard', icon: ShieldCheck },
-              { label: 'Residents', to: '/hostel-overview', icon: Users },
-              { label: 'Warden', to: '/hostel-add-entry', icon: UserCheck },
+              { label: 'Gate Pass', to: '/hostel-gatepass', icon: Ticket },
+              { label: 'Hostel Logs', to: '/hostel-overview', icon: Users },
+              { label: 'Gate Pass Review', to: '/gatepass-review', icon: ShieldCheck },
             ],
           },
         ]
