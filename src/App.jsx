@@ -2,8 +2,8 @@
 import { useState, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Menu } from 'lucide-react';
 import Sidebar from './components/Layout/Sidebar';
-import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import ComplaintBox from './components/Dashboard/ComplaintBox';
 import { useDarkMode } from './hooks/useDarkMode';
@@ -70,7 +70,6 @@ function MainAppLayout({ isDark, toggle }) {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
 
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isComplaintOpen, setIsComplaintOpen] = useState(false);
 
@@ -89,10 +88,8 @@ function MainAppLayout({ isDark, toggle }) {
 
   return (
     <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex flex-col">
-      {/* Modern Fixed Left Sidebar */}
+      {/* Permanent Fixed 260px Left Sidebar */}
       <Sidebar
-        collapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
         onOpenComplaints={() => setIsComplaintOpen(true)}
@@ -100,22 +97,19 @@ function MainAppLayout({ isDark, toggle }) {
         onToggleDark={toggle}
       />
 
-      {/* Dynamic Top App Header */}
-      <Header
-        collapsed={sidebarCollapsed}
-        onOpenMobile={() => setMobileOpen(true)}
-        isDark={isDark}
-        onToggleDark={toggle}
-        onOpenComplaints={() => setIsComplaintOpen(true)}
-      />
-
-      {/* Main Content Viewport — Offsets dynamically for 250px / 72px left sidebar */}
-      <main
-        className={`flex-1 transition-all duration-300 ${
-          sidebarCollapsed ? 'lg:pl-[72px]' : 'lg:pl-[250px]'
-        } w-full pb-12 flex flex-col`}
+      {/* Floating Hamburger Toggle Button for Small Mobile Screens Only */}
+      <button
+        type="button"
+        onClick={() => setMobileOpen(true)}
+        className="lg:hidden fixed top-3 left-3 z-30 p-2.5 rounded-xl bg-[#0C242C] text-white border border-white/20 shadow-lg active:scale-95 transition-all"
+        aria-label="Open Navigation Drawer"
       >
-        <div className="w-full max-w-[1500px] mx-auto px-3 sm:px-6 py-4 flex-1">
+        <Menu size={20} strokeWidth={2.2} />
+      </button>
+
+      {/* Main Content Area — Starts directly at top (pt-0) beside sidebar */}
+      <main className="lg:pl-[260px] w-full min-h-screen flex flex-col pt-0 pb-12">
+        <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 flex-1">
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Common Super Admin Home Route */}
@@ -139,7 +133,7 @@ function MainAppLayout({ isDark, toggle }) {
           </Suspense>
         </div>
 
-        {/* Global Footer aligned with main content padding */}
+        {/* Global Footer aligned with main content */}
         <Footer />
       </main>
 

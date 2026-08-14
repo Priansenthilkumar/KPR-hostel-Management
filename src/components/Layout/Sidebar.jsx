@@ -20,12 +20,8 @@ import {
   LogOut,
   ChevronDown,
   ChevronRight,
-  PanelLeft,
   X,
   Sparkles,
-  Sun,
-  Moon,
-  ShieldAlert,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';
@@ -34,8 +30,6 @@ import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
 
 export default function Sidebar({
-  collapsed,
-  onToggleCollapse,
   mobileOpen,
   onCloseMobile,
   onOpenComplaints,
@@ -85,7 +79,7 @@ export default function Sidebar({
       ? '/hostel-dashboard'
       : '/mess-dashboard';
 
-  // Navigation Items Structure
+  // Navigation Structure
   const navSections = [
     {
       id: 'dashboard',
@@ -154,45 +148,31 @@ export default function Sidebar({
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full select-none bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] text-white border-r border-white/10 shadow-2xl overflow-hidden">
+    <div className="flex flex-col h-full select-none bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] text-white border-r border-white/10 shadow-2xl overflow-hidden w-[260px]">
       
-      {/* ── Top KPR Branding Header ── */}
-      <div className="h-16 px-4 flex items-center justify-between border-b border-white/10 bg-[#0A1F26]/60 backdrop-blur-md flex-shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-white p-1 shadow-md flex items-center justify-center flex-shrink-0 border border-white/20">
-            <img src={kprLogo} alt="KPR Logo" className="w-full h-full object-contain" />
-          </div>
-
-          {!collapsed && (
-            <div className="flex flex-col min-w-0 animate-fade-in">
-              <span className="text-sm font-extrabold text-white leading-tight tracking-tight truncate flex items-center gap-1.5">
-                <span>KPR Hostel & Mess</span>
-              </span>
-              <span className="text-[10px] font-bold text-[#52B74A] uppercase tracking-wider truncate flex items-center gap-1">
-                <Sparkles size={10} />
-                <span>Admin System</span>
-              </span>
-            </div>
-          )}
+      {/* ── Top KPR Logo & Branding (Permanently Fully Visible) ── */}
+      <div className="h-20 px-4 flex items-center gap-3 border-b border-white/10 bg-[#0A1F26]/70 backdrop-blur-md flex-shrink-0">
+        <div className="w-11 h-11 rounded-xl bg-white p-1.5 shadow-md flex items-center justify-center flex-shrink-0 border border-white/20">
+          <img src={kprLogo} alt="KPR Logo" className="w-full h-full object-contain" />
         </div>
 
-        {/* Collapse / Expand Toggle Button */}
-        <button
-          type="button"
-          onClick={onToggleCollapse}
-          className="hidden lg:flex w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white items-center justify-center border border-white/15 transition-all active:scale-95 flex-shrink-0"
-          title={collapsed ? 'Expand Sidebar (250px)' : 'Collapse Sidebar (72px)'}
-        >
-          <PanelLeft size={16} className={`transition-transform duration-200 ${collapsed ? 'rotate-180 text-[#52B74A]' : 'text-slate-300'}`} />
-        </button>
+        <div className="flex flex-col min-w-0">
+          <span className="text-sm font-black text-white leading-tight tracking-tight truncate">
+            KPR Hostel & Mess
+          </span>
+          <span className="text-[10px] font-extrabold text-[#52B74A] uppercase tracking-wider truncate flex items-center gap-1 mt-0.5">
+            <Sparkles size={11} />
+            <span>ADMIN SYSTEM</span>
+          </span>
+        </div>
       </div>
 
-      {/* ── Navigation Menu Section ── */}
+      {/* ── Permanent 260px Navigation Items List ── */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 custom-sidebar-scroll">
         {navSections.map((section) => {
           const SectionIcon = section.icon;
 
-          // Single Direct Item (e.g. Dashboard)
+          // Single Direct Item (Dashboard)
           if (section.type === 'item') {
             const isActive =
               location.pathname === section.to ||
@@ -203,21 +183,14 @@ export default function Sidebar({
                 key={section.id}
                 to={section.to}
                 onClick={onCloseMobile}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 relative group ${
+                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
                   isActive
                     ? 'bg-gradient-to-r from-[#52B74A] to-[#44A03C] text-white shadow-lg shadow-emerald-900/30'
                     : 'text-slate-200 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <SectionIcon size={19} strokeWidth={2.2} className="flex-shrink-0" />
-                {!collapsed && (
-                  <span className="truncate text-[13px]">{section.label}</span>
-                )}
-                {collapsed && (
-                  <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#0C242C] text-white text-xs font-bold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/15">
-                    {section.label}
-                  </div>
-                )}
+                <span className="truncate text-[13px]">{section.label}</span>
               </NavLink>
             );
           }
@@ -229,44 +202,29 @@ export default function Sidebar({
 
             return (
               <div key={section.id} className="space-y-1">
-                {!collapsed ? (
-                  <button
-                    type="button"
-                    onClick={() => toggleSubmenu(section.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
-                      isAnySubActive
-                        ? 'bg-white/10 text-white border border-white/15'
-                        : 'text-slate-300 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <SectionIcon size={19} strokeWidth={2.2} className={isAnySubActive ? 'text-[#52B74A]' : 'text-slate-300'} />
-                      <span className="truncate text-[13px]">{section.label}</span>
-                    </div>
-                    {isOpen ? (
-                      <ChevronDown size={16} className="text-slate-400 flex-shrink-0" />
-                    ) : (
-                      <ChevronRight size={16} className="text-slate-400 flex-shrink-0" />
-                    )}
-                  </button>
-                ) : (
-                  <div
-                    onClick={() => toggleSubmenu(section.id)}
-                    className={`w-full flex justify-center py-2.5 rounded-xl text-slate-300 hover:bg-white/10 hover:text-white cursor-pointer relative group ${
-                      isAnySubActive ? 'bg-white/10 text-[#52B74A]' : ''
-                    }`}
-                    title={section.label}
-                  >
-                    <SectionIcon size={20} strokeWidth={2.2} />
-                    <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#0C242C] text-white text-xs font-bold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/15">
-                      {section.label}
-                    </div>
+                <button
+                  type="button"
+                  onClick={() => toggleSubmenu(section.id)}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+                    isAnySubActive
+                      ? 'bg-white/10 text-white border border-white/15'
+                      : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <SectionIcon size={19} strokeWidth={2.2} className={isAnySubActive ? 'text-[#52B74A]' : 'text-slate-300'} />
+                    <span className="truncate text-[13px]">{section.label}</span>
                   </div>
-                )}
+                  {isOpen ? (
+                    <ChevronDown size={16} className="text-slate-400 flex-shrink-0" />
+                  ) : (
+                    <ChevronRight size={16} className="text-slate-400 flex-shrink-0" />
+                  )}
+                </button>
 
                 {/* Submenu Items */}
-                {(isOpen || collapsed) && (
-                  <div className={`space-y-1 ${!collapsed ? 'pl-4 border-l border-white/10 ml-4' : ''}`}>
+                {isOpen && (
+                  <div className="space-y-1 pl-4 border-l border-white/10 ml-4">
                     {section.items.map((sub) => {
                       const SubIcon = sub.icon;
                       const isSubActive = location.pathname === sub.to;
@@ -276,21 +234,14 @@ export default function Sidebar({
                           key={sub.to + sub.label}
                           to={sub.to}
                           onClick={onCloseMobile}
-                          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-150 relative group ${
+                          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-150 ${
                             isSubActive
                               ? 'bg-[#52B74A] text-white shadow-sm font-extrabold'
                               : 'text-slate-300 hover:bg-white/10 hover:text-white'
                           }`}
                         >
                           <SubIcon size={16} strokeWidth={2.2} className="flex-shrink-0" />
-                          {!collapsed && (
-                            <span className="truncate text-[12.5px]">{sub.label}</span>
-                          )}
-                          {collapsed && (
-                            <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#0C242C] text-white text-xs font-bold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/15">
-                              {sub.label}
-                            </div>
-                          )}
+                          <span className="truncate text-[12.5px]">{sub.label}</span>
                         </NavLink>
                       );
                     })}
@@ -310,22 +261,15 @@ export default function Sidebar({
                   section.onClick();
                   onCloseMobile();
                 }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-extrabold text-slate-300 hover:bg-white/10 hover:text-white transition-all text-left group relative"
+                className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-300 hover:bg-white/10 hover:text-white transition-all text-left group"
               >
                 <SectionIcon size={19} strokeWidth={2.2} className="flex-shrink-0 text-sky-400" />
-                {!collapsed && (
-                  <div className="flex flex-col min-w-0 text-left">
-                    <span className="truncate text-[13px]">{section.label}</span>
-                    {section.subtitle && (
-                      <span className="text-[10px] text-slate-400 font-semibold">{section.subtitle}</span>
-                    )}
-                  </div>
-                )}
-                {collapsed && (
-                  <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#0C242C] text-white text-xs font-bold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/15">
-                    {section.label}
-                  </div>
-                )}
+                <div className="flex flex-col min-w-0 text-left">
+                  <span className="truncate text-[13px]">{section.label}</span>
+                  {section.subtitle && (
+                    <span className="text-[10px] text-slate-400 font-semibold">{section.subtitle}</span>
+                  )}
+                </div>
               </button>
             );
           }
@@ -336,76 +280,53 @@ export default function Sidebar({
 
       {/* ── Bottom Super Admin Profile & Logout Section ── */}
       <div className="p-3 bg-[#08181E]/90 border-t border-white/10 flex-shrink-0">
-        {!collapsed ? (
-          <div className="flex items-center justify-between gap-2 p-2 rounded-xl bg-white/5 border border-white/10">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-black text-sm shadow-md flex-shrink-0">
-                {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-xs font-extrabold text-white truncate leading-tight">
-                  {user?.name || 'Super Admin'}
-                </span>
-                <span className="text-[10px] font-bold text-purple-300 uppercase tracking-wider truncate">
-                  {user?.role === 'super_admin'
-                    ? 'Super Admin'
-                    : user?.role === 'warden'
-                    ? 'Hostel Warden'
-                    : 'Mess Staff'}
-                </span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 transition-colors border border-red-500/30 flex-shrink-0"
-              title="Logout"
-            >
-              <LogOut size={16} strokeWidth={2.2} />
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-2">
-            <div
-              className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-black text-sm shadow-md"
-              title={user?.name || 'Super Admin'}
-            >
+        <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white/5 border border-white/10">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-black text-sm shadow-md flex-shrink-0">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
             </div>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors border border-red-500/30"
-              title="Logout"
-            >
-              <LogOut size={16} strokeWidth={2.2} />
-            </button>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-extrabold text-white truncate leading-tight">
+                {user?.name || 'Super Admin'}
+              </span>
+              <span className="text-[10px] font-bold text-purple-300 uppercase tracking-wider truncate">
+                {user?.role === 'super_admin'
+                  ? 'Super Admin'
+                  : user?.role === 'warden'
+                  ? 'Hostel Warden'
+                  : 'Mess Staff'}
+              </span>
+            </div>
           </div>
-        )}
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 transition-colors border border-red-500/30 flex-shrink-0"
+            title="Logout"
+          >
+            <LogOut size={16} strokeWidth={2.2} />
+          </button>
+        </div>
       </div>
     </div>
   );
 
   return (
     <>
-      {/* Desktop Fixed Left Sidebar */}
-      <aside
-        className={`hidden lg:block fixed top-0 left-0 h-screen z-40 transition-all duration-300 ease-in-out ${
-          collapsed ? 'w-[72px]' : 'w-[250px]'
-        }`}
-      >
+      {/* Desktop Permanently Expanded 260px Sidebar */}
+      <aside className="hidden lg:block fixed top-0 left-0 h-screen w-[260px] z-40">
         {sidebarContent}
       </aside>
 
-      {/* Mobile Drawer Overlay */}
+      {/* Mobile Slide-Over Drawer Overlay */}
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div
             className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
             onClick={onCloseMobile}
           />
-          <aside className="relative w-[250px] max-w-[85vw] h-full shadow-2xl z-10 animate-slide-in-left">
+          <aside className="relative w-[260px] max-w-[85vw] h-full shadow-2xl z-10 animate-slide-in-left">
             <div className="absolute top-3 right-3 z-20">
               <button
                 type="button"
