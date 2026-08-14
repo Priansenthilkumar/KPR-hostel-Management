@@ -67,6 +67,7 @@ export default function GatePassForm() {
   });
 
   const [errorMsg, setErrorMsg] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -94,13 +95,16 @@ export default function GatePassForm() {
       return;
     }
 
-    // Create Gate Pass
-    const createdPass = gatepassService.addGatePass(form);
-    toast.success(`Gate pass submitted for ${createdPass.studentName}! Status: Pending Warden Approval`, {
-      icon: '🎫',
-    });
-
-    navigate('/gatepass-review');
+    setIsSubmitting(true);
+    setTimeout(() => {
+      // Create Gate Pass
+      const createdPass = gatepassService.addGatePass(form);
+      toast.success(`Gate pass submitted for ${createdPass.studentName}! Status: Pending Warden Approval`, {
+        icon: '🎫',
+      });
+      setIsSubmitting(false);
+      navigate('/gatepass-review');
+    }, 500);
   };
 
   return (
@@ -340,10 +344,12 @@ export default function GatePassForm() {
               type="submit"
               variant="success"
               size="md"
-              className="text-xs font-extrabold flex items-center gap-2 shadow-lg"
+              loading={isSubmitting}
+              disabled={isSubmitting}
+              className="text-xs font-extrabold flex items-center gap-2 shadow-xl shadow-emerald-600/30 hover:shadow-2xl hover:shadow-emerald-600/40 active:scale-95 transition-all duration-150 btn-shine btn-submit-glow"
             >
               <ShieldCheck size={16} />
-              <span>Submit Gate Pass for Approval</span>
+              <span>{isSubmitting ? 'Submitting Gate Pass...' : 'Submit Gate Pass for Approval'}</span>
             </Button>
           </div>
         </form>

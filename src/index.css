@@ -379,3 +379,87 @@ footer {
   width: 100%;
   flex-shrink: 0;
 }
+
+/* ═══════════════════════════════════════
+   BUTTON INTERACTIVE EFFECTS & ANIMATIONS
+═══════════════════════════════════════ */
+.btn,
+button {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active,
+button:active {
+  transform: scale(0.96) translateY(1px);
+}
+
+.btn:hover:not(:disabled),
+button:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+}
+
+/* Shine Swipe Overlay Effect on Hover */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  transition: all 0.6s ease;
+  pointer-events: none;
+}
+
+.btn-shine:hover::after {
+  left: 135%;
+}
+
+/* Green Submit Gate Pass Glow */
+.btn-submit-glow {
+  background: linear-gradient(135deg, #52B74A 0%, #44A03C 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px rgba(82, 183, 74, 0.35) !important;
+}
+
+.btn-submit-glow:hover {
+  background: linear-gradient(135deg, #44A03C 0%, #388A31 100%) !important;
+  box-shadow: 0 8px 25px rgba(82, 183, 74, 0.55) !important;
+}
+
+/* Approve Green Glow */
+.btn-approve-glow {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35) !important;
+}
+
+.btn-approve-glow:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5) !important;
+}
+
+/* Reject Red Glow */
+.btn-reject-glow {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35) !important;
+}
+
+.btn-reject-glow:hover {
+  background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%) !important;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5) !important;
+}

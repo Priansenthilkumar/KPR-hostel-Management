@@ -44,11 +44,15 @@ export default function GatePassReceipt({ gatePass, onClose }) {
     }
   }, [gatePass.approvedAt]);
 
+  const [isPrinting, setIsPrinting] = useState(false);
+
   const handlePrint = () => {
+    setIsPrinting(true);
     toast.success('Preparing printable PDF receipt...', { icon: '🖨️' });
     setTimeout(() => {
       window.print();
-    }, 200);
+      setIsPrinting(false);
+    }, 300);
   };
 
   // SVG Barcode Line Generator based on Gate Pass ID string
@@ -77,11 +81,13 @@ export default function GatePassReceipt({ gatePass, onClose }) {
           <Button
             variant="success"
             size="sm"
+            loading={isPrinting}
+            disabled={isPrinting}
             onClick={handlePrint}
-            className="text-xs font-extrabold flex items-center gap-1.5 shadow-md"
+            className="text-xs font-extrabold flex items-center gap-1.5 shadow-xl shadow-emerald-600/30 hover:shadow-2xl hover:shadow-emerald-600/40 active:scale-95 transition-all duration-150 btn-shine btn-submit-glow cursor-pointer"
           >
             <Printer size={15} />
-            <span>Download / Print Receipt</span>
+            <span>{isPrinting ? 'Preparing PDF...' : 'Download / Print Receipt'}</span>
           </Button>
         </div>
       </div>

@@ -80,6 +80,8 @@ export default function GatePassReview() {
     });
   }, [passes, searchQuery, filterStatus]);
 
+  const [isSubmittingAction, setIsSubmittingAction] = useState(false);
+
   // Action Handlers
   const handleOpenActionModal = (pass, type) => {
     setSelectedPass(pass);
@@ -96,18 +98,22 @@ export default function GatePassReview() {
     e.preventDefault();
     if (!selectedPass) return;
 
-    const wardenName = user?.name || selectedPass.wardenName || 'Hostel Warden';
+    setIsSubmittingAction(true);
+    setTimeout(() => {
+      const wardenName = user?.name || selectedPass.wardenName || 'Hostel Warden';
 
-    if (actionType === 'approve') {
-      const updated = gatepassService.approveGatePass(selectedPass.id, wardenName, actionRemark);
-      toast.success(`Gate Pass ${updated.id} APPROVED for ${updated.studentName}!`, { icon: '✅' });
-    } else {
-      const updated = gatepassService.rejectGatePass(selectedPass.id, wardenName, actionRemark);
-      toast.error(`Gate Pass ${updated.id} REJECTED for ${updated.studentName}`, { icon: '❌' });
-    }
+      if (actionType === 'approve') {
+        const updated = gatepassService.approveGatePass(selectedPass.id, wardenName, actionRemark);
+        toast.success(`Gate Pass ${updated.id} APPROVED for ${updated.studentName}!`, { icon: '✅' });
+      } else {
+        const updated = gatepassService.rejectGatePass(selectedPass.id, wardenName, actionRemark);
+        toast.error(`Gate Pass ${updated.id} REJECTED for ${updated.studentName}`, { icon: '❌' });
+      }
 
-    setIsActionModalOpen(false);
-    refreshPasses();
+      setIsSubmittingAction(false);
+      setIsActionModalOpen(false);
+      refreshPasses();
+    }, 450);
   };
 
   const handleCompletePass = (pass) => {
@@ -331,16 +337,18 @@ export default function GatePassReview() {
                             <button
                               type="button"
                               onClick={() => handleOpenActionModal(pass, 'approve')}
-                              className="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-500 font-extrabold text-[11px] border border-emerald-500/30 transition-all"
+                              className="px-3 py-1.5 rounded-xl font-extrabold text-[11px] border-0 transition-all btn-shine btn-approve-glow active:scale-95 shadow-md flex items-center gap-1 cursor-pointer"
                             >
-                              Approve
+                              <Check size={13} />
+                              <span>Approve</span>
                             </button>
                             <button
                               type="button"
                               onClick={() => handleOpenActionModal(pass, 'reject')}
-                              className="px-2.5 py-1 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-500 font-extrabold text-[11px] border border-red-500/30 transition-all"
+                              className="px-3 py-1.5 rounded-xl font-extrabold text-[11px] border-0 transition-all btn-shine btn-reject-glow active:scale-95 shadow-md flex items-center gap-1 cursor-pointer"
                             >
-                              Reject
+                              <X size={13} />
+                              <span>Reject</span>
                             </button>
                           </>
                         )}
@@ -350,7 +358,7 @@ export default function GatePassReview() {
                             <button
                               type="button"
                               onClick={() => handleViewReceipt(pass)}
-                              className="px-2.5 py-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 text-sky-500 font-extrabold text-[11px] border border-sky-500/30 transition-all flex items-center gap-1"
+                              className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-sky-600/30 btn-shine flex items-center gap-1.5 cursor-pointer"
                             >
                               <Printer size={13} />
                               <span>Receipt</span>
@@ -358,9 +366,10 @@ export default function GatePassReview() {
                             <button
                               type="button"
                               onClick={() => handleCompletePass(pass)}
-                              className="px-2.5 py-1 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 text-purple-400 font-extrabold text-[11px] border border-purple-500/30 transition-all"
+                              className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-purple-600/30 btn-shine flex items-center gap-1 cursor-pointer"
                             >
-                              Complete
+                              <CheckCircle2 size={13} />
+                              <span>Complete</span>
                             </button>
                           </>
                         )}
@@ -440,9 +449,19 @@ export default function GatePassReview() {
                   type="submit"
                   variant={actionType === 'approve' ? 'success' : 'danger'}
                   size="sm"
-                  className="text-xs font-extrabold"
+                  loading={isSubmittingAction}
+                  disabled={isSubmittingAction}
+                  className={`text-xs font-extrabold active:scale-95 btn-shine ${
+                    actionType === 'approve' ? 'btn-approve-glow' : 'btn-reject-glow'
+                  }`}
                 >
-                  {actionType === 'approve' ? 'Confirm Approval' : 'Confirm Rejection'}
+                  {isSubmittingAction
+                    ? actionType === 'approve'
+                      ? 'Approving Gate Pass...'
+                      : 'Rejecting Gate Pass...'
+                    : actionType === 'approve'
+                    ? 'Confirm Approval'
+                    : 'Confirm Rejection'}
                 </Button>
               </div>
             </form>
