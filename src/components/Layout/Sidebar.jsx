@@ -23,6 +23,8 @@ import {
   X,
   Sparkles,
   PanelLeft,
+  Crown,
+  ChefHat,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';
@@ -45,6 +47,7 @@ export default function Sidebar({
 
   // Accordion state for expandable submenus
   const [openSubmenus, setOpenSubmenus] = useState({
+    admin: true,
     mess: true,
     hostel: true,
     logs: false,
@@ -76,10 +79,11 @@ export default function Sidebar({
 
   const isHostelUser = user?.role === 'warden';
   const isMessUser = user?.role === 'mess_staff';
+  const isSuperAdmin = user?.role === 'super_admin';
 
   // Determine home dashboard target path based on user role
   const homePath =
-    user?.role === 'super_admin'
+    isSuperAdmin
       ? '/admin-home'
       : isHostelUser
       ? '/hostel-dashboard'
@@ -94,6 +98,25 @@ export default function Sidebar({
       icon: LayoutDashboard,
       to: homePath,
     },
+
+    // Super Admin Control Center Section
+    ...(isSuperAdmin
+      ? [
+          {
+            id: 'admin',
+            type: 'group',
+            label: 'Super Admin Access',
+            icon: Crown,
+            items: [
+              { label: 'Control Center', to: '/admin-home', icon: Crown },
+              { label: 'Mess Menu Manager', to: '/menu', icon: Utensils },
+              { label: 'Mess Operations', to: '/mess-dashboard', icon: FileText },
+              { label: 'Hostel Operations', to: '/hostel-dashboard', icon: Building },
+            ],
+          },
+        ]
+      : []),
+
     // Mess Management — Hidden if Hostel Warden logged in
     ...(!isHostelUser
       ? [
@@ -110,6 +133,7 @@ export default function Sidebar({
           },
         ]
       : []),
+
     // Hostel Management — Hidden if Mess Staff logged in
     ...(!isMessUser
       ? [
@@ -126,6 +150,7 @@ export default function Sidebar({
           },
         ]
       : []),
+
     // Logs Section — Filtered by role
     {
       id: 'logs',

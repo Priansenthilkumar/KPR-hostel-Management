@@ -1,15 +1,12 @@
 // src/constants/cooks.js
-// List of all available cooks/chefs
+import { adminManagementService } from '../services/adminManagementService';
 
-export const COOKS = [
-  'Chef Nandhakumar',
-  'Master Munees',
-  'Master Balu',
-  'Master Sombu',
-  'Master Panty',
-  'Master Suthan',
-  'Master Baktha',
-];
+export const getActiveCookNames = () => {
+  const cooks = adminManagementService.getCooks();
+  return cooks.filter((c) => c.status === 'Active').map((c) => c.name);
+};
+
+export const COOKS = getActiveCookNames();
 
 export const COOK_COLORS = {
   'Chef Nandhakumar': '#174351',
