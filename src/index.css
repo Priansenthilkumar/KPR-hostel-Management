@@ -1,26 +1,81 @@
 /* src/index.css — KPR Brand Design System: Deep Petrol Teal & Vibrant Leaf Green */
-@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,800;0,900;1,800&family=Outfit:wght@700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,800;0,900;1,800&family=Outfit:wght@700;800;900&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@700&family=Inter:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 @import "tailwindcss";
 
 /* Force Tailwind to use class-based dark mode instead of media query */
 @variant dark (&:where(.dark, .dark *));
 
-/* Set global mobile-optimized font family across all devices */
-body, input, button, select, textarea {
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+@theme {
+  --font-sans: 'Arial Bold', Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  --font-heading: 'Epic Pro', 'Epilogue', 'Outfit', 'Syne', Arial, sans-serif;
+  --font-epic: 'Epic Pro', 'Epilogue', 'Outfit', 'Syne', Arial, sans-serif;
+}
+
+/* ═══════════════════════════════════════
+   TYPOGRAPHY SYSTEM — Epic Pro Headings & Arial Bold Body Content
+═══════════════════════════════════════ */
+
+/* Custom Font Face Definitions */
+@font-face {
+  font-family: 'Epic Pro';
+  src: local('Epic Pro'), local('Epilogue-ExtraBold'), local('Outfit-Black'), local('Syne-ExtraBold'), local('Impact');
+  font-weight: 700 900;
+}
+
+@font-face {
+  font-family: 'Arial Bold';
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Arial');
+  font-weight: 700;
+}
+
+/* Global Body & UI Elements: Arial Bold */
+html,
+body,
+input,
+button,
+select,
+textarea,
+p,
+span,
+div,
+td,
+li,
+a,
+label,
+form,
+option {
+  font-family: 'Arial Bold', Arial, 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+body {
+  font-weight: 700;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Epic Pro App Name Display Font Definition */
-@font-face {
-  font-family: 'Epic Pro';
-  src: local('Epic Pro'), local('Epilogue-ExtraBold'), local('Outfit-Black');
+/* Headings & Section Titles: Epic Pro Font */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+th,
+.font-epic-pro,
+.app-name-font,
+.font-heading,
+.heading-title,
+.card-header-title,
+.section-header-title {
+  font-family: 'Epic Pro', 'Epilogue', 'Outfit', 'Syne', 'Arial Black', Arial, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em;
 }
 
 .font-epic-pro,
-.app-name-font {
-  font-family: 'Epic Pro', 'Epilogue', 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
+.app-name-font,
+.font-heading {
+  font-family: 'Epic Pro', 'Epilogue', 'Outfit', 'Syne', 'Arial Black', Arial, sans-serif !important;
   letter-spacing: -0.025em;
 }
 
