@@ -61,9 +61,9 @@ export default function Header({
         </button>
 
         <div className="flex items-center gap-2 text-xs">
-          <span className="inline-flex items-center gap-1 font-bold text-[#52B74A] font-epic-pro">
+          <span className="inline-flex items-center gap-1 font-bold text-[#52B74A]">
             <Sparkles size={12} />
-            <span className="font-epic-pro">KPR Hostel</span>
+            <span>KPR Hostel</span>
           </span>
           <ChevronRight size={13} className="text-slate-400" />
           <span className="font-extrabold text-white">{breadcrumb.title}</span>

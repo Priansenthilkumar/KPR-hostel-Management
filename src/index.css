@@ -79,6 +79,14 @@ th,
   letter-spacing: -0.025em;
 }
 
+/* Header & Navbar Top Bar: Normal Arial Bold Font */
+header,
+header *,
+.navbar,
+.navbar * {
+  font-family: 'Arial Bold', Arial, 'Helvetica Neue', Helvetica, sans-serif !important;
+}
+
 /* ═══════════════════════════════════════
    CSS VARIABLES — Petrol Teal & Leaf Green Palette
 ═══════════════════════════════════════ */

@@ -162,9 +162,9 @@ export default function Navbar() {
               </div>
 
               <div className="flex flex-col text-left justify-center min-w-0">
-                <h1 className="text-xs sm:text-sm font-black text-white leading-tight tracking-tight whitespace-nowrap flex items-center gap-1.5">
-                  <span className="font-epic-pro">KPR HOSTELS & MESS</span>
-                </h1>
+                <div className="text-xs sm:text-sm font-bold text-white leading-tight tracking-tight whitespace-nowrap flex items-center gap-1.5 font-sans">
+                  <span>KPR HOSTELS & MESS</span>
+                </div>
                 <div className="flex items-center gap-1 mt-0.5">
                   <span className="inline-flex items-center gap-1 text-[9px] sm:text-[9.5px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider hidden sm:flex">
                     <Sparkles size={10} className="text-[#52B74A]" />
