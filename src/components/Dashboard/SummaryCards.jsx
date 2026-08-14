@@ -1,5 +1,5 @@
 // src/components/Dashboard/SummaryCards.jsx
-import { Users, AlertTriangle, ClipboardList, Calendar } from 'lucide-react';
+import { Users, AlertTriangle, ClipboardList, Calendar, TrendingUp, Sparkles } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { isDateToday, formatKg } from '../../utils/dateUtils';
 
@@ -10,8 +10,8 @@ const CARDS = [
     sub: 'All time entries',
     icon: ClipboardList,
     accent: '#174351',         // Primary petrol teal
-    lightBg: '#EBF4F6',
-    darkBg: '#1F5161',
+    gradient: 'from-[#174351]/10 via-[#174351]/5 to-transparent',
+    badge: 'Live Logged',
   },
   {
     key: 'strength',
@@ -19,8 +19,8 @@ const CARDS = [
     sub: 'Cumulative headcount',
     icon: Users,
     accent: '#52B74A',         // Vibrant leaf green
-    lightBg: '#EAF7EA',
-    darkBg: '#1E3F20',
+    gradient: 'from-[#52B74A]/15 via-[#52B74A]/5 to-transparent',
+    badge: 'Headcount',
   },
   {
     key: 'wastage',
@@ -28,50 +28,80 @@ const CARDS = [
     sub: 'All meals (KG)',
     icon: AlertTriangle,
     accent: '#E65100',         // Warm orange
-    lightBg: '#FFF7ED',
-    darkBg: '#3A2210',
+    gradient: 'from-[#E65100]/15 via-[#E65100]/5 to-transparent',
+    badge: 'Tracked KG',
   },
   {
     key: 'today',
     label: "Today's Entries",
     sub: 'people served today',
     icon: Calendar,
-    accent: '#2A819B',         // Teal slate accent
-    lightBg: '#EAF4F7',
-    darkBg: '#1B4A5A',
+    accent: '#3DA1D1',         // Sky blue accent
+    gradient: 'from-[#3DA1D1]/15 via-[#3DA1D1]/5 to-transparent',
+    badge: 'Active Today',
   },
 ];
 
-function StatCard({ label, value, sub, icon: Icon, accent, delay }) {
+function StatCard({ label, value, sub, badge, icon: Icon, accent, gradient, delay }) {
   return (
     <div
-      className="card rounded-2xl p-5 
-                 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 
-                 flex flex-col justify-between h-full relative overflow-hidden group border-t-4 animate-fade-in"
-      style={{ borderTopColor: accent, animationDelay: `${delay}ms` }}
+      className="card rounded-3xl p-5 
+                 bg-[var(--bg-card)] border border-[var(--border)]
+                 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 
+                 flex flex-col justify-between h-full relative overflow-hidden group animate-fade-in"
+      style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="flex items-start justify-between gap-3">
+      {/* Background Gradient Accent Glow */}
+      <div className={`absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl ${gradient} rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500`} />
+      
+      {/* Top Accent Stripe Line */}
+      <div
+        className="h-1.5 w-full absolute top-0 left-0 right-0"
+        style={{ backgroundColor: accent }}
+      />
+
+      <div className="flex items-start justify-between gap-3 pt-1">
         <div className="flex flex-col min-w-0 flex-1">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-            {label}
-          </p>
-          <p className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight tabular-nums mt-1.5 leading-none">
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[10.5px] font-black uppercase tracking-wider text-[var(--text-muted)]">
+              {label}
+            </span>
+            <span
+              className="text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wide border shadow-2xs"
+              style={{
+                color: accent,
+                backgroundColor: `${accent}15`,
+                borderColor: `${accent}30`,
+              }}
+            >
+              {badge}
+            </span>
+          </div>
+          <p className="text-3xl sm:text-3.5xl font-black text-[var(--text-primary)] tracking-tight tabular-nums mt-1 leading-none">
             {value}
           </p>
         </div>
 
-        {/* Icon bubble */}
+        {/* Icon Bubble Tile */}
         <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-xs bg-[var(--bg-subtle)]"
+          className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-md border border-white/20"
+          style={{
+            backgroundColor: `${accent}18`,
+            borderColor: `${accent}30`,
+          }}
         >
-          <Icon size={20} strokeWidth={2.2} style={{ color: accent }} />
+          <Icon size={22} strokeWidth={2.2} style={{ color: accent }} />
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between">
-        <p className="text-xs font-medium text-[var(--text-muted)] truncate" title={sub}>
+      <div className="mt-4 pt-3 border-t border-[var(--border)]/80 flex items-center justify-between">
+        <p className="text-xs font-semibold text-[var(--text-secondary)] truncate" title={sub}>
           {sub}
         </p>
+        <span className="text-[11px] font-extrabold flex items-center gap-0.5 text-emerald-500">
+          <TrendingUp size={12} />
+          <span>Realtime</span>
+        </span>
       </div>
     </div>
   );
@@ -100,20 +130,21 @@ export default function SummaryCards({ entries }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 w-full">
       {CARDS.map((card, i) => (
         <StatCard
           key={card.key}
           label={card.label}
           value={cardValues[i]}
           sub={cardSubs[i]}
+          badge={card.badge}
           icon={card.icon}
           accent={card.accent}
-          lightBg={card.lightBg}
-          darkBg={card.darkBg}
+          gradient={card.gradient}
           delay={i * 70}
         />
       ))}
     </div>
   );
 }
+
