@@ -2,7 +2,7 @@
 import { useState, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { Menu } from 'lucide-react';
+import { Menu, PanelLeft } from 'lucide-react';
 import Sidebar from './components/Layout/Sidebar';
 import Footer from './components/Layout/Footer';
 import ComplaintBox from './components/Dashboard/ComplaintBox';
@@ -70,6 +70,7 @@ function MainAppLayout({ isDark, toggle }) {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
 
+  const [sidebarVisible, setSidebarVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isComplaintOpen, setIsComplaintOpen] = useState(false);
 
@@ -88,14 +89,29 @@ function MainAppLayout({ isDark, toggle }) {
 
   return (
     <div className="app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex">
-      {/* Permanent Fixed 260px Left Sidebar */}
+      {/* 260px Left Sidebar */}
       <Sidebar
+        sidebarVisible={sidebarVisible}
+        onHideSidebar={() => setSidebarVisible(false)}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
         onOpenComplaints={() => setIsComplaintOpen(true)}
         isDark={isDark}
         onToggleDark={toggle}
       />
+
+      {/* Floating Toggle Button to Show Sidebar when Hidden (Desktop) */}
+      {!sidebarVisible && (
+        <button
+          type="button"
+          onClick={() => setSidebarVisible(true)}
+          className="hidden lg:flex fixed top-4 left-4 z-50 items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#0C242C] text-white border border-white/20 shadow-2xl hover:bg-[#123843] active:scale-95 transition-all duration-200"
+          title="Show Navigation Sidebar"
+        >
+          <PanelLeft size={18} className="text-[#52B74A]" />
+          <span className="text-xs font-bold">Show Menu</span>
+        </button>
+      )}
 
       {/* Floating Hamburger Toggle Button for Small Mobile Screens Only */}
       <button
@@ -107,8 +123,12 @@ function MainAppLayout({ isDark, toggle }) {
         <Menu size={20} strokeWidth={2.2} />
       </button>
 
-      {/* Main Area Flex Container: Content + Footer */}
-      <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col lg:pl-[260px]">
+      {/* Main Area Flex Container: Padding dynamically shifts between lg:pl-[260px] and lg:pl-0 */}
+      <div
+        className={`main-area flex-1 min-w-0 min-h-screen flex flex-col transition-all duration-300 ${
+          sidebarVisible ? 'lg:pl-[260px]' : 'lg:pl-0'
+        }`}
+      >
         <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>

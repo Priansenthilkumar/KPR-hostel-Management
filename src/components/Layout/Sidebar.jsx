@@ -22,6 +22,7 @@ import {
   ChevronRight,
   X,
   Sparkles,
+  PanelLeft,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';
@@ -30,6 +31,8 @@ import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
 
 export default function Sidebar({
+  sidebarVisible = true,
+  onHideSidebar,
   mobileOpen,
   onCloseMobile,
   onOpenComplaints,
@@ -176,21 +179,35 @@ export default function Sidebar({
   const sidebarContent = (
     <div className="flex flex-col h-full select-none bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] text-white border-r border-white/10 shadow-2xl overflow-hidden w-[260px]">
       
-      {/* ── Top KPR Logo & Branding ── */}
-      <div className="h-20 px-4 flex items-center gap-3 border-b border-white/10 bg-[#0A1F26]/70 backdrop-blur-md flex-shrink-0">
-        <div className="w-11 h-11 rounded-xl bg-white p-1.5 shadow-md flex items-center justify-center flex-shrink-0 border border-white/20">
-          <img src={kprLogo} alt="KPR Logo" className="w-full h-full object-contain" />
+      {/* ── Top KPR Logo & Branding + Hide Sidebar Toggle Button ── */}
+      <div className="h-20 px-4 flex items-center justify-between gap-2 border-b border-white/10 bg-[#0A1F26]/70 backdrop-blur-md flex-shrink-0">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-11 h-11 rounded-xl bg-white p-1.5 shadow-md flex items-center justify-center flex-shrink-0 border border-white/20">
+            <img src={kprLogo} alt="KPR Logo" className="w-full h-full object-contain" />
+          </div>
+
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-black text-white leading-tight tracking-tight truncate">
+              {brandTitle}
+            </span>
+            <span className="text-[10px] font-extrabold text-[#52B74A] uppercase tracking-wider truncate flex items-center gap-1 mt-0.5">
+              <Sparkles size={11} />
+              <span>{brandSubtitle}</span>
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-col min-w-0">
-          <span className="text-sm font-black text-white leading-tight tracking-tight truncate">
-            {brandTitle}
-          </span>
-          <span className="text-[10px] font-extrabold text-[#52B74A] uppercase tracking-wider truncate flex items-center gap-1 mt-0.5">
-            <Sparkles size={11} />
-            <span>{brandSubtitle}</span>
-          </span>
-        </div>
+        {/* Hide Sidebar Toggle Button */}
+        {onHideSidebar && (
+          <button
+            type="button"
+            onClick={onHideSidebar}
+            className="hidden lg:flex w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white items-center justify-center border border-white/15 transition-all active:scale-95 flex-shrink-0"
+            title="Hide Sidebar"
+          >
+            <PanelLeft size={17} className="text-slate-200" />
+          </button>
+        )}
       </div>
 
       {/* ── Permanent 260px Navigation Items List ── */}
@@ -340,8 +357,12 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Desktop Permanently Expanded 260px Sidebar */}
-      <aside className="hidden lg:block fixed top-0 left-0 h-screen w-[260px] z-40">
+      {/* Desktop 260px Sidebar with Smooth Slide-In/Out */}
+      <aside
+        className={`hidden lg:block fixed top-0 left-0 h-screen w-[260px] z-40 transition-transform duration-300 ease-in-out ${
+          sidebarVisible ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
         {sidebarContent}
       </aside>
 
