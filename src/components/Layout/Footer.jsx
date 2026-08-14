@@ -43,7 +43,7 @@ export default function Footer() {
               />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black text-white leading-tight tracking-tight flex items-center justify-center lg:justify-start gap-2">
+              <h2 className="text-sm sm:text-base font-black text-white leading-tight tracking-tight flex items-center justify-center lg:justify-start gap-2 font-epic-pro">
                 <span>
                   {isSuperAdmin
                     ? 'KPR EXECUTIVE ADMINISTRATION'

@@ -324,9 +324,9 @@ export default function Login() {
               </div>
             </div>
 
-            <h1 className="text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug font-sans">
+            <h1 className="text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug font-epic-pro">
               Hostel & Mess <br />
-              <span className="bg-gradient-to-r from-[#52B74A] via-emerald-300 to-teal-200 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#52B74A] via-emerald-300 to-teal-200 bg-clip-text text-transparent font-epic-pro">
                 Management System
               </span>
             </h1>
@@ -436,14 +436,14 @@ export default function Login() {
                 <img src={kprLogo} alt="KPR Logo" className="h-12 w-auto object-contain" />
               </div>
             </div>
-            <h1 className="text-xl font-black text-gray-900 tracking-tight">
+            <h1 className="text-xl font-black text-gray-900 tracking-tight font-epic-pro">
               {authMode === 'signup'
                 ? 'Create New Account'
                 : authMode === 'forgot'
                   ? 'Reset Password'
                   : 'Welcome to KPR Portal'}
             </h1>
-            <p className="text-xs text-gray-500 font-semibold mt-0.5">Hostel & Mess Management System</p>
+            <p className="text-xs text-gray-500 font-bold mt-0.5 font-epic-pro">Hostel & Mess Management System</p>
           </div>
 
           {/* Form Header Desktop */}

@@ -163,7 +163,7 @@ export default function Navbar() {
 
               <div className="flex flex-col text-left justify-center min-w-0">
                 <h1 className="text-xs sm:text-sm font-black text-white leading-tight tracking-tight whitespace-nowrap flex items-center gap-1.5">
-                  <span>KPR HOSTELS & MESS</span>
+                  <span className="font-epic-pro">KPR HOSTELS & MESS</span>
                 </h1>
                 <div className="flex items-center gap-1 mt-0.5">
                   <span className="inline-flex items-center gap-1 text-[9px] sm:text-[9.5px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider hidden sm:flex">
@@ -455,7 +455,7 @@ export default function Navbar() {
                     className="h-11 sm:h-12 w-auto object-contain bg-white p-1 rounded-lg shadow-sm"
                   />
                   <div>
-                    <h2 className="text-sm font-extrabold text-white leading-tight">
+                    <h2 className="text-sm font-extrabold text-white leading-tight font-epic-pro">
                       KPR HOSTELS & MESS
                     </h2>
                     <span className="text-[10px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider block mt-0.5">
