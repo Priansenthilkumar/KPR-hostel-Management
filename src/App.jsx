@@ -117,7 +117,7 @@ export default function App() {
             toastOptions={{
               duration: 3500,
               style: {
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
                 fontSize: '13.5px',
                 fontWeight: 500,
                 borderRadius: '10px',
