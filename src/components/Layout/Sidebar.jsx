@@ -51,7 +51,7 @@ export default function Sidebar({
     admin: true,
     mess: true,
     hostel: true,
-    logs: false,
+    logs: true,
   });
 
   const toggleSubmenu = (key) => {
@@ -144,10 +144,11 @@ export default function Sidebar({
             label: 'Hostel Management',
             icon: Building,
             items: [
-              { label: 'Hostel Blocks', to: '/hostel-dashboard', icon: ShieldCheck },
-              { label: 'Gate Pass', to: '/hostel-gatepass', icon: Ticket },
-              { label: 'Hostel Logs', to: '/hostel-overview', icon: Users },
+              { label: 'Hostel Blocks', to: '/hostel-dashboard', icon: Building },
+              { label: 'Create Gate Pass', to: '/hostel-gatepass', icon: Ticket },
               { label: 'Gate Pass Review', to: '/gatepass-review', icon: ShieldCheck },
+              { label: 'Hostel Logs', to: '/hostel-overview', icon: FileText },
+              { label: 'Log Shift / Remark', to: '/hostel-add-entry', icon: UserCheck },
             ],
           },
         ]
