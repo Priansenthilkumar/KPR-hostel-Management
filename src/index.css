@@ -7,18 +7,18 @@
 
 @theme {
   --font-sans: 'Arial Bold', Arial, 'Helvetica Neue', Helvetica, sans-serif;
-  --font-heading: 'Epic Pro', 'Epilogue', 'Outfit', 'Syne', Arial, sans-serif;
-  --font-epic: 'Epic Pro', 'Epilogue', 'Outfit', 'Syne', Arial, sans-serif;
+  --font-heading: 'Syne', 'Epic Pro', 'Epilogue', 'Outfit', Arial, sans-serif;
+  --font-epic: 'Syne', 'Epic Pro', 'Epilogue', 'Outfit', Arial, sans-serif;
 }
 
 /* ═══════════════════════════════════════
-   TYPOGRAPHY SYSTEM — Epic Pro Headings & Arial Bold Body Content
+   TYPOGRAPHY SYSTEM — Syne / Epic Pro Headings & Arial Bold Body Content
 ═══════════════════════════════════════ */
 
 /* Custom Font Face Definitions */
 @font-face {
   font-family: 'Epic Pro';
-  src: local('Epic Pro'), local('Epilogue-ExtraBold'), local('Outfit-Black'), local('Syne-ExtraBold'), local('Impact');
+  src: local('Syne ExtraBold'), local('Syne-ExtraBold'), local('Epic Pro'), local('Epilogue-ExtraBold'), local('Outfit-Black'), local('Impact');
   font-weight: 700 900;
 }
 
@@ -53,7 +53,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Headings & Section Titles: Epic Pro Font */
+/* Headings & Section Titles: Syne / Epic Pro Font */
 h1,
 h2,
 h3,
@@ -67,7 +67,7 @@ th,
 .heading-title,
 .card-header-title,
 .section-header-title {
-  font-family: 'Epic Pro', 'Epilogue', 'Outfit', 'Syne', 'Arial Black', Arial, sans-serif !important;
+  font-family: 'Syne', 'Epic Pro', 'Epilogue', 'Outfit', 'Arial Black', Arial, sans-serif !important;
   font-weight: 800 !important;
   letter-spacing: -0.025em;
 }
@@ -75,7 +75,7 @@ th,
 .font-epic-pro,
 .app-name-font,
 .font-heading {
-  font-family: 'Epic Pro', 'Epilogue', 'Outfit', 'Syne', 'Arial Black', Arial, sans-serif !important;
+  font-family: 'Syne', 'Epic Pro', 'Epilogue', 'Outfit', 'Arial Black', Arial, sans-serif !important;
   letter-spacing: -0.025em;
 }
 
