@@ -1,20 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap');
 @import "tailwindcss";
 
 /* Force Tailwind to use class-based dark mode instead of media query */
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  --font-heading: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  --font-epic: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Manrope', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-epic: 'Manrope', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Manrope', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 /* ═══════════════════════════════════════
-   TYPOGRAPHY SYSTEM — Native System Serif Font Stack
+   TYPOGRAPHY SYSTEM — Inter (Body & UI) & Manrope (Headings & KPIs)
 ═══════════════════════════════════════ */
 
-/* Global Body & UI Elements */
+/* Global Body & UI Elements: Inter 400-500 */
 html,
 body,
 input,
@@ -30,16 +31,16 @@ a,
 label,
 form,
 option {
-  font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-  font-weight: 700;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Headings & Section Titles */
+/* Headings, Section Titles & Numbers: Manrope 700-800 */
 h1,
 h2,
 h3,
@@ -52,25 +53,27 @@ th,
 .font-heading,
 .heading-title,
 .card-header-title,
-.section-header-title {
-  font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.025em;
+.section-header-title,
+.tabular-nums {
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
 }
 
 .font-epic-pro,
 .app-name-font,
 .font-heading {
-  font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif !important;
-  letter-spacing: -0.025em;
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  letter-spacing: -0.02em;
 }
 
-/* Header & Navbar Top Bar */
-header,
-header *,
-.navbar,
-.navbar * {
-  font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif !important;
+/* Navigation & Buttons: Inter 600 */
+button,
+.nav-link,
+a.btn,
+.btn {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 600;
 }
 
 /* ═══════════════════════════════════════

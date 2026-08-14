@@ -159,7 +159,7 @@ export default function App() {
             toastOptions={{
               duration: 3500,
               style: {
-                fontFamily: "ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif",
+                fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                 fontSize: '13.5px',
                 fontWeight: 500,
                 borderRadius: '10px',
