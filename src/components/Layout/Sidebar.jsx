@@ -71,15 +71,18 @@ export default function Sidebar({
     navigate('/login');
   };
 
+  const isHostelUser = user?.role === 'warden';
+  const isMessUser = user?.role === 'mess_staff';
+
   // Determine home dashboard target path based on user role
   const homePath =
     user?.role === 'super_admin'
       ? '/admin-home'
-      : user?.role === 'warden'
+      : isHostelUser
       ? '/hostel-dashboard'
       : '/mess-dashboard';
 
-  // Navigation Structure
+  // Role-based Navigation Structure
   const navSections = [
     {
       id: 'dashboard',
@@ -88,36 +91,47 @@ export default function Sidebar({
       icon: LayoutDashboard,
       to: homePath,
     },
-    {
-      id: 'mess',
-      type: 'group',
-      label: 'Mess Management',
-      icon: UtensilsCrossed,
-      items: [
-        { label: 'Food Maintenance', to: '/add-entry', icon: PlusCircle },
-        { label: 'Mess Menu', to: '/menu', icon: Utensils },
-        { label: 'Mess Records', to: '/mess-dashboard', icon: FileText },
-      ],
-    },
-    {
-      id: 'hostel',
-      type: 'group',
-      label: 'Hostel Management',
-      icon: Building,
-      items: [
-        { label: 'Hostel Blocks', to: '/hostel-dashboard', icon: ShieldCheck },
-        { label: 'Residents', to: '/hostel-overview', icon: Users },
-        { label: 'Warden', to: '/hostel-add-entry', icon: UserCheck },
-      ],
-    },
+    // Mess Management — Hidden if Hostel Warden logged in
+    ...(!isHostelUser
+      ? [
+          {
+            id: 'mess',
+            type: 'group',
+            label: 'Mess Management',
+            icon: UtensilsCrossed,
+            items: [
+              { label: 'Food Maintenance', to: '/add-entry', icon: PlusCircle },
+              { label: 'Mess Menu', to: '/menu', icon: Utensils },
+              { label: 'Mess Records', to: '/mess-dashboard', icon: FileText },
+            ],
+          },
+        ]
+      : []),
+    // Hostel Management — Hidden if Mess Staff logged in
+    ...(!isMessUser
+      ? [
+          {
+            id: 'hostel',
+            type: 'group',
+            label: 'Hostel Management',
+            icon: Building,
+            items: [
+              { label: 'Hostel Blocks', to: '/hostel-dashboard', icon: ShieldCheck },
+              { label: 'Residents', to: '/hostel-overview', icon: Users },
+              { label: 'Warden', to: '/hostel-add-entry', icon: UserCheck },
+            ],
+          },
+        ]
+      : []),
+    // Logs Section — Filtered by role
     {
       id: 'logs',
       type: 'group',
       label: 'Logs',
       icon: ClipboardList,
       items: [
-        { label: 'Mess Logs', to: '/overview', icon: BarChart2 },
-        { label: 'Hostel Logs', to: '/hostel-overview', icon: Activity },
+        ...(!isHostelUser ? [{ label: 'Mess Logs', to: '/overview', icon: BarChart2 }] : []),
+        ...(!isMessUser ? [{ label: 'Hostel Logs', to: '/hostel-overview', icon: Activity }] : []),
       ],
     },
     {
@@ -147,10 +161,22 @@ export default function Sidebar({
     },
   ];
 
+  const brandTitle = isHostelUser
+    ? 'KPR Hostels'
+    : isMessUser
+    ? 'KPR Mess'
+    : 'KPR Hostel & Mess';
+
+  const brandSubtitle = isHostelUser
+    ? 'HOSTEL WARDEN SYSTEM'
+    : isMessUser
+    ? 'MESS STAFF SYSTEM'
+    : 'ADMIN SYSTEM';
+
   const sidebarContent = (
     <div className="flex flex-col h-full select-none bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] text-white border-r border-white/10 shadow-2xl overflow-hidden w-[260px]">
       
-      {/* ── Top KPR Logo & Branding (Permanently Fully Visible) ── */}
+      {/* ── Top KPR Logo & Branding ── */}
       <div className="h-20 px-4 flex items-center gap-3 border-b border-white/10 bg-[#0A1F26]/70 backdrop-blur-md flex-shrink-0">
         <div className="w-11 h-11 rounded-xl bg-white p-1.5 shadow-md flex items-center justify-center flex-shrink-0 border border-white/20">
           <img src={kprLogo} alt="KPR Logo" className="w-full h-full object-contain" />
@@ -158,11 +184,11 @@ export default function Sidebar({
 
         <div className="flex flex-col min-w-0">
           <span className="text-sm font-black text-white leading-tight tracking-tight truncate">
-            KPR Hostel & Mess
+            {brandTitle}
           </span>
           <span className="text-[10px] font-extrabold text-[#52B74A] uppercase tracking-wider truncate flex items-center gap-1 mt-0.5">
             <Sparkles size={11} />
-            <span>ADMIN SYSTEM</span>
+            <span>{brandSubtitle}</span>
           </span>
         </div>
       </div>
@@ -278,7 +304,7 @@ export default function Sidebar({
         })}
       </div>
 
-      {/* ── Bottom Super Admin Profile & Logout Section ── */}
+      {/* ── Bottom User Profile & Logout Section ── */}
       <div className="p-3 bg-[#08181E]/90 border-t border-white/10 flex-shrink-0">
         <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white/5 border border-white/10">
           <div className="flex items-center gap-2.5 min-w-0">
@@ -287,12 +313,12 @@ export default function Sidebar({
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-xs font-extrabold text-white truncate leading-tight">
-                {user?.name || 'Super Admin'}
+                {user?.name || (isHostelUser ? 'Hostel Warden' : isMessUser ? 'Mess Staff' : 'Super Admin')}
               </span>
               <span className="text-[10px] font-bold text-purple-300 uppercase tracking-wider truncate">
                 {user?.role === 'super_admin'
                   ? 'Super Admin'
-                  : user?.role === 'warden'
+                  : isHostelUser
                   ? 'Hostel Warden'
                   : 'Mess Staff'}
               </span>
