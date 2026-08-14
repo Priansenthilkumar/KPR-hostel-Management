@@ -87,7 +87,7 @@ function MainAppLayout({ isDark, toggle }) {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex flex-col">
+    <div className="app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex">
       {/* Permanent Fixed 260px Left Sidebar */}
       <Sidebar
         mobileOpen={mobileOpen}
@@ -107,9 +107,9 @@ function MainAppLayout({ isDark, toggle }) {
         <Menu size={20} strokeWidth={2.2} />
       </button>
 
-      {/* Main Content Area — Starts directly at top (pt-0) beside sidebar */}
-      <main className="lg:pl-[260px] w-full min-h-screen flex flex-col pt-0 pb-12">
-        <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 flex-1">
+      {/* Main Area Flex Container: Content + Footer */}
+      <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col lg:pl-[260px]">
+        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Common Super Admin Home Route */}
@@ -131,11 +131,11 @@ function MainAppLayout({ isDark, toggle }) {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
-        </div>
+        </main>
 
-        {/* Global Footer aligned with main content */}
+        {/* Global Footer sits inside main-area at bottom */}
         <Footer />
-      </main>
+      </div>
 
       {/* Complaints Modal Overlay */}
       <ComplaintBox

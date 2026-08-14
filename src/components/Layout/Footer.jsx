@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ShieldCheck, Mail, MapPin, Sparkles, Heart, Award } from 'lucide-react';
+// src/components/Layout/Footer.jsx
+import { ShieldCheck, Mail, MapPin, Sparkles, Award } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import kprLogo from '../../assets/kprLogo.png';
@@ -22,37 +22,35 @@ export default function Footer() {
       : 'mess.committee@kpr.edu';
 
   return (
-    <footer className="w-full bg-gradient-to-r from-[#0C242C] via-[#123843] to-[#0C242C] border-t border-white/10 text-white py-8 mt-auto shadow-2xl relative overflow-hidden">
+    <footer className="w-full shrink-0 bg-gradient-to-r from-[#0C242C] via-[#123843] to-[#0C242C] border-t border-white/10 text-white py-6 shadow-2xl relative overflow-hidden">
       {/* Top Glowing Gradient Line */}
       <div className="h-[2px] w-full bg-gradient-to-r from-[#1C5362] via-[#52B74A] to-[#3DA1D1] absolute top-0 left-0 right-0" />
       <div className="absolute -bottom-24 -right-24 w-60 h-60 bg-[#52B74A]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -top-24 -left-24 w-60 h-60 bg-[#3DA1D1]/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-5 relative z-10">
+      <div className="max-w-[1550px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-4 relative z-10">
         
-        {/* Main Row */}
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-5 pb-5 border-b border-white/10 text-center lg:text-left">
-          {/* Logo & Dynamic Title */}
+        {/* ── Top Row ── */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 pb-4 border-b border-white/10 text-center lg:text-left">
+          
+          {/* Left: KPR logo + "KPR EXECUTIVE ADMINISTRATION" + subtitle */}
           <div className="flex flex-col sm:flex-row items-center gap-3.5">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-[#52B74A] to-[#3DA1D1] rounded-xl blur-xs opacity-40 group-hover:opacity-80 transition duration-300"></div>
+            <div className="relative group flex-shrink-0">
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#52B74A] to-[#3DA1D1] rounded-xl blur-xs opacity-40 group-hover:opacity-80 transition duration-300" />
               <img
                 src={kprLogo}
                 alt="KPR Logo"
                 className="relative h-10 sm:h-11 w-auto object-contain bg-white/95 p-1.5 rounded-xl shadow-md transition-transform duration-300 group-hover:scale-105"
               />
             </div>
-            <div>
-              <h2 className="text-sm sm:text-base font-black text-white leading-tight tracking-tight flex items-center justify-center lg:justify-start gap-2 font-epic-pro">
+            <div className="flex flex-col text-center sm:text-left">
+              <h2 className="text-sm sm:text-base font-black text-white leading-tight tracking-tight flex items-center justify-center sm:justify-start gap-2">
                 <span>
                   {isSuperAdmin
                     ? 'KPR EXECUTIVE ADMINISTRATION'
                     : isHostel
                       ? 'KPR HOSTELS MANAGEMENT'
                       : 'KPR MESS MANAGEMENT'}
-                </span>
-                <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#52B74A]/20 text-[#52B74A] border border-[#52B74A]/30 text-[10px] uppercase font-extrabold tracking-wider">
-                  <Sparkles size={10} /> Live Platform
                 </span>
               </h2>
               <p className="text-[11.5px] text-[#B0D0D8] font-medium mt-0.5">
@@ -65,18 +63,26 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Contact Info */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-[#B0D0D8]">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 shadow-xs">
-              <MapPin size={14} className="text-[#52B74A]" />
+          {/* Center: LIVE PLATFORM badge */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#52B74A]/20 text-[#52B74A] border border-[#52B74A]/30 text-[11px] uppercase font-black tracking-wider shadow-xs">
+              <Sparkles size={12} className="animate-pulse" />
+              <span>LIVE PLATFORM</span>
+            </span>
+          </div>
+
+          {/* Right: Location, email, and Super Admin Verified badges */}
+          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2.5 text-xs text-[#B0D0D8]">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 shadow-xs">
+              <MapPin size={13} className="text-[#52B74A]" />
               <span className="font-semibold text-white">Arasur, Coimbatore</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 shadow-xs">
-              <Mail size={14} className="text-[#3DA1D1]" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 shadow-xs">
+              <Mail size={13} className="text-[#3DA1D1]" />
               <span className="font-semibold text-white">{footerEmail}</span>
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-400 text-xs font-black shadow-xs">
-              <ShieldCheck size={14} />
+              <ShieldCheck size={13} />
               <span>
                 {isSuperAdmin
                   ? 'Super Admin Verified'
@@ -86,23 +92,25 @@ export default function Footer() {
               </span>
             </div>
           </div>
+
         </div>
 
-        {/* Gold Accent Footer Box & Copyright */}
+        {/* ── Bottom Row ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1 text-center sm:text-left">
-          {/* Gold Accent Badge Box */}
+          {/* Left: Gold Accent Badge Box */}
           <div className="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-400/30 shadow-xs flex items-center gap-2">
-            <Award size={14} className="text-amber-400" />
+            <Award size={14} className="text-amber-400 flex-shrink-0" />
             <p className="text-[11px] font-black text-amber-300 tracking-wide uppercase">
               {isSuperAdmin
-                ? 'Created for Executive Admin by Super Admin Team'
+                ? 'CREATED FOR EXECUTIVE ADMIN BY SUPER ADMIN TEAM'
                 : isHostel
-                  ? 'Created for KPR Hostels by Hostel Committee'
-                  : 'Created for Hostel Mess by Hostel Committee'}
+                  ? 'CREATED FOR KPR HOSTELS BY HOSTEL COMMITTEE'
+                  : 'CREATED FOR HOSTEL MESS BY HOSTEL COMMITTEE'}
             </p>
           </div>
 
-          <p className="text-[11.5px] text-[#8BB2BC] font-medium flex items-center gap-1.5">
+          {/* Right: Copyright */}
+          <p className="text-[11.5px] text-[#8BB2BC] font-medium flex items-center justify-center sm:justify-end gap-1.5">
             <span>© {new Date().getFullYear()}</span>
             <strong className="text-white font-extrabold">
               {isSuperAdmin ? 'KPR SUPER ADMIN' : isHostel ? 'KPR HOSTELS' : 'KPR MESS'}
@@ -115,4 +123,3 @@ export default function Footer() {
     </footer>
   );
 }
-

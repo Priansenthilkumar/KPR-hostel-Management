@@ -346,3 +346,33 @@ html.dark {
 .animate-slide-in-left {
   animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ═══════════════════════════════════════
+   APP LAYOUT & FOOTER ALIGNMENT STYLES
+═══════════════════════════════════════ */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  width: 100%;
+  flex-shrink: 0;
+}
