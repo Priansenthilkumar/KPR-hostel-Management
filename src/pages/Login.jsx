@@ -76,7 +76,6 @@ export default function Login() {
     setActiveTab(roleKey);
     setEmail(roleEmail);
     setPassword('Password123');
-    toast.success(`Selected ${roleKey === 'super_admin' ? 'Super Admin' : roleKey === 'warden' ? 'Hostel Warden' : 'Mess Staff'} profile`, { duration: 1500 });
   };
 
   // ── Standard Password Login ──
