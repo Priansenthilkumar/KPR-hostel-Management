@@ -2,31 +2,35 @@
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
-  RotateCw,
-  Lightbulb,
-  Bell,
-  Home,
-  ShieldCheck,
-  Search,
-  ChevronDown,
-  ChevronUp,
   LayoutDashboard,
+  UtensilsCrossed,
   PlusCircle,
-  FileText,
-  FileSpreadsheet,
-  GraduationCap,
-  CalendarCheck,
   Utensils,
-  BarChart3,
-  BookOpen,
-  UserCheck,
+  FileText,
   Building,
-  ChevronLeft,
+  ShieldCheck,
+  Users,
+  UserCheck,
+  ClipboardList,
+  BarChart2,
+  Activity,
+  MessageSquare,
+  FileSpreadsheet,
+  Settings,
+  LogOut,
+  ChevronDown,
   ChevronRight,
+  PanelLeft,
   X,
+  Sparkles,
+  Sun,
+  Moon,
+  ShieldAlert,
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';
+import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
 
 export default function Sidebar({
@@ -34,28 +38,23 @@ export default function Sidebar({
   onToggleCollapse,
   mobileOpen,
   onCloseMobile,
+  onOpenComplaints,
   isDark,
   onToggleDark,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
+  const { user, logout } = useAuth();
 
-  // Accordion toggle states
-  const [openSections, setOpenSections] = useState({
-    foodOps: true,
-    academics: false,
-    booking: false,
-    reports: false,
-    system: false,
+  // Accordion state for expandable submenus
+  const [openSubmenus, setOpenSubmenus] = useState({
+    mess: true,
+    hostel: true,
+    logs: false,
   });
 
-  const toggleSection = (key) => {
-    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handleRefresh = () => {
-    toast.success('Refreshing dashboard data...');
+  const toggleSubmenu = (key) => {
+    setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleExport = () => {
@@ -66,255 +65,334 @@ export default function Sidebar({
         return;
       }
       exportToExcel(entries);
-      toast.success(`Exported ${entries.length} records to Excel!`);
+      toast.success(`Exported ${entries.length} records to Excel!`, { icon: '📊' });
     } catch (err) {
       toast.error(err.message || 'Export failed');
     }
   };
 
-  // Section categories matched to the institution screenshot style
-  const sections = [
+  const handleLogout = () => {
+    logout();
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
+
+  // Determine home dashboard target path based on user role
+  const homePath =
+    user?.role === 'super_admin'
+      ? '/admin-home'
+      : user?.role === 'warden'
+      ? '/hostel-dashboard'
+      : '/mess-dashboard';
+
+  // Navigation Items Structure
+  const navSections = [
     {
-      key: 'foodOps',
-      title: 'Food Operations',
-      icon: Utensils,
+      id: 'dashboard',
+      type: 'item',
+      label: 'Dashboard',
+      icon: LayoutDashboard,
+      to: homePath,
+    },
+    {
+      id: 'mess',
+      type: 'group',
+      label: 'Mess Management',
+      icon: UtensilsCrossed,
       items: [
-        { to: '/', label: 'Dashboard Overview', icon: LayoutDashboard },
-        { to: '/add-entry', label: '4.0 Daily Meal Entry Log', icon: PlusCircle },
-        { to: '/records', label: 'Food Records Database', icon: FileText },
+        { label: 'Food Maintenance', to: '/add-entry', icon: PlusCircle },
+        { label: 'Mess Menu', to: '/menu', icon: Utensils },
+        { label: 'Mess Records', to: '/mess-dashboard', icon: FileText },
       ],
     },
     {
-      key: 'academics',
-      title: 'Academics & Mess',
-      icon: GraduationCap,
-      items: [
-        { to: '/records?cat=strength', label: 'Hostel Student Strength', icon: UserCheck },
-        { to: '/records?cat=timings', label: 'Mess Operating Timings', icon: BookOpen },
-      ],
-    },
-    {
-      key: 'booking',
-      title: 'Booking Service',
-      icon: CalendarCheck,
-      items: [
-        { to: '/add-entry', label: 'Special Meal Feast Booking', icon: PlusCircle },
-        { to: '/records?cat=raw', label: 'Raw Material Requisition', icon: FileSpreadsheet },
-      ],
-    },
-    {
-      key: 'reports',
-      title: 'IQAC & Analytics',
-      icon: BarChart3,
-      items: [
-        { to: '/', label: 'Daily Wastage Analytics', icon: BarChart3 },
-        { action: handleExport, label: 'Export Monthly Excel Audit', icon: FileSpreadsheet },
-      ],
-    },
-    {
-      key: 'system',
-      title: 'User Service',
+      id: 'hostel',
+      type: 'group',
+      label: 'Hostel Management',
       icon: Building,
       items: [
-        { action: onToggleDark, label: isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme', icon: Lightbulb },
-        { to: '/', label: 'KPR Maintenance Status', icon: ShieldCheck },
+        { label: 'Hostel Blocks', to: '/hostel-dashboard', icon: ShieldCheck },
+        { label: 'Residents', to: '/hostel-overview', icon: Users },
+        { label: 'Warden', to: '/hostel-add-entry', icon: UserCheck },
       ],
+    },
+    {
+      id: 'logs',
+      type: 'group',
+      label: 'Logs',
+      icon: ClipboardList,
+      items: [
+        { label: 'Mess Logs', to: '/overview', icon: BarChart2 },
+        { label: 'Hostel Logs', to: '/hostel-overview', icon: Activity },
+      ],
+    },
+    {
+      id: 'complaints',
+      type: 'action',
+      label: 'Complaints',
+      icon: MessageSquare,
+      onClick: () => {
+        if (onOpenComplaints) onOpenComplaints();
+        else toast('Complaints channel open', { icon: '💬' });
+      },
+    },
+    {
+      id: 'reports',
+      type: 'action',
+      label: 'Reports',
+      icon: FileSpreadsheet,
+      onClick: handleExport,
+    },
+    {
+      id: 'settings',
+      type: 'action',
+      label: 'Settings',
+      icon: Settings,
+      onClick: onToggleDark,
+      subtitle: isDark ? 'Dark Mode Active' : 'Light Mode Active',
     },
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full select-none bg-[#164350] text-white border-r border-[#245767] shadow-xl overflow-hidden">
+    <div className="flex flex-col h-full select-none bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] text-white border-r border-white/10 shadow-2xl overflow-hidden">
       
-      {/* ── Top Circular Buttons Row (Exact match to screenshot top header) ── */}
-      <div className="p-3 bg-[#123843] border-b border-[#245767] flex items-center justify-around flex-shrink-0">
-        {/* Refresh */}
-        <button
-          onClick={handleRefresh}
-          className="w-9 h-9 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-transform active:scale-95 border border-[#2B6F82]"
-          title="Refresh Data"
-        >
-          <RotateCw size={16} strokeWidth={2.2} />
-        </button>
+      {/* ── Top KPR Branding Header ── */}
+      <div className="h-16 px-4 flex items-center justify-between border-b border-white/10 bg-[#0A1F26]/60 backdrop-blur-md flex-shrink-0">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-xl bg-white p-1 shadow-md flex items-center justify-center flex-shrink-0 border border-white/20">
+            <img src={kprLogo} alt="KPR Logo" className="w-full h-full object-contain" />
+          </div>
 
-        {/* Theme Lightbulb */}
-        <button
-          onClick={onToggleDark}
-          className="w-9 h-9 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-transform active:scale-95 border border-[#2B6F82]"
-          title="Toggle Theme"
-        >
-          <Lightbulb size={16} strokeWidth={2.2} className={isDark ? 'text-[#52B74A]' : 'text-amber-300'} />
-        </button>
-
-        {/* Notification Bell with 0 badge */}
-        <div className="relative">
-          <button
-            onClick={() => toast('No new notifications', { icon: '🔔' })}
-            className="w-9 h-9 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-transform active:scale-95 border border-[#2B6F82]"
-            title="Notifications"
-          >
-            <Bell size={16} strokeWidth={2.2} />
-          </button>
-          <span className="absolute -top-1 right-0 w-4 h-4 rounded-full bg-[#52B74A] text-white text-[9.5px] font-bold flex items-center justify-center shadow-xs">
-            0
-          </span>
+          {!collapsed && (
+            <div className="flex flex-col min-w-0 animate-fade-in">
+              <span className="text-sm font-extrabold text-white leading-tight tracking-tight truncate flex items-center gap-1.5">
+                <span>KPR Hostel & Mess</span>
+              </span>
+              <span className="text-[10px] font-bold text-[#52B74A] uppercase tracking-wider truncate flex items-center gap-1">
+                <Sparkles size={10} />
+                <span>Admin System</span>
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Home */}
+        {/* Collapse / Expand Toggle Button */}
         <button
-          onClick={() => navigate('/')}
-          className="w-9 h-9 rounded-full bg-[#1C5362] hover:bg-[#256678] text-white flex items-center justify-center transition-transform active:scale-95 border border-[#2B6F82]"
-          title="Go to Home"
-        >
-          <Home size={16} strokeWidth={2.2} />
-        </button>
-
-        {/* Green Status Circle Action */}
-        <button
+          type="button"
           onClick={onToggleCollapse}
-          className="w-9 h-9 rounded-full bg-[#52B74A] hover:bg-[#44A03C] text-white flex items-center justify-center shadow-md transition-transform active:scale-95"
-          title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          className="hidden lg:flex w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white items-center justify-center border border-white/15 transition-all active:scale-95 flex-shrink-0"
+          title={collapsed ? 'Expand Sidebar (250px)' : 'Collapse Sidebar (72px)'}
         >
-          {collapsed ? <ChevronRight size={17} strokeWidth={2.5} /> : <ShieldCheck size={17} strokeWidth={2.2} />}
+          <PanelLeft size={16} className={`transition-transform duration-200 ${collapsed ? 'rotate-180 text-[#52B74A]' : 'text-slate-300'}`} />
         </button>
       </div>
 
-      {/* ── Search Input (Exact match to screenshot search bar) ── */}
-      {!collapsed && (
-        <div className="px-3 pt-3 pb-2 flex-shrink-0">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-9 pl-3 pr-9 rounded-md bg-[#11323B] border border-[#235868] text-xs font-medium text-white placeholder-slate-400 focus:outline-none focus:border-[#52B74A] transition-colors"
-            />
-            <Search size={15} className="absolute right-2.5 top-2.5 text-slate-300" strokeWidth={2.2} />
-          </div>
-        </div>
-      )}
-
-      {/* ── Accordion Menu Items List ── */}
-      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1 custom-sidebar-scroll">
-        {sections.map((section) => {
+      {/* ── Navigation Menu Section ── */}
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 custom-sidebar-scroll">
+        {navSections.map((section) => {
           const SectionIcon = section.icon;
-          const isOpen = openSections[section.key];
-          
-          // Filter items by search query if any
-          const filteredItems = section.items.filter((item) =>
-            item.label.toLowerCase().includes(searchQuery.toLowerCase())
-          );
 
-          if (searchQuery && filteredItems.length === 0) return null;
+          // Single Direct Item (e.g. Dashboard)
+          if (section.type === 'item') {
+            const isActive =
+              location.pathname === section.to ||
+              (section.to !== '/' && location.pathname === section.to);
 
-          return (
-            <div key={section.key} className="mb-1">
-              {/* Category Header */}
-              {!collapsed ? (
-                <button
-                  onClick={() => toggleSection(section.key)}
-                  className="w-full flex items-center justify-between px-2.5 py-2 rounded-md hover:bg-[#1C5362]/60 text-white font-bold text-[13.5px] transition-colors"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <SectionIcon size={18} strokeWidth={2.2} className="text-white flex-shrink-0" />
-                    <span className="truncate tracking-tight">{section.title}</span>
+            return (
+              <NavLink
+                key={section.id}
+                to={section.to}
+                onClick={onCloseMobile}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 relative group ${
+                  isActive
+                    ? 'bg-gradient-to-r from-[#52B74A] to-[#44A03C] text-white shadow-lg shadow-emerald-900/30'
+                    : 'text-slate-200 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <SectionIcon size={19} strokeWidth={2.2} className="flex-shrink-0" />
+                {!collapsed && (
+                  <span className="truncate text-[13px]">{section.label}</span>
+                )}
+                {collapsed && (
+                  <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#0C242C] text-white text-xs font-bold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/15">
+                    {section.label}
                   </div>
-                  {isOpen ? (
-                    <ChevronUp size={15} className="text-slate-300 flex-shrink-0" />
-                  ) : (
-                    <ChevronDown size={15} className="text-slate-300 flex-shrink-0" />
-                  )}
-                </button>
-              ) : (
-                <div className="flex justify-center py-2 text-slate-300" title={section.title}>
-                  <SectionIcon size={20} strokeWidth={2} />
-                </div>
-              )}
+                )}
+              </NavLink>
+            );
+          }
 
-              {/* Sub-Items (Shown if expanded or searching) */}
-              {(isOpen || searchQuery || collapsed) && (
-                <div className={`mt-0.5 space-y-0.5 ${!collapsed ? 'pl-2' : ''}`}>
-                  {filteredItems.map((item, idx) => {
-                    const ItemIcon = item.icon;
+          // Expandable Submenu Group
+          if (section.type === 'group') {
+            const isOpen = openSubmenus[section.id];
+            const isAnySubActive = section.items.some((item) => location.pathname === item.to);
 
-                    if (item.to) {
-                      const isActive =
-                        location.pathname === item.to ||
-                        (item.to !== '/' && location.pathname.startsWith(item.to));
+            return (
+              <div key={section.id} className="space-y-1">
+                {!collapsed ? (
+                  <button
+                    type="button"
+                    onClick={() => toggleSubmenu(section.id)}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+                      isAnySubActive
+                        ? 'bg-white/10 text-white border border-white/15'
+                        : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <SectionIcon size={19} strokeWidth={2.2} className={isAnySubActive ? 'text-[#52B74A]' : 'text-slate-300'} />
+                      <span className="truncate text-[13px]">{section.label}</span>
+                    </div>
+                    {isOpen ? (
+                      <ChevronDown size={16} className="text-slate-400 flex-shrink-0" />
+                    ) : (
+                      <ChevronRight size={16} className="text-slate-400 flex-shrink-0" />
+                    )}
+                  </button>
+                ) : (
+                  <div
+                    onClick={() => toggleSubmenu(section.id)}
+                    className={`w-full flex justify-center py-2.5 rounded-xl text-slate-300 hover:bg-white/10 hover:text-white cursor-pointer relative group ${
+                      isAnySubActive ? 'bg-white/10 text-[#52B74A]' : ''
+                    }`}
+                    title={section.label}
+                  >
+                    <SectionIcon size={20} strokeWidth={2.2} />
+                    <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#0C242C] text-white text-xs font-bold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/15">
+                      {section.label}
+                    </div>
+                  </div>
+                )}
+
+                {/* Submenu Items */}
+                {(isOpen || collapsed) && (
+                  <div className={`space-y-1 ${!collapsed ? 'pl-4 border-l border-white/10 ml-4' : ''}`}>
+                    {section.items.map((sub) => {
+                      const SubIcon = sub.icon;
+                      const isSubActive = location.pathname === sub.to;
 
                       return (
                         <NavLink
-                          key={idx}
-                          to={item.to}
+                          key={sub.to + sub.label}
+                          to={sub.to}
                           onClick={onCloseMobile}
-                          className={`flex items-center gap-2.5 px-3 py-2 rounded-sm text-xs font-semibold transition-all duration-150 relative group ${
-                            isActive
-                              ? 'bg-[#52B74A] text-white shadow-sm font-bold'
-                              : 'text-slate-100 hover:bg-[#1D5868] hover:text-white'
+                          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-150 relative group ${
+                            isSubActive
+                              ? 'bg-[#52B74A] text-white shadow-sm font-extrabold'
+                              : 'text-slate-300 hover:bg-white/10 hover:text-white'
                           }`}
                         >
-                          <ItemIcon size={16} strokeWidth={2.2} className="flex-shrink-0" />
+                          <SubIcon size={16} strokeWidth={2.2} className="flex-shrink-0" />
                           {!collapsed && (
-                            <span className="truncate leading-tight text-[12.5px]">{item.label}</span>
+                            <span className="truncate text-[12.5px]">{sub.label}</span>
                           )}
-
-                          {/* Hover Tooltip matching screenshot black tooltip style */}
                           {collapsed && (
-                            <div className="absolute left-full ml-2 px-3 py-1.5 bg-[#2B2B2B] text-white text-[11.5px] font-semibold rounded shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-slate-700">
-                              {item.label}
+                            <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#0C242C] text-white text-xs font-bold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/15">
+                              {sub.label}
                             </div>
                           )}
                         </NavLink>
                       );
-                    } else if (item.action) {
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => {
-                            item.action();
-                            onCloseMobile();
-                          }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-sm text-xs font-semibold text-slate-100 hover:bg-[#1D5868] hover:text-white transition-all text-left group relative"
-                        >
-                          <ItemIcon size={16} strokeWidth={2.2} className="flex-shrink-0 text-[#52B74A]" />
-                          {!collapsed && (
-                            <span className="truncate leading-tight text-[12.5px]">{item.label}</span>
-                          )}
-                          {collapsed && (
-                            <div className="absolute left-full ml-2 px-3 py-1.5 bg-[#2B2B2B] text-white text-[11.5px] font-semibold rounded shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-slate-700">
-                              {item.label}
-                            </div>
-                          )}
-                        </button>
-                      );
-                    }
-                    return null;
-                  })}
-                </div>
-              )}
-            </div>
-          );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // Action Items (Complaints, Reports, Settings)
+          if (section.type === 'action') {
+            return (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => {
+                  section.onClick();
+                  onCloseMobile();
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-extrabold text-slate-300 hover:bg-white/10 hover:text-white transition-all text-left group relative"
+              >
+                <SectionIcon size={19} strokeWidth={2.2} className="flex-shrink-0 text-sky-400" />
+                {!collapsed && (
+                  <div className="flex flex-col min-w-0 text-left">
+                    <span className="truncate text-[13px]">{section.label}</span>
+                    {section.subtitle && (
+                      <span className="text-[10px] text-slate-400 font-semibold">{section.subtitle}</span>
+                    )}
+                  </div>
+                )}
+                {collapsed && (
+                  <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#0C242C] text-white text-xs font-bold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/15">
+                    {section.label}
+                  </div>
+                )}
+              </button>
+            );
+          }
+
+          return null;
         })}
       </div>
 
-      {/* ── Footer Info ── */}
-      {!collapsed && (
-        <div className="p-3 bg-[#11323B] border-t border-[#245767] flex items-center justify-between text-[11px] font-semibold text-slate-300">
-          <span className="truncate">KPR Food Maintenance</span>
-          <span className="px-1.5 py-0.5 rounded bg-[#52B74A] text-white text-[9.5px] font-bold">
-            v4.0
-          </span>
-        </div>
-      )}
+      {/* ── Bottom Super Admin Profile & Logout Section ── */}
+      <div className="p-3 bg-[#08181E]/90 border-t border-white/10 flex-shrink-0">
+        {!collapsed ? (
+          <div className="flex items-center justify-between gap-2 p-2 rounded-xl bg-white/5 border border-white/10">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-black text-sm shadow-md flex-shrink-0">
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-extrabold text-white truncate leading-tight">
+                  {user?.name || 'Super Admin'}
+                </span>
+                <span className="text-[10px] font-bold text-purple-300 uppercase tracking-wider truncate">
+                  {user?.role === 'super_admin'
+                    ? 'Super Admin'
+                    : user?.role === 'warden'
+                    ? 'Hostel Warden'
+                    : 'Mess Staff'}
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 transition-colors border border-red-500/30 flex-shrink-0"
+              title="Logout"
+            >
+              <LogOut size={16} strokeWidth={2.2} />
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-2">
+            <div
+              className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-black text-sm shadow-md"
+              title={user?.name || 'Super Admin'}
+            >
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors border border-red-500/30"
+              title="Logout"
+            >
+              <LogOut size={16} strokeWidth={2.2} />
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 
   return (
     <>
-      {/* Desktop Persistent Sidebar (Width expanded to 285px to fix any size truncation mistakes) */}
+      {/* Desktop Fixed Left Sidebar */}
       <aside
-        className={`hidden lg:block fixed top-0 left-0 h-screen z-30 transition-all duration-300 ease-in-out ${
-          collapsed ? 'w-[72px]' : 'w-[285px]'
+        className={`hidden lg:block fixed top-0 left-0 h-screen z-40 transition-all duration-300 ease-in-out ${
+          collapsed ? 'w-[72px]' : 'w-[250px]'
         }`}
       >
         {sidebarContent}
@@ -327,11 +405,12 @@ export default function Sidebar({
             className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
             onClick={onCloseMobile}
           />
-          <aside className="relative w-[285px] max-w-[85vw] h-full shadow-2xl z-10 animate-slide-in-left">
-            <div className="absolute top-2 right-2 z-20">
+          <aside className="relative w-[250px] max-w-[85vw] h-full shadow-2xl z-10 animate-slide-in-left">
+            <div className="absolute top-3 right-3 z-20">
               <button
+                type="button"
                 onClick={onCloseMobile}
-                className="p-1 rounded bg-[#123843] text-white"
+                className="p-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20"
               >
                 <X size={18} />
               </button>

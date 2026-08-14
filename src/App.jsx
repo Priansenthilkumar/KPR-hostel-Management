@@ -1,9 +1,11 @@
 // src/App.jsx
-import { Suspense, lazy } from 'react';
+import { useState, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import Navbar from './components/Layout/Navbar';
+import Sidebar from './components/Layout/Sidebar';
+import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
+import ComplaintBox from './components/Dashboard/ComplaintBox';
 import { useDarkMode } from './hooks/useDarkMode';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ErrorBoundary } from './components/UI/ErrorBoundary';
@@ -18,7 +20,6 @@ import AddEntry from './pages/AddEntry';
 // Parallel Hostel Management Suite
 import HostelDashboard from './pages/HostelDashboard';
 import HostelManagement from './pages/HostelManagement';
-import HostelSchedule from './pages/HostelSchedule';
 import AddHostelEntry from './pages/AddHostelEntry';
 import SuperAdminHome from './pages/SuperAdminHome';
 
@@ -65,41 +66,88 @@ function HomeRedirect() {
   return <Dashboard />;
 }
 
-function MainAppLayout() {
+function MainAppLayout({ isDark, toggle }) {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
 
-  return (
-    <div className={`min-h-screen ${isLogin ? 'bg-slate-900' : 'bg-[var(--bg-page)]'} text-[var(--text-primary)] transition-colors duration-300`}>
-      <Navbar />
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isComplaintOpen, setIsComplaintOpen] = useState(false);
 
-      <main className={`${isLogin ? 'w-full' : 'pb-16 w-full'} flex flex-col items-center`}>
+  if (isLogin) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white flex flex-col justify-center">
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/login" element={<Login />} />
-            
-            {/* Common Super Admin Home Route */}
-            <Route path="/admin-home"        element={<ProtectedRoute allowedRole="super_admin"><SuperAdminHome /></ProtectedRoute>} />
-            
-            {/* Mess Protected Routes (Mess Staff & Super Admin) */}
-            <Route path="/"                  element={<ProtectedRoute allowedRole="mess_staff"><HomeRedirect /></ProtectedRoute>} />
-            <Route path="/mess-dashboard"    element={<ProtectedRoute allowedRole="mess_staff"><Dashboard /></ProtectedRoute>} />
-            <Route path="/overview"          element={<ProtectedRoute allowedRole="mess_staff"><Overview /></ProtectedRoute>} />
-            <Route path="/menu"              element={<ProtectedRoute allowedRole="mess_staff"><FoodMenu /></ProtectedRoute>} />
-            <Route path="/add-entry"         element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
-            <Route path="/add-entry/:id"     element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
-
-            {/* Hostel Management Suite Routes (Wardens & Super Admin) */}
-            <Route path="/hostel-dashboard"  element={<ProtectedRoute allowedRole="warden"><HostelDashboard /></ProtectedRoute>} />
-            <Route path="/hostel-overview"   element={<ProtectedRoute allowedRole="warden"><HostelManagement /></ProtectedRoute>} />
-            <Route path="/hostel-add-entry"  element={<ProtectedRoute allowedRole="warden"><AddHostelEntry /></ProtectedRoute>} />
-
-            <Route path="*"                  element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </Suspense>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex flex-col">
+      {/* Modern Fixed Left Sidebar */}
+      <Sidebar
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        mobileOpen={mobileOpen}
+        onCloseMobile={() => setMobileOpen(false)}
+        onOpenComplaints={() => setIsComplaintOpen(true)}
+        isDark={isDark}
+        onToggleDark={toggle}
+      />
+
+      {/* Dynamic Top App Header */}
+      <Header
+        collapsed={sidebarCollapsed}
+        onOpenMobile={() => setMobileOpen(true)}
+        isDark={isDark}
+        onToggleDark={toggle}
+        onOpenComplaints={() => setIsComplaintOpen(true)}
+      />
+
+      {/* Main Content Viewport — Offsets dynamically for 250px / 72px left sidebar */}
+      <main
+        className={`flex-1 transition-all duration-300 ${
+          sidebarCollapsed ? 'lg:pl-[72px]' : 'lg:pl-[250px]'
+        } w-full pb-12 flex flex-col`}
+      >
+        <div className="w-full max-w-[1500px] mx-auto px-3 sm:px-6 py-4 flex-1">
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Common Super Admin Home Route */}
+              <Route path="/admin-home" element={<ProtectedRoute allowedRole="super_admin"><SuperAdminHome /></ProtectedRoute>} />
+
+              {/* Mess Protected Routes */}
+              <Route path="/" element={<ProtectedRoute allowedRole="mess_staff"><HomeRedirect /></ProtectedRoute>} />
+              <Route path="/mess-dashboard" element={<ProtectedRoute allowedRole="mess_staff"><Dashboard /></ProtectedRoute>} />
+              <Route path="/overview" element={<ProtectedRoute allowedRole="mess_staff"><Overview /></ProtectedRoute>} />
+              <Route path="/menu" element={<ProtectedRoute allowedRole="mess_staff"><FoodMenu /></ProtectedRoute>} />
+              <Route path="/add-entry" element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
+              <Route path="/add-entry/:id" element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
+
+              {/* Hostel Management Suite Routes */}
+              <Route path="/hostel-dashboard" element={<ProtectedRoute allowedRole="warden"><HostelDashboard /></ProtectedRoute>} />
+              <Route path="/hostel-overview" element={<ProtectedRoute allowedRole="warden"><HostelManagement /></ProtectedRoute>} />
+              <Route path="/hostel-add-entry" element={<ProtectedRoute allowedRole="warden"><AddHostelEntry /></ProtectedRoute>} />
+
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </div>
+
+        {/* Global Footer aligned with main content padding */}
+        <Footer />
       </main>
 
-      <Footer />
+      {/* Complaints Modal Overlay */}
+      <ComplaintBox
+        isOpen={isComplaintOpen}
+        onClose={() => setIsComplaintOpen(false)}
+      />
     </div>
   );
 }
@@ -111,7 +159,7 @@ export default function App() {
     <ErrorBoundary>
       <AuthProvider>
         <BrowserRouter>
-          <MainAppLayout />
+          <MainAppLayout isDark={isDark} toggle={toggle} />
           <Toaster
             position="top-right"
             toastOptions={{
