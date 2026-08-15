@@ -92,19 +92,19 @@ function MainAppLayout({ isDark, toggle }) {
   return (
     <div className="app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex">
       
-      {/* Sleek Narrow KPR Green Menu Button in Top-Left */}
+      {/* Small Icon-Only Green Toggle Button in Top-Left Corner */}
       <button
         type="button"
         onClick={() => setSidebarVisible((prev) => !prev)}
-        className="fixed top-3 left-3 z-50 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
-        title="Toggle Navigation Sidebar"
+        className="fixed top-3 left-3 z-50 flex items-center justify-center w-9 h-9 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
+        title={sidebarVisible ? 'Close Navigation Sidebar' : 'Open Navigation Sidebar'}
+        aria-label="Toggle Navigation Sidebar"
       >
         {sidebarVisible ? (
-          <X size={15} strokeWidth={2.5} className="text-white" />
+          <X size={18} strokeWidth={2.5} className="text-white" />
         ) : (
-          <Menu size={15} strokeWidth={2.5} className="text-white" />
+          <Menu size={18} strokeWidth={2.5} className="text-white" />
         )}
-        <span className="text-[11px] font-extrabold text-white tracking-tight">Menu</span>
       </button>
 
       {/* Dark Transparent Backdrop Overlay when Sidebar Drawer is Open */}
