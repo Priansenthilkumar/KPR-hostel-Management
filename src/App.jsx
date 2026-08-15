@@ -102,27 +102,28 @@ function MainAppLayout({ isDark, toggle }) {
         onToggleDark={toggle}
       />
 
-      {/* Small Compact Floating Toggle Button to Show Sidebar when Hidden (Desktop) */}
+      {/* Floating Toggle Button to Show Sidebar when Hidden (Desktop - Exact Green Menu Button) */}
       {!sidebarVisible && (
         <button
           type="button"
           onClick={() => setSidebarVisible(true)}
-          className="hidden lg:flex fixed top-3 left-3 z-50 items-center gap-2 px-3 py-2 rounded-xl bg-[#0C242C]/90 hover:bg-[#123843] backdrop-blur-md text-white border border-white/20 shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+          className="hidden lg:flex fixed top-4 left-4 z-50 items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
           title="Show Navigation Sidebar"
         >
-          <PanelLeft size={16} className="text-[#52B74A]" />
-          <span className="text-xs font-black">Show Menu</span>
+          <Menu size={20} strokeWidth={2.5} className="text-white" />
+          <span className="text-sm font-extrabold text-white tracking-wide">Menu</span>
         </button>
       )}
 
-      {/* Floating Hamburger Toggle Button for Small Mobile Screens Only */}
+      {/* Floating Hamburger Toggle Button for Small Mobile Screens */}
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-3 left-3 z-30 p-2.5 rounded-xl bg-[#0C242C] text-white border border-white/20 shadow-lg active:scale-95 transition-all"
+        className="lg:hidden fixed top-3 left-3 z-30 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-lg active:scale-95 transition-all border border-emerald-400/30"
         aria-label="Open Navigation Drawer"
       >
-        <Menu size={20} strokeWidth={2.2} />
+        <Menu size={19} strokeWidth={2.5} className="text-white" />
+        <span className="text-xs font-extrabold text-white">Menu</span>
       </button>
 
       {/* Main Area Flex Container: Padding dynamically shifts between lg:pl-[260px] and lg:pl-0 */}
