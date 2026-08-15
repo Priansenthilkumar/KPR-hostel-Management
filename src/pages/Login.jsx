@@ -1,7 +1,8 @@
 // src/pages/Login.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { googleAuthService } from '../services/googleAuthService';
 import kprLogo from '../assets/kprLogo.png';
 import campusBg from '../assets/campusBg.jpg';
 import Button from '../components/UI/Button';
@@ -118,7 +119,22 @@ export default function Login() {
   const [isVerifyingGoogle, setIsVerifyingGoogle] = useState(false);
   const [googleError, setGoogleError] = useState('');
 
-  // ── Open Google SSO Verification Modal ──
+  // Initialize Google OAuth 2.0 Identity API on mount
+  useEffect(() => {
+    googleAuthService.initializeGoogleAuth(
+      (googleData) => {
+        if (googleData?.email) {
+          setGoogleEmailInput(googleData.email);
+          handleVerifyGoogleAccount(googleData.email);
+        }
+      },
+      (errMessage) => {
+        console.log('Google Auth status notice:', errMessage);
+      }
+    );
+  }, [activeTab]);
+
+  // ── Open Google SSO Verification Modal & Trigger Google One-Tap ──
   const handleOpenGoogleModal = () => {
     const currentEmail = email.trim();
     if (currentEmail) {
@@ -134,6 +150,13 @@ export default function Login() {
     }
     setGoogleError('');
     setIsGoogleModalOpen(true);
+
+    // Attempt Google API One-Tap Popup
+    try {
+      googleAuthService.promptGoogleSignIn();
+    } catch {
+      // Ignore if prompt suppressed
+    }
   };
 
   // ── Verify Google Account Email & Complete Authentication ──
