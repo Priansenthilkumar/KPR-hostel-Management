@@ -123,7 +123,6 @@ export default function Login() {
   // ── Official Google OAuth 2.0 Provider Sign-In Trigger ──
   const handleGoogleSignInFlow = async () => {
     setIsAuthenticatingGoogle(true);
-    toast.loading('Redirecting to Google OAuth Sign-In...', { duration: 1000 });
 
     try {
       const res = await signInWithGoogleOAuth(activeTab);
@@ -137,15 +136,14 @@ export default function Login() {
             ? '/hostel-dashboard'
             : '/mess-dashboard');
         navigate(targetPath, { replace: true });
-      } else if (!res.cancelled) {
-        if (res.message) {
-          toast.error(res.message, { duration: 5000 });
-        }
+      } else if (res.requiresModal) {
+        handleOpenGoogleModal();
+      } else if (!res.cancelled && res.message) {
+        toast.error(res.message, { duration: 5000 });
       }
     } catch (err) {
       setIsAuthenticatingGoogle(false);
-      console.error('Google Sign In Error:', err);
-      toast.error('Google Authentication failed. Please try again.');
+      handleOpenGoogleModal();
     }
   };
 

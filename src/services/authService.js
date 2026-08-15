@@ -358,7 +358,8 @@ export const authService = {
     if (!googleUser) {
       return {
         success: false,
-        message: 'Google Sign-In was cancelled or unavailable.',
+        requiresModal: true,
+        message: 'Google popup unavailable. Please enter your Google Workspace email below.',
       };
     }
 
