@@ -102,16 +102,16 @@ function MainAppLayout({ isDark, toggle }) {
         onToggleDark={toggle}
       />
 
-      {/* Floating Toggle Button to Show Sidebar when Hidden (Desktop) */}
+      {/* Small Compact Floating Toggle Button to Show Sidebar when Hidden (Desktop) */}
       {!sidebarVisible && (
         <button
           type="button"
           onClick={() => setSidebarVisible(true)}
-          className="hidden lg:flex fixed top-4 left-4 z-50 items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#0C242C] text-white border border-white/20 shadow-2xl hover:bg-[#123843] active:scale-95 transition-all duration-200"
+          className="hidden lg:flex fixed top-3 left-3 z-50 items-center gap-2 px-3 py-2 rounded-xl bg-[#0C242C]/90 hover:bg-[#123843] backdrop-blur-md text-white border border-white/20 shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
           title="Show Navigation Sidebar"
         >
-          <PanelLeft size={18} className="text-[#52B74A]" />
-          <span className="text-xs font-bold">Show Menu</span>
+          <PanelLeft size={16} className="text-[#52B74A]" />
+          <span className="text-xs font-black">Show Menu</span>
         </button>
       )}
 
