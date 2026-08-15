@@ -37,6 +37,23 @@ export function AuthProvider({ children }) {
   const completeRegistration = (email, password, name, role) => authService.completeRegistration(email, password, name, role);
   const completePasswordReset = (email, newPassword) => authService.completePasswordReset(email, newPassword);
 
+  const signInWithGoogleOAuth = async (role, googlePayload = null) => {
+    const result = await authService.signInWithGoogleOAuth(role, googlePayload);
+    if (result.success) {
+      setUser(result.user);
+      const greeting =
+        result.user.role === 'super_admin'
+          ? 'Super Admin Control Center'
+          : result.user.role === 'warden'
+          ? 'Hostel Warden Portal'
+          : 'Mess Management Hub';
+      toast.success(`Google Verified! Welcome, ${result.user.name} (${greeting})`, { icon: '✅', duration: 4000 });
+    } else if (!result.cancelled && result.message) {
+      toast.error(result.message, { duration: 5000 });
+    }
+    return result;
+  };
+
   const isSuperAdmin = user?.role === 'super_admin';
   const isWarden = user?.role === 'warden';
   const isMessStaff = user?.role === 'mess_staff';
@@ -49,6 +66,7 @@ export function AuthProvider({ children }) {
         user,
         login,
         logout,
+        signInWithGoogleOAuth,
         completeRegistration,
         completePasswordReset,
         isSuperAdmin,

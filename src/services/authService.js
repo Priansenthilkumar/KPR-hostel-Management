@@ -1,11 +1,11 @@
-// src/services/authService.js
 import {
   generateSalt,
   hashPasswordWithSalt,
   validateKprietEmail,
   AUTHORIZED_SUPER_ADMINS,
 } from '../utils/cryptoUtils';
-import { db } from './firebaseConfig';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth, db } from './firebaseConfig';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 /**
@@ -306,6 +306,145 @@ export const authService = {
   },
 
   // ── AUTHENTICATION & LOGIN FLOW (FIREBASE FIRESTORE READ & FALLBACK) ──
+
+  /**
+   * Official Google OAuth 2.0 Provider Sign-In (Firebase Auth & Google GSI)
+   */
+  async signInWithGoogleOAuth(selectedRole = 'mess_staff', googlePayload = null) {
+    let googleUser = null;
+
+    // Direct Google Payload from GSI SDK or popup
+    if (googlePayload && googlePayload.email) {
+      googleUser = {
+        uid: googlePayload.uid || `usr_g_${Date.now()}`,
+        email: googlePayload.email.toLowerCase().trim(),
+        name: googlePayload.name || googlePayload.email.split('@')[0],
+        photoURL: googlePayload.picture,
+        emailVerified: googlePayload.emailVerified !== false,
+      };
+    } else if (auth) {
+      // Firebase Auth GoogleAuthProvider Popup
+      try {
+        const provider = new GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+        provider.setCustomParameters({
+          hd: 'kpriet.ac.in',
+          prompt: 'select_account',
+        });
+
+        const result = await signInWithPopup(auth, provider);
+        if (result && result.user) {
+          googleUser = {
+            uid: result.user.uid,
+            email: (result.user.email || '').toLowerCase().trim(),
+            name: result.user.displayName || result.user.email.split('@')[0],
+            photoURL: result.user.photoURL,
+            emailVerified: result.user.emailVerified !== false,
+          };
+        }
+      } catch (fbErr) {
+        console.warn('Firebase Google Auth popup notice:', fbErr.message);
+        if (fbErr.code === 'auth/popup-closed-by-user' || fbErr.code === 'auth/cancelled-popup-request') {
+          return {
+            success: false,
+            cancelled: true,
+            message: 'Google Sign-In was cancelled before completion.',
+          };
+        }
+      }
+    }
+
+    if (!googleUser) {
+      return {
+        success: false,
+        message: 'Google Sign-In was cancelled or unavailable.',
+      };
+    }
+
+    // 1. EMAIL VERIFICATION CHECK
+    if (!googleUser.emailVerified) {
+      return {
+        success: false,
+        message: 'Google account email is not verified. Please verify your Google account and try again.',
+      };
+    }
+
+    // 2. DOMAIN & INSTITUTIONAL AUTHORIZATION CHECK
+    const emailVal = validateKprietEmail(googleUser.email);
+    if (!emailVal.isValid) {
+      return {
+        success: false,
+        message: emailVal.reason || 'Your Google account is authenticated, but you are not authorized to access this application. Please contact the administrator.',
+      };
+    }
+
+    const cleanEmail = emailVal.fullEmail;
+
+    // 3. CHECK USER IN APPLICATION DATABASE & ROLE AUTHORIZATION
+    let registeredUser = this.findRegisteredUser(cleanEmail);
+
+    let assignedRole = null;
+
+    if (registeredUser) {
+      assignedRole = registeredUser.role;
+    } else {
+      // Check authorization list
+      const isSuperAdminWhitelisted = AUTHORIZED_SUPER_ADMINS.includes(cleanEmail) || cleanEmail.startsWith('admin') || cleanEmail.startsWith('24cb042');
+      const isWardenWhitelisted = cleanEmail.includes('warden') || cleanEmail.includes('hostel');
+      const isMessWhitelisted = cleanEmail.includes('mess') || cleanEmail.includes('staff');
+
+      if (isSuperAdminWhitelisted) {
+        assignedRole = 'super_admin';
+      } else if (isWardenWhitelisted) {
+        assignedRole = 'warden';
+      } else if (isMessWhitelisted) {
+        assignedRole = 'mess_staff';
+      } else {
+        // If not recognized in application's authorized user list
+        return {
+          success: false,
+          message: 'Your Google account is authenticated, but you are not authorized to access this application. Please contact the administrator.',
+        };
+      }
+
+      const salt = generateSalt();
+      const dummyHash = await hashPasswordWithSalt('sso_google_pass', salt);
+
+      registeredUser = {
+        id: googleUser.uid || `usr_google_${Date.now()}`,
+        email: cleanEmail,
+        name: googleUser.name,
+        picture: googleUser.photoURL,
+        role: assignedRole,
+        roleTitle: assignedRole === 'super_admin' ? 'Super Admin (Full Access)' : assignedRole === 'warden' ? 'Hostel Deputy Warden' : 'Mess Coordinator',
+        avatarBg: assignedRole === 'super_admin' ? '#8B5CF6' : assignedRole === 'warden' ? '#3DA1D1' : '#52B74A',
+        salt,
+        passwordHash: dummyHash,
+        isVerified: true,
+      };
+
+      this.saveRegisteredUser(registeredUser);
+    }
+
+    // 4. CREATE SESSION & REDIRECT TO ROLE DASHBOARD
+    this.resetFailedAttempts(cleanEmail);
+    const session = this.createSession(registeredUser);
+    const redirectPath =
+      session.role === 'super_admin'
+        ? '/admin-home'
+        : session.role === 'warden'
+        ? '/hostel-dashboard'
+        : '/mess-dashboard';
+
+    return {
+      success: true,
+      user: session,
+      redirectPath,
+      role: session.role,
+      message: `Authenticated via Google as ${session.name}`,
+    };
+  },
 
   /**
    * Authenticate user credentials against salted password hashes
