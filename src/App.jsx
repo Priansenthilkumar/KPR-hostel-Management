@@ -2,7 +2,7 @@
 import { useState, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { Menu, PanelLeft } from 'lucide-react';
+import { Menu, PanelLeft, X } from 'lucide-react';
 import Sidebar from './components/Layout/Sidebar';
 import Footer from './components/Layout/Footer';
 import ComplaintBox from './components/Dashboard/ComplaintBox';
@@ -72,8 +72,8 @@ function MainAppLayout({ isDark, toggle }) {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
 
-  const [sidebarVisible, setSidebarVisible] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  // Sidebar navigation is HIDDEN by default (slide-out drawer behavior)
+  const [sidebarVisible, setSidebarVisible] = useState(false);
   const [isComplaintOpen, setIsComplaintOpen] = useState(false);
 
   if (isLogin) {
@@ -91,48 +91,43 @@ function MainAppLayout({ isDark, toggle }) {
 
   return (
     <div className="app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex">
-      {/* 260px Left Sidebar */}
+      
+      {/* Floating KPR Green Menu Button in Top-Left (Toggles Slide-out Drawer) */}
+      <button
+        type="button"
+        onClick={() => setSidebarVisible((prev) => !prev)}
+        className="fixed top-4 left-4 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
+        title="Toggle Navigation Sidebar"
+      >
+        {sidebarVisible ? (
+          <X size={20} strokeWidth={2.5} className="text-white" />
+        ) : (
+          <Menu size={20} strokeWidth={2.5} className="text-white" />
+        )}
+        <span className="text-sm font-extrabold text-white tracking-wide">Menu</span>
+      </button>
+
+      {/* Dark Transparent Backdrop Overlay when Sidebar Drawer is Open */}
+      {sidebarVisible && (
+        <div
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 transition-opacity duration-300 animate-fade-in cursor-pointer"
+          onClick={() => setSidebarVisible(false)}
+        />
+      )}
+
+      {/* Slide-out Left Sidebar Drawer */}
       <Sidebar
         sidebarVisible={sidebarVisible}
+        onClose={() => setSidebarVisible(false)}
         onHideSidebar={() => setSidebarVisible(false)}
-        mobileOpen={mobileOpen}
-        onCloseMobile={() => setMobileOpen(false)}
         onOpenComplaints={() => setIsComplaintOpen(true)}
         isDark={isDark}
         onToggleDark={toggle}
       />
 
-      {/* Floating Toggle Button to Show Sidebar when Hidden (Desktop - Exact Green Menu Button) */}
-      {!sidebarVisible && (
-        <button
-          type="button"
-          onClick={() => setSidebarVisible(true)}
-          className="hidden lg:flex fixed top-4 left-4 z-50 items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
-          title="Show Navigation Sidebar"
-        >
-          <Menu size={20} strokeWidth={2.5} className="text-white" />
-          <span className="text-sm font-extrabold text-white tracking-wide">Menu</span>
-        </button>
-      )}
-
-      {/* Floating Hamburger Toggle Button for Small Mobile Screens */}
-      <button
-        type="button"
-        onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-3 left-3 z-30 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-lg active:scale-95 transition-all border border-emerald-400/30"
-        aria-label="Open Navigation Drawer"
-      >
-        <Menu size={19} strokeWidth={2.5} className="text-white" />
-        <span className="text-xs font-extrabold text-white">Menu</span>
-      </button>
-
-      {/* Main Area Flex Container: Padding dynamically shifts between lg:pl-[260px] and lg:pl-0 */}
-      <div
-        className={`main-area flex-1 min-w-0 min-h-screen flex flex-col transition-all duration-300 ${
-          sidebarVisible ? 'lg:pl-[260px]' : 'lg:pl-0'
-        }`}
-      >
-        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-12">
+      {/* Main Area Flex Container: Occupies 100% full width at all times */}
+      <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col pl-0 transition-all duration-300">
+        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-16 sm:pt-16 pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Common Super Admin Home Route */}

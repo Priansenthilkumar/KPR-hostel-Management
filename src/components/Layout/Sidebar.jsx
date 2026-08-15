@@ -34,7 +34,8 @@ import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
 
 export default function Sidebar({
-  sidebarVisible = true,
+  sidebarVisible = false,
+  onClose,
   onHideSidebar,
   mobileOpen,
   onCloseMobile,
@@ -56,6 +57,12 @@ export default function Sidebar({
 
   const toggleSubmenu = (key) => {
     setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleCloseDrawer = () => {
+    if (onClose) onClose();
+    if (onHideSidebar) onHideSidebar();
+    if (onCloseMobile) onCloseMobile();
   };
 
   const handleExport = () => {
@@ -225,20 +232,18 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Hide Sidebar Toggle Button */}
-        {onHideSidebar && (
-          <button
-            type="button"
-            onClick={onHideSidebar}
-            className="hidden lg:flex w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white items-center justify-center border border-white/15 transition-all active:scale-95 flex-shrink-0"
-            title="Hide Sidebar"
-          >
-            <PanelLeft size={17} className="text-slate-200" />
-          </button>
-        )}
+        {/* Close Sidebar Drawer Button */}
+        <button
+          type="button"
+          onClick={handleCloseDrawer}
+          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center border border-white/15 transition-all active:scale-95 flex-shrink-0 cursor-pointer"
+          title="Close Sidebar"
+        >
+          <X size={18} className="text-white" />
+        </button>
       </div>
 
-      {/* ── Permanent 260px Navigation Items List ── */}
+      {/* ── 260px Navigation Items List ── */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 custom-sidebar-scroll">
         {navSections.map((section) => {
           const SectionIcon = section.icon;
@@ -253,7 +258,7 @@ export default function Sidebar({
               <NavLink
                 key={section.id}
                 to={section.to}
-                onClick={onCloseMobile}
+                onClick={handleCloseDrawer}
                 className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
                   isActive
                     ? 'bg-gradient-to-r from-[#52B74A] to-[#44A03C] text-white shadow-lg shadow-emerald-900/30'
@@ -304,7 +309,7 @@ export default function Sidebar({
                         <NavLink
                           key={sub.to + sub.label}
                           to={sub.to}
-                          onClick={onCloseMobile}
+                          onClick={handleCloseDrawer}
                           className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-150 ${
                             isSubActive
                               ? 'bg-[#52B74A] text-white shadow-sm font-extrabold'
@@ -330,7 +335,7 @@ export default function Sidebar({
                 type="button"
                 onClick={() => {
                   section.onClick();
-                  onCloseMobile();
+                  handleCloseDrawer();
                 }}
                 className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-300 hover:bg-white/10 hover:text-white transition-all text-left group"
               >
@@ -372,8 +377,11 @@ export default function Sidebar({
 
           <button
             type="button"
-            onClick={handleLogout}
-            className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 transition-colors border border-red-500/30 flex-shrink-0"
+            onClick={() => {
+              handleLogout();
+              handleCloseDrawer();
+            }}
+            className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 transition-colors border border-red-500/30 flex-shrink-0 cursor-pointer"
             title="Logout"
           >
             <LogOut size={16} strokeWidth={2.2} />
@@ -385,36 +393,14 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Desktop 260px Sidebar with Smooth Slide-In/Out */}
+      {/* Slide-out Sidebar Drawer with Smooth Slide-In/Out */}
       <aside
-        className={`hidden lg:block fixed top-0 left-0 h-screen w-[260px] z-40 transition-transform duration-300 ease-in-out ${
-          sidebarVisible ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed top-0 left-0 h-screen w-[260px] max-w-[85vw] z-50 transition-transform duration-300 ease-in-out ${
+          sidebarVisible || mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {sidebarContent}
       </aside>
-
-      {/* Mobile Slide-Over Drawer Overlay */}
-      {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div
-            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
-            onClick={onCloseMobile}
-          />
-          <aside className="relative w-[260px] max-w-[85vw] h-full shadow-2xl z-10 animate-slide-in-left">
-            <div className="absolute top-3 right-3 z-20">
-              <button
-                type="button"
-                onClick={onCloseMobile}
-                className="p-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            {sidebarContent}
-          </aside>
-        </div>
-      )}
     </>
   );
 }
