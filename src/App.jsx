@@ -92,19 +92,19 @@ function MainAppLayout({ isDark, toggle }) {
   return (
     <div className="app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex">
       
-      {/* Floating KPR Green Menu Button in Top-Left (Toggles Slide-out Drawer) */}
+      {/* Small Compact KPR Green Menu Button in Top-Left */}
       <button
         type="button"
         onClick={() => setSidebarVisible((prev) => !prev)}
-        className="fixed top-4 left-4 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
+        className="fixed top-3 left-3 z-50 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
         title="Toggle Navigation Sidebar"
       >
         {sidebarVisible ? (
-          <X size={20} strokeWidth={2.5} className="text-white" />
+          <X size={16} strokeWidth={2.5} className="text-white" />
         ) : (
-          <Menu size={20} strokeWidth={2.5} className="text-white" />
+          <Menu size={16} strokeWidth={2.5} className="text-white" />
         )}
-        <span className="text-sm font-extrabold text-white tracking-wide">Menu</span>
+        <span className="text-xs font-extrabold text-white">Menu</span>
       </button>
 
       {/* Dark Transparent Backdrop Overlay when Sidebar Drawer is Open */}
@@ -125,9 +125,9 @@ function MainAppLayout({ isDark, toggle }) {
         onToggleDark={toggle}
       />
 
-      {/* Main Area Flex Container: Occupies 100% full width at all times */}
+      {/* Main Area Flex Container: Occupies 100% full width with standard top padding */}
       <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col pl-0 transition-all duration-300">
-        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-16 sm:pt-16 pb-12">
+        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Common Super Admin Home Route */}
