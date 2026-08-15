@@ -3,47 +3,21 @@ import { db } from './firebaseConfig';
 import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy } from 'firebase/firestore';
 import { notificationService } from './notificationService';
 
-const STORAGE_GATEPASS_KEY = 'kpr_hostel_gatepasses_v1';
+const STORAGE_GATEPASS_KEY = 'kpr_hostel_gatepasses_v2';
 const GATEPASS_COLLECTION = 'hostel_gate_passes';
 
-const DEFAULT_GATEPASSES = [
-  {
-    id: 'KPR-GP-2026-84920',
-    studentName: 'K. Vignesh',
-    rollNo: '21CS104',
-    wardenName: 'Dr. M. Senthil',
-    block: 'Pallavan Hostel',
-    department: 'Computer Science Engineering',
-    purpose: 'Home Visit (Weekend Outing)',
-    depDate: '2026-08-15',
-    depTime: '17:30',
-    arrDate: '2026-08-17',
-    arrTime: '20:00',
-    status: 'Approved',
-    wardenRemark: 'Parents confirmed via phone call. Approved.',
-    approvedBy: 'Dr. M. Senthil',
-    approvedAt: '2026-08-14T18:00:00.000Z',
-    createdAt: '2026-08-14T17:00:00.000Z',
-  },
-  {
-    id: 'KPR-GP-2026-73912',
-    studentName: 'R. Anitha',
-    rollNo: '22EC045',
-    wardenName: 'Mrs. S. Lakshmi',
-    block: 'Thiruvalluvar GF',
-    department: 'Electronics & Communication',
-    purpose: 'Medical Appointment',
-    depDate: '2026-08-16',
-    depTime: '09:00',
-    arrDate: '2026-08-16',
-    arrTime: '18:00',
-    status: 'Pending',
-    wardenRemark: '',
-    approvedBy: null,
-    approvedAt: null,
-    createdAt: '2026-08-14T20:15:00.000Z',
-  },
-];
+const DEFAULT_GATEPASSES = [];
+
+function purgeLegacyGatePassKeys() {
+  try {
+    ['v1', 'v2', 'v3', 'legacy'].forEach((v) => {
+      localStorage.removeItem(`kpr_hostel_gatepasses_${v}`);
+    });
+    localStorage.removeItem('kpr_hostel_gatepasses_v1');
+  } catch (e) {
+    console.error('Purge legacy gatepass keys error:', e);
+  }
+}
 
 function notifyChange() {
   try {
@@ -76,13 +50,14 @@ syncGatepassesFromCloud();
 
 export const gatepassService = {
   getGatePasses() {
+    purgeLegacyGatePassKeys();
     try {
       const raw = localStorage.getItem(STORAGE_GATEPASS_KEY);
       if (raw) return JSON.parse(raw);
-      localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(DEFAULT_GATEPASSES));
-      return DEFAULT_GATEPASSES;
+      localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify([]));
+      return [];
     } catch {
-      return DEFAULT_GATEPASSES;
+      return [];
     }
   },
 
@@ -227,5 +202,17 @@ export const gatepassService = {
     }
 
     return passes;
+  },
+
+  clearAllGatePasses() {
+    try {
+      ['v1', 'v2', 'v3'].forEach((v) => {
+        localStorage.removeItem(`kpr_hostel_gatepasses_${v}`);
+      });
+      localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify([]));
+      notifyChange();
+    } catch (e) {
+      console.error('Failed to clear gate passes:', e);
+    }
   },
 };
