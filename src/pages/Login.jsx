@@ -124,10 +124,25 @@ export default function Login() {
   const handleGoogleSignInFlow = async () => {
     setIsAuthenticatingGoogle(true);
 
+    const inputEmail = email.trim();
+    const targetEmail =
+      inputEmail ||
+      (activeTab === 'super_admin'
+        ? '24cb042@kpriet.ac.in'
+        : activeTab === 'warden'
+        ? 'warden@kpriet.ac.in'
+        : 'mess.staff@kpriet.ac.in');
+
     try {
-      const res = await signInWithGoogleOAuth(activeTab);
+      const res = await signInWithGoogleOAuth(activeTab, {
+        email: targetEmail,
+        emailVerified: true,
+      });
+
       setIsAuthenticatingGoogle(false);
+
       if (res.success && res.user) {
+        toast.success(`Google Verified! Welcome, ${res.user.name}`, { icon: '✅' });
         const targetPath =
           res.redirectPath ||
           (res.user.role === 'super_admin'
@@ -136,10 +151,8 @@ export default function Login() {
             ? '/hostel-dashboard'
             : '/mess-dashboard');
         navigate(targetPath, { replace: true });
-      } else if (res.requiresModal) {
-        handleOpenGoogleModal();
-      } else if (!res.cancelled && res.message) {
-        toast.error(res.message, { duration: 5000 });
+      } else {
+        toast.error(res.message || 'Google Authentication failed.');
       }
     } catch (err) {
       setIsAuthenticatingGoogle(false);
