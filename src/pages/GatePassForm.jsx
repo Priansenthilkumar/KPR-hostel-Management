@@ -31,14 +31,12 @@ const DEPARTMENTS = [
   'Information Technology',
   'Biotechnology',
   'Chemical Engineering',
+  'Computer Science and Business Systems'
 ];
 
 const PURPOSES = [
-  'Home Visit (Weekend Outing)',
   'Medical Emergency / Hospital',
-  'Academic Project / Industrial Visit',
-  'Campus On-Duty Event',
-  'Personal Evening Outing',
+  
 ];
 
 export default function GatePassForm() {
