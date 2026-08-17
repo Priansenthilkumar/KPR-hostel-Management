@@ -30,7 +30,8 @@ import {
   Filter,
   Check,
   Power,
-  SlidersHorizontal,
+  Phone,
+  Layers,
 } from 'lucide-react';
 import { storageService } from '../services/storage';
 import { hostelService } from '../services/hostelService';
@@ -39,8 +40,6 @@ import { days } from '../data/menuData';
 import { exportToExcel } from '../utils/exportExcel';
 import ComplaintBox from '../components/Dashboard/ComplaintBox';
 import Button from '../components/UI/Button';
-import Badge from '../components/UI/Badge';
-import kprLogo from '../assets/kprLogo.png';
 import toast from 'react-hot-toast';
 
 export default function SuperAdminHome() {
@@ -64,7 +63,6 @@ export default function SuperAdminHome() {
   const [selectedDay, setSelectedDay] = useState('Monday');
   const [selectedMeal, setSelectedMeal] = useState('Breakfast');
   const [menuInputText, setMenuInputText] = useState('');
-  const [isMenuEditing, setIsMenuEditing] = useState(false);
 
   // ── 2. COOK MANAGEMENT STATE ──
   const [cookSearch, setCookSearch] = useState('');
@@ -139,7 +137,6 @@ export default function SuperAdminHome() {
 
     const updated = adminManagementService.updateMealItems(selectedDay, selectedMeal, newItems);
     setMenuState(updated);
-    setIsMenuEditing(false);
     toast.success(`Updated ${selectedDay} ${selectedMeal} menu!`, { icon: '🍲' });
   };
 
@@ -151,14 +148,10 @@ export default function SuperAdminHome() {
     }
   };
 
-  const handleDeleteMenuItem = (day, meal, dishToDelete) => {
-    if (window.confirm(`Delete "${dishToDelete}" from ${day} ${meal}?`)) {
-      const currentItems = menuState[day]?.[meal] || [];
-      const updatedItems = currentItems.filter((item) => item !== dishToDelete);
-      const updated = adminManagementService.updateMealItems(day, meal, updatedItems);
-      setMenuState(updated);
-      toast.success(`Removed "${dishToDelete}" from ${day} ${meal}`);
-    }
+  const handleDeleteMenuItem = (day, meal, item) => {
+    const updated = adminManagementService.deleteMealItem(day, meal, item);
+    setMenuState(updated);
+    toast.success(`Removed ${item} from ${day} ${meal}`);
   };
 
   // ── COOK HANDLERS ──
@@ -166,7 +159,7 @@ export default function SuperAdminHome() {
     setEditingCookId(null);
     setCookForm({
       name: '',
-      specialty: 'South Indian & Feast Special',
+      specialty: '',
       shift: 'Morning',
       contact: '',
       status: 'Active',
@@ -177,7 +170,7 @@ export default function SuperAdminHome() {
   const handleOpenEditCook = (cook) => {
     setEditingCookId(cook.id);
     setCookForm({
-      name: cook.name,
+      name: cook.name || '',
       specialty: cook.specialty || '',
       shift: cook.shift || 'Morning',
       contact: cook.contact || '',
@@ -189,49 +182,53 @@ export default function SuperAdminHome() {
   const handleSaveCook = (e) => {
     e.preventDefault();
     if (!cookForm.name.trim()) {
-      toast.error('Cook Name is required!');
+      toast.error('Cook name is required');
       return;
     }
 
     if (editingCookId) {
       adminManagementService.updateCook(editingCookId, cookForm);
-      toast.success(`Updated details for ${cookForm.name}!`, { icon: '👨‍🍳' });
+      toast.success(`Updated cook ${cookForm.name}`);
     } else {
       adminManagementService.addCook(cookForm);
-      toast.success(`Added new cook: ${cookForm.name}!`, { icon: '👨‍🍳' });
+      toast.success(`Added new cook ${cookForm.name}`);
     }
+
     setIsCookModalOpen(false);
     setCooksList(adminManagementService.getCooks());
   };
 
+  const handleToggleCookStatus = (cook) => {
+    const newStatus = cook.status === 'Active' ? 'Inactive' : 'Active';
+    adminManagementService.updateCook(cook.id, { status: newStatus });
+    toast.success(`${cook.name} marked as ${newStatus}`);
+    setCooksList(adminManagementService.getCooks());
+  };
+
   const handleDeleteCook = (cook) => {
-    if (window.confirm(`Are you sure you want to remove ${cook.name}?`)) {
+    if (window.confirm(`Delete cook profile for ${cook.name}?`)) {
       adminManagementService.deleteCook(cook.id);
+      toast.success(`Deleted ${cook.name}`);
       setCooksList(adminManagementService.getCooks());
-      toast.success(`Removed ${cook.name}`);
     }
   };
 
-  const handleToggleCookStatus = (cook) => {
-    adminManagementService.toggleCookStatus(cook.id);
-    setCooksList(adminManagementService.getCooks());
-    const newStatus = cook.status === 'Active' ? 'Inactive' : 'Active';
-    toast.success(`Set ${cook.name} to ${newStatus}`);
-  };
-
-  // Filtered Cooks
   const filteredCooks = useMemo(() => {
     return cooksList.filter((c) => {
+      const q = cookSearch.toLowerCase().trim();
       const matchSearch =
-        c.name.toLowerCase().includes(cookSearch.toLowerCase()) ||
-        c.specialty.toLowerCase().includes(cookSearch.toLowerCase()) ||
-        c.shift.toLowerCase().includes(cookSearch.toLowerCase());
-      const matchStatus = cookFilterStatus === 'all' || c.status.toLowerCase() === cookFilterStatus.toLowerCase();
+        c.name.toLowerCase().includes(q) ||
+        (c.specialty && c.specialty.toLowerCase().includes(q)) ||
+        (c.shift && c.shift.toLowerCase().includes(q));
+
+      const matchStatus =
+        cookFilterStatus === 'all' || c.status.toLowerCase() === cookFilterStatus.toLowerCase();
+
       return matchSearch && matchStatus;
     });
   }, [cooksList, cookSearch, cookFilterStatus]);
 
-  // ── HOSTEL BLOCK HANDLERS ──
+  // ── BLOCK HANDLERS ──
   const handleOpenAddBlock = () => {
     setEditingBlockId(null);
     setBlockForm({
@@ -249,7 +246,7 @@ export default function SuperAdminHome() {
   const handleOpenEditBlock = (block) => {
     setEditingBlockId(block.id);
     setBlockForm({
-      name: block.name,
+      name: block.name || '',
       code: block.code || '',
       type: block.type || 'Boys Hostel',
       capacity: block.capacity || 200,
@@ -263,44 +260,52 @@ export default function SuperAdminHome() {
   const handleSaveBlock = (e) => {
     e.preventDefault();
     if (!blockForm.name.trim()) {
-      toast.error('Hostel Block Name is required!');
+      toast.error('Block name is required');
       return;
     }
 
     if (editingBlockId) {
       adminManagementService.updateBlock(editingBlockId, blockForm);
-      toast.success(`Updated ${blockForm.name} details!`, { icon: '🏢' });
+      toast.success(`Updated block ${blockForm.name}`);
     } else {
       adminManagementService.addBlock(blockForm);
-      toast.success(`Added new block: ${blockForm.name}!`, { icon: '🏢' });
+      toast.success(`Added new hostel block ${blockForm.name}`);
     }
+
     setIsBlockModalOpen(false);
     setBlocksList(adminManagementService.getBlocks());
   };
 
+  const handleToggleBlockStatus = (block) => {
+    const newStatus = block.status === 'Active' ? 'Maintenance' : 'Active';
+    adminManagementService.updateBlock(block.id, { status: newStatus });
+    toast.success(`${block.name} status updated to ${newStatus}`);
+    setBlocksList(adminManagementService.getBlocks());
+  };
+
   const handleDeleteBlock = (block) => {
-    if (window.confirm(`Are you sure you want to delete ${block.name}? This action cannot be undone.`)) {
+    if (window.confirm(`Delete hostel block ${block.name}?`)) {
       adminManagementService.deleteBlock(block.id);
+      toast.success(`Deleted block ${block.name}`);
       setBlocksList(adminManagementService.getBlocks());
-      toast.success(`Deleted ${block.name}`);
     }
   };
 
-  const handleToggleBlockStatus = (block) => {
-    adminManagementService.toggleBlockStatus(block.id);
-    setBlocksList(adminManagementService.getBlocks());
-    const newStatus = block.status === 'Active' ? 'Inactive' : 'Active';
-    toast.success(`Set ${block.name} status to ${newStatus}`);
-  };
-
-  // Filtered Hostel Blocks
   const filteredBlocks = useMemo(() => {
     return blocksList.filter((b) => {
+      const q = blockSearch.toLowerCase().trim();
       const matchSearch =
-        b.name.toLowerCase().includes(blockSearch.toLowerCase()) ||
-        b.code.toLowerCase().includes(blockSearch.toLowerCase()) ||
-        b.warden.toLowerCase().includes(blockSearch.toLowerCase());
-      const matchType = blockFilterType === 'all' || b.type.toLowerCase().includes(blockFilterType.toLowerCase());
+        b.name.toLowerCase().includes(q) ||
+        (b.code && b.code.toLowerCase().includes(q)) ||
+        (b.warden && b.warden.toLowerCase().includes(q));
+
+      const matchType =
+        blockFilterType === 'all' ||
+        (blockFilterType === 'boys' && b.type.toLowerCase().includes('boys')) ||
+        (blockFilterType === 'girls' && b.type.toLowerCase().includes('girls')) ||
+        (blockFilterType === 'dorm' && b.type.toLowerCase().includes('dorm')) ||
+        (blockFilterType === 'pg' && b.type.toLowerCase().includes('international'));
+
       return matchSearch && matchType;
     });
   }, [blocksList, blockSearch, blockFilterType]);
@@ -308,11 +313,11 @@ export default function SuperAdminHome() {
   const handleExportFullAudit = () => {
     try {
       if (messEntries.length === 0) {
-        toast.error('No mess records to export!');
+        toast.error('No mess entries to export!');
         return;
       }
       exportToExcel(messEntries);
-      toast.success(`Exported ${messEntries.length} records to Excel file!`);
+      toast.success('Exported Executive Audit Report to Excel!', { icon: '📊' });
     } catch (err) {
       toast.error(err.message || 'Export failed');
     }
@@ -322,7 +327,7 @@ export default function SuperAdminHome() {
     <div className="super-admin-home max-w-[1500px] w-full mx-auto pt-2 sm:pt-4 pb-12 flex flex-col gap-5 sm:gap-6 page-enter">
       
       {/* ── Executive Super Admin Master Command Banner ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-950 via-[#164350] to-[#0E2730] text-white p-4 sm:p-8 shadow-2xl border border-purple-500/40">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-950 via-[#164350] to-[#0E2730] text-white p-5 sm:p-8 shadow-2xl border border-purple-500/40">
         <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-purple-600/20 blur-3xl pointer-events-none" />
         <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-[#52B74A]/15 blur-3xl pointer-events-none" />
 
@@ -376,9 +381,9 @@ export default function SuperAdminHome() {
           <button
             type="button"
             onClick={() => setActiveTab('overview')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
               activeTab === 'overview'
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
+                ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40 scale-102'
                 : 'text-slate-300 hover:bg-white/10 hover:text-white'
             }`}
           >
@@ -389,9 +394,9 @@ export default function SuperAdminHome() {
           <button
             type="button"
             onClick={() => setActiveTab('menu')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
               activeTab === 'menu'
-                ? 'bg-[#52B74A] text-white shadow-lg shadow-emerald-900/30'
+                ? 'bg-[#52B74A] text-white shadow-lg shadow-emerald-900/40 scale-102'
                 : 'text-slate-300 hover:bg-white/10 hover:text-white'
             }`}
           >
@@ -402,27 +407,27 @@ export default function SuperAdminHome() {
           <button
             type="button"
             onClick={() => setActiveTab('cooks')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
               activeTab === 'cooks'
-                ? 'bg-amber-600 text-white shadow-lg shadow-amber-900/30'
+                ? 'bg-amber-600 text-white shadow-lg shadow-amber-900/40 scale-102'
                 : 'text-slate-300 hover:bg-white/10 hover:text-white'
             }`}
           >
             <ChefHat size={16} />
-            <span>Cook Management ({cooksList.length})</span>
+            <span>Cook Roster ({cooksList.length})</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('blocks')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
               activeTab === 'blocks'
-                ? 'bg-sky-600 text-white shadow-lg shadow-sky-900/30'
+                ? 'bg-sky-600 text-white shadow-lg shadow-sky-900/40 scale-102'
                 : 'text-slate-300 hover:bg-white/10 hover:text-white'
             }`}
           >
             <Building size={16} />
-            <span>Hostel Block Management ({blocksList.length})</span>
+            <span>Hostel Infrastructure ({blocksList.length})</span>
           </button>
         </div>
       </div>
@@ -432,71 +437,71 @@ export default function SuperAdminHome() {
       ═══════════════════════════════════════ */}
       {activeTab === 'overview' && (
         <div className="flex flex-col gap-6 animate-fade-in">
-          {/* Live Metrics Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between">
+          {/* Live Executive Metrics Summary Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div className="card p-4 sm:p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider">
+                <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider truncate">
                   Mess Records
                 </span>
-                <div className="w-8 h-8 rounded-xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold">
-                  <Utensils size={16} />
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#52B74A]/20 to-emerald-600/20 text-[#52B74A] flex items-center justify-center font-bold flex-shrink-0">
+                  <Utensils size={18} />
                 </div>
               </div>
               <span className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] tabular-nums mt-2">
                 {messEntries.length}
               </span>
-              <p className="text-[11px] text-[var(--text-muted)] font-medium mt-0.5">Logged meal entries</p>
+              <p className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">Logged meal entries</p>
             </div>
 
-            <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between">
+            <div className="card p-4 sm:p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider">
+                <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider truncate">
                   Active Cooks
                 </span>
-                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold">
-                  <ChefHat size={16} />
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-600/20 text-amber-500 flex items-center justify-center font-bold flex-shrink-0">
+                  <ChefHat size={18} />
                 </div>
               </div>
               <span className="text-2xl sm:text-3xl font-black text-amber-500 tabular-nums mt-2">
                 {cooksList.filter((c) => c.status === 'Active').length}
               </span>
-              <p className="text-[11px] text-[var(--text-muted)] font-medium mt-0.5">Assigned kitchen chefs</p>
+              <p className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">Assigned kitchen chefs</p>
             </div>
 
-            <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between">
+            <div className="card p-4 sm:p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider">
+                <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider truncate">
                   Hostel Blocks
                 </span>
-                <div className="w-8 h-8 rounded-xl bg-sky-500/15 text-sky-500 flex items-center justify-center font-bold">
-                  <Building size={16} />
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500/20 to-blue-600/20 text-sky-500 flex items-center justify-center font-bold flex-shrink-0">
+                  <Building size={18} />
                 </div>
               </div>
               <span className="text-2xl sm:text-3xl font-black text-sky-500 tabular-nums mt-2">
                 {blocksList.length}
               </span>
-              <p className="text-[11px] text-[var(--text-muted)] font-medium mt-0.5">Campus hostel blocks</p>
+              <p className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">Campus hostel blocks</p>
             </div>
 
-            <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between">
+            <div className="card p-4 sm:p-5 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider">
+                <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider truncate">
                   Total Capacity
                 </span>
-                <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-500 flex items-center justify-center font-bold">
-                  <Users size={16} />
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-600/20 text-purple-500 flex items-center justify-center font-bold flex-shrink-0">
+                  <Users size={18} />
                 </div>
               </div>
               <span className="text-2xl sm:text-3xl font-black text-purple-500 tabular-nums mt-2">
                 {blocksList.reduce((acc, b) => acc + (Number(b.capacity) || 0), 0)}
               </span>
-              <p className="text-[11px] text-[var(--text-muted)] font-medium mt-0.5">Student bed capacity</p>
+              <p className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">Student bed capacity</p>
             </div>
           </div>
 
-          {/* Super Admin Control Quick Action Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Super Admin Control Launchpad */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             <div
               onClick={() => setActiveTab('menu')}
               className="card p-6 rounded-3xl border border-[var(--border)] hover:border-[#52B74A] shadow-md hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between"
@@ -524,13 +529,13 @@ export default function SuperAdminHome() {
                 <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center mb-4 font-bold group-hover:scale-110 transition-transform">
                   <ChefHat size={24} />
                 </div>
-                <h3 className="text-lg font-black text-[var(--text-primary)]">Cook Management</h3>
+                <h3 className="text-lg font-black text-[var(--text-primary)]">Cook Roster</h3>
                 <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed font-medium">
                   Add new cooks, edit specialty & shift details, and activate or deactivate kitchen staff.
                 </p>
               </div>
               <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center justify-between text-xs font-extrabold text-amber-500">
-                <span>Manage Cooks List</span>
+                <span>Manage Cook Roster</span>
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
@@ -543,7 +548,7 @@ export default function SuperAdminHome() {
                 <div className="w-12 h-12 rounded-2xl bg-sky-500/15 text-sky-500 flex items-center justify-center mb-4 font-bold group-hover:scale-110 transition-transform">
                   <Building size={24} />
                 </div>
-                <h3 className="text-lg font-black text-[var(--text-primary)]">Hostel Block Management</h3>
+                <h3 className="text-lg font-black text-[var(--text-primary)]">Hostel Infrastructure</h3>
                 <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed font-medium">
                   Add new hostel blocks, edit wardens & room capacity, filter blocks, and update statuses.
                 </p>
@@ -561,10 +566,10 @@ export default function SuperAdminHome() {
          TAB 2: MESS MENU MANAGEMENT
       ═══════════════════════════════════════ */}
       {activeTab === 'menu' && (
-        <div className="card p-6 sm:p-8 rounded-3xl border border-[var(--border)] shadow-md flex flex-col gap-6 animate-fade-in">
+        <div className="card p-5 sm:p-8 rounded-3xl border border-[var(--border)] shadow-md flex flex-col gap-6 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold flex-shrink-0">
                 <Utensils size={20} />
               </div>
               <div>
@@ -579,50 +584,66 @@ export default function SuperAdminHome() {
               variant="outline"
               size="sm"
               onClick={handleResetMenuToDefault}
-              className="text-xs font-bold flex items-center gap-1.5 text-amber-500 border-amber-500/40 hover:bg-amber-500/10"
+              className="text-xs font-bold flex items-center gap-1.5 text-amber-500 border-amber-500/40 hover:bg-amber-500/10 cursor-pointer"
             >
               <RotateCcw size={14} />
               <span>Reset Default Schedule</span>
             </Button>
           </div>
 
-          {/* Day & Meal Selector */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border)]">
-            <div>
-              <label className="block text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider mb-2">
-                Select Day *
-              </label>
-              <select
-                value={selectedDay}
-                onChange={(e) => setSelectedDay(e.target.value)}
-                className="form-select font-bold text-sm"
-              >
-                {days.map((d) => (
-                  <option key={d} value={d}>
-                    {d}
-                  </option>
-                ))}
-              </select>
+          {/* Interactive Day Pill Selector */}
+          <div>
+            <span className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider block mb-2">
+              1. Select Day of Week:
+            </span>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+              {days.map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => setSelectedDay(d)}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+                    selectedDay === d
+                      ? 'bg-[#52B74A] text-white shadow-md shadow-emerald-900/30'
+                      : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]'
+                  }`}
+                >
+                  {d}
+                </button>
+              ))}
             </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider mb-2">
-                Select Meal *
-              </label>
-              <select
-                value={selectedMeal}
-                onChange={(e) => setSelectedMeal(e.target.value)}
-                className="form-select font-bold text-sm"
-              >
-                <option value="Breakfast">Breakfast (7:30 AM - 9:00 AM)</option>
-                <option value="Lunch">Lunch (12:30 PM - 2:00 PM)</option>
-                <option value="Dinner">Dinner (7:30 PM - 9:00 PM)</option>
-              </select>
+          {/* Meal Type Pill Selector */}
+          <div>
+            <span className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider block mb-2">
+              2. Select Meal Type:
+            </span>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {[
+                { type: 'Breakfast', label: 'Breakfast', sub: '7:30 AM - 9:00 AM' },
+                { type: 'Lunch', label: 'Lunch', sub: '12:30 PM - 2:00 PM' },
+                { type: 'Dinner', label: 'Dinner', sub: '7:30 PM - 9:00 PM' },
+              ].map((m) => (
+                <button
+                  key={m.type}
+                  type="button"
+                  onClick={() => setSelectedMeal(m.type)}
+                  className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col ${
+                    selectedMeal === m.type
+                      ? 'bg-[#52B74A]/10 border-[#52B74A] text-[#52B74A] ring-2 ring-[#52B74A]/30'
+                      : 'bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-secondary)] hover:border-slate-400'
+                  }`}
+                >
+                  <span className="text-xs sm:text-sm font-black">{m.label}</span>
+                  <span className="text-[10px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">{m.sub}</span>
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Edit Form */}
-          <form onSubmit={handleSaveMenu} className="flex flex-col gap-4">
+          <form onSubmit={handleSaveMenu} className="flex flex-col gap-4 pt-2 border-t border-[var(--border)]">
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider">
@@ -653,9 +674,9 @@ export default function SuperAdminHome() {
                 }}
                 className="text-xs font-bold"
               >
-                Cancel Changes
+                Cancel
               </Button>
-              <Button type="submit" variant="success" size="sm" className="text-xs font-extrabold flex items-center gap-1.5">
+              <Button type="submit" variant="success" size="sm" className="text-xs font-extrabold flex items-center gap-1.5 shadow-md">
                 <Save size={15} />
                 <span>Save Menu Items</span>
               </Button>
@@ -663,21 +684,21 @@ export default function SuperAdminHome() {
           </form>
 
           {/* Current Food Items Cards List */}
-          <div className="mt-2">
-            <h3 className="text-sm font-extrabold text-[var(--text-primary)] uppercase tracking-wider mb-3">
-              Current Dishes in {selectedDay} ({selectedMeal}):
+          <div className="pt-3 border-t border-[var(--border)]">
+            <h3 className="text-xs font-extrabold text-[var(--text-primary)] uppercase tracking-wider mb-3">
+              Active Dishes in {selectedDay} ({selectedMeal}):
             </h3>
-            <div className="flex flex-wrap gap-2.5">
+            <div className="flex flex-wrap gap-2">
               {(menuState[selectedDay]?.[selectedMeal] || []).map((dish, idx) => (
                 <div
                   key={idx}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-extrabold text-[var(--text-primary)] shadow-xs"
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-extrabold text-[var(--text-primary)] shadow-xs"
                 >
                   <span>{dish}</span>
                   <button
                     type="button"
                     onClick={() => handleDeleteMenuItem(selectedDay, selectedMeal, dish)}
-                    className="text-red-500 hover:text-red-700 p-0.5 rounded hover:bg-red-500/10 transition-colors"
+                    className="text-red-500 hover:text-red-700 p-0.5 rounded hover:bg-red-500/10 transition-colors cursor-pointer"
                     title="Remove item"
                   >
                     <X size={14} />
@@ -693,16 +714,16 @@ export default function SuperAdminHome() {
          TAB 3: COOK MANAGEMENT
       ═══════════════════════════════════════ */}
       {activeTab === 'cooks' && (
-        <div className="card p-6 sm:p-8 rounded-3xl border border-[var(--border)] shadow-md flex flex-col gap-6 animate-fade-in">
+        <div className="card p-5 sm:p-8 rounded-3xl border border-[var(--border)] shadow-md flex flex-col gap-6 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold flex-shrink-0">
                 <ChefHat size={20} />
               </div>
               <div>
-                <h2 className="text-xl font-extrabold text-[var(--text-primary)]">Cook & Chef Management</h2>
+                <h2 className="text-xl font-extrabold text-[var(--text-primary)]">Cook Roster & Staff</h2>
                 <p className="text-xs text-[var(--text-secondary)] font-medium">
-                  Add new cooks, assign kitchen shifts, edit details, and toggle active status.
+                  Add kitchen cooks, assign shifts, edit specialty, and toggle active status.
                 </p>
               </div>
             </div>
@@ -711,7 +732,7 @@ export default function SuperAdminHome() {
               variant="warning"
               size="sm"
               onClick={handleOpenAddCook}
-              className="text-xs font-extrabold flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white"
+              className="text-xs font-extrabold flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white shadow-md cursor-pointer"
             >
               <PlusCircle size={15} />
               <span>Add New Cook</span>
@@ -723,7 +744,7 @@ export default function SuperAdminHome() {
             <div className="relative w-full sm:w-80">
               <input
                 type="text"
-                placeholder="Search cook name or shift..."
+                placeholder="Search cook name, specialty or shift..."
                 value={cookSearch}
                 onChange={(e) => setCookSearch(e.target.value)}
                 className="form-input text-xs pl-10"
@@ -745,17 +766,17 @@ export default function SuperAdminHome() {
             </div>
           </div>
 
-          {/* Cooks Datatable */}
+          {/* Cooks Datatable View */}
           <div className="overflow-x-auto rounded-2xl border border-[var(--border)] shadow-xs">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border)] text-[11px] font-extrabold uppercase text-[var(--text-muted)] tracking-wider">
-                  <th className="py-3 px-4">Cook Name</th>
-                  <th className="py-3 px-4">Specialty</th>
-                  <th className="py-3 px-4">Work Shift</th>
-                  <th className="py-3 px-4">Contact</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                  <th className="py-3.5 px-4">Cook Name</th>
+                  <th className="py-3.5 px-4">Specialty</th>
+                  <th className="py-3.5 px-4">Work Shift</th>
+                  <th className="py-3.5 px-4">Contact</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
@@ -768,18 +789,18 @@ export default function SuperAdminHome() {
                 ) : (
                   filteredCooks.map((cook) => (
                     <tr key={cook.id} className="hover:bg-[var(--bg-subtle)]/50 transition-colors">
-                      <td className="py-3 px-4 font-black text-[var(--text-primary)]">
+                      <td className="py-3.5 px-4 font-black text-[var(--text-primary)]">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold">
-                            <ChefHat size={14} />
+                          <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold flex-shrink-0">
+                            <ChefHat size={16} />
                           </div>
-                          <span>{cook.name}</span>
+                          <span className="text-sm">{cook.name}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 font-semibold text-[var(--text-secondary)]">{cook.specialty}</td>
-                      <td className="py-3 px-4 font-bold text-[var(--text-primary)]">{cook.shift}</td>
-                      <td className="py-3 px-4 font-medium text-[var(--text-muted)]">{cook.contact}</td>
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4 font-semibold text-[var(--text-secondary)]">{cook.specialty}</td>
+                      <td className="py-3.5 px-4 font-bold text-[var(--text-primary)]">{cook.shift}</td>
+                      <td className="py-3.5 px-4 font-medium text-[var(--text-muted)]">{cook.contact}</td>
+                      <td className="py-3.5 px-4">
                         <span
                           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
                             cook.status === 'Active'
@@ -795,12 +816,12 @@ export default function SuperAdminHome() {
                           {cook.status}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             type="button"
                             onClick={() => handleToggleCookStatus(cook)}
-                            className="p-1.5 rounded-lg bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 transition-colors"
+                            className="p-2 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 transition-colors cursor-pointer"
                             title="Toggle Status"
                           >
                             <Power size={14} />
@@ -808,7 +829,7 @@ export default function SuperAdminHome() {
                           <button
                             type="button"
                             onClick={() => handleOpenEditCook(cook)}
-                            className="p-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 transition-colors"
+                            className="p-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 transition-colors cursor-pointer"
                             title="Edit Cook"
                           >
                             <Edit3 size={14} />
@@ -816,7 +837,7 @@ export default function SuperAdminHome() {
                           <button
                             type="button"
                             onClick={() => handleDeleteCook(cook)}
-                            className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors"
+                            className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer"
                             title="Delete Cook"
                           >
                             <Trash2 size={14} />
@@ -843,7 +864,7 @@ export default function SuperAdminHome() {
               <button
                 type="button"
                 onClick={() => setIsCookModalOpen(false)}
-                className="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
+                className="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -923,7 +944,7 @@ export default function SuperAdminHome() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" variant="warning" size="sm" className="text-xs font-bold">
+                <Button type="submit" variant="warning" size="sm" className="text-xs font-bold shadow-md">
                   Save Cook
                 </Button>
               </div>
@@ -936,14 +957,14 @@ export default function SuperAdminHome() {
          TAB 4: HOSTEL BLOCK MANAGEMENT
       ═══════════════════════════════════════ */}
       {activeTab === 'blocks' && (
-        <div className="card p-6 sm:p-8 rounded-3xl border border-[var(--border)] shadow-md flex flex-col gap-6 animate-fade-in">
+        <div className="card p-5 sm:p-8 rounded-3xl border border-[var(--border)] shadow-md flex flex-col gap-6 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-500 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-500 flex items-center justify-center font-bold flex-shrink-0">
                 <Building size={20} />
               </div>
               <div>
-                <h2 className="text-xl font-extrabold text-[var(--text-primary)]">Hostel Block Management</h2>
+                <h2 className="text-xl font-extrabold text-[var(--text-primary)]">Hostel Infrastructure & Blocks</h2>
                 <p className="text-xs text-[var(--text-secondary)] font-medium">
                   Add hostel blocks, edit wardens, room capacity, search and filter campus blocks.
                 </p>
@@ -954,7 +975,7 @@ export default function SuperAdminHome() {
               variant="primary"
               size="sm"
               onClick={handleOpenAddBlock}
-              className="text-xs font-extrabold flex items-center gap-1.5 bg-sky-600 hover:bg-sky-500 text-white"
+              className="text-xs font-extrabold flex items-center gap-1.5 bg-sky-600 hover:bg-sky-500 text-white shadow-md cursor-pointer"
             >
               <PlusCircle size={15} />
               <span>Add New Hostel Block</span>
@@ -990,18 +1011,18 @@ export default function SuperAdminHome() {
             </div>
           </div>
 
-          {/* Hostel Blocks Datatable */}
+          {/* Hostel Blocks Datatable View */}
           <div className="overflow-x-auto rounded-2xl border border-[var(--border)] shadow-xs">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border)] text-[11px] font-extrabold uppercase text-[var(--text-muted)] tracking-wider">
-                  <th className="py-3 px-4">Block Name</th>
-                  <th className="py-3 px-4">Code</th>
-                  <th className="py-3 px-4">Hostel Type</th>
-                  <th className="py-3 px-4">Warden</th>
-                  <th className="py-3 px-4">Capacity & Rooms</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                  <th className="py-3.5 px-4">Block Name</th>
+                  <th className="py-3.5 px-4">Code</th>
+                  <th className="py-3.5 px-4">Hostel Type</th>
+                  <th className="py-3.5 px-4">Warden</th>
+                  <th className="py-3.5 px-4">Capacity & Rooms</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
@@ -1014,21 +1035,21 @@ export default function SuperAdminHome() {
                 ) : (
                   filteredBlocks.map((block) => (
                     <tr key={block.id} className="hover:bg-[var(--bg-subtle)]/50 transition-colors">
-                      <td className="py-3 px-4 font-black text-[var(--text-primary)]">
+                      <td className="py-3.5 px-4 font-black text-[var(--text-primary)]">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-500 flex items-center justify-center font-bold">
-                            <Building size={14} />
+                          <div className="w-8 h-8 rounded-xl bg-sky-500/15 text-sky-500 flex items-center justify-center font-bold flex-shrink-0">
+                            <Building size={16} />
                           </div>
-                          <span>{block.name}</span>
+                          <span className="text-sm">{block.name}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 font-mono font-bold text-sky-500">{block.code}</td>
-                      <td className="py-3 px-4 font-semibold text-[var(--text-secondary)]">{block.type}</td>
-                      <td className="py-3 px-4 font-bold text-[var(--text-primary)]">{block.warden}</td>
-                      <td className="py-3 px-4 font-medium text-[var(--text-muted)]">
+                      <td className="py-3.5 px-4 font-mono font-bold text-sky-500">{block.code}</td>
+                      <td className="py-3.5 px-4 font-semibold text-[var(--text-secondary)]">{block.type}</td>
+                      <td className="py-3.5 px-4 font-bold text-[var(--text-primary)]">{block.warden}</td>
+                      <td className="py-3.5 px-4 font-medium text-[var(--text-muted)]">
                         <span className="font-bold text-[var(--text-primary)]">{block.capacity}</span> beds ({block.rooms} rooms)
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4">
                         <span
                           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
                             block.status === 'Active'
@@ -1044,12 +1065,12 @@ export default function SuperAdminHome() {
                           {block.status}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             type="button"
                             onClick={() => handleToggleBlockStatus(block)}
-                            className="p-1.5 rounded-lg bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 transition-colors"
+                            className="p-2 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 transition-colors cursor-pointer"
                             title="Toggle Status"
                           >
                             <Power size={14} />
@@ -1057,7 +1078,7 @@ export default function SuperAdminHome() {
                           <button
                             type="button"
                             onClick={() => handleOpenEditBlock(block)}
-                            className="p-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 transition-colors"
+                            className="p-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 transition-colors cursor-pointer"
                             title="Edit Block"
                           >
                             <Edit3 size={14} />
@@ -1065,7 +1086,7 @@ export default function SuperAdminHome() {
                           <button
                             type="button"
                             onClick={() => handleDeleteBlock(block)}
-                            className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors"
+                            className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer"
                             title="Delete Block"
                           >
                             <Trash2 size={14} />
@@ -1092,7 +1113,7 @@ export default function SuperAdminHome() {
               <button
                 type="button"
                 onClick={() => setIsBlockModalOpen(false)}
-                className="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
+                className="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -1201,7 +1222,7 @@ export default function SuperAdminHome() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" size="sm" className="text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white">
+                <Button type="submit" variant="primary" size="sm" className="text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-md">
                   Save Hostel Block
                 </Button>
               </div>
