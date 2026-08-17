@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { Toaster } from 'react-hot-toast';
 import { Menu, PanelLeft, X } from 'lucide-react';
 import Sidebar from './components/Layout/Sidebar';
+import MobileBottomNav from './components/Layout/MobileBottomNav';
 import Footer from './components/Layout/Footer';
 import ComplaintBox from './components/Dashboard/ComplaintBox';
 import { useDarkMode } from './hooks/useDarkMode';
@@ -127,7 +128,7 @@ function MainAppLayout({ isDark, toggle }) {
 
       {/* Main Area Flex Container: Occupies 100% full width with standard top padding */}
       <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col pl-0 transition-all duration-300">
-        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-12">
+        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-20 md:pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Common Super Admin Home Route */}
@@ -156,6 +157,9 @@ function MainAppLayout({ isDark, toggle }) {
         {/* Global Footer sits inside main-area at bottom */}
         <Footer />
       </div>
+
+      {/* Mobile Bottom Navigation Bar (Visible only on mobile < md) */}
+      <MobileBottomNav onOpenSidebar={() => setSidebarVisible(true)} />
 
       {/* Complaints Modal Overlay */}
       <ComplaintBox

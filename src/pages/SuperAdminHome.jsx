@@ -371,8 +371,8 @@ export default function SuperAdminHome() {
       />
 
       {/* ── Control Center Mode Tabs ── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-2 rounded-2xl bg-[#123843]/40 border border-white/10 backdrop-blur-md">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center justify-between gap-3 p-2 rounded-2xl bg-[#123843]/40 border border-white/10 backdrop-blur-md overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <button
             type="button"
             onClick={() => setActiveTab('overview')}
