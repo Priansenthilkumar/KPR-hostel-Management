@@ -73,7 +73,7 @@ const DEFAULT_GATEPASSES = [
     depTime: '08:00',
     arrDate: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
     arrTime: '21:00',
-    status: 'Completed',
+    status: 'Approved',
     wardenRemark: 'Returned on schedule.',
     approvedBy: 'Dr. M. Senthil',
     approvedAt: new Date(Date.now() - 86400000 * 3).toISOString(),

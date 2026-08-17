@@ -239,7 +239,7 @@ export default function GatePassReview() {
           </div>
 
           <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
-            {['all', 'pending', 'approved', 'rejected', 'completed'].map((st) => (
+            {['all', 'pending', 'approved', 'rejected'].map((st) => (
               <button
                 key={st}
                 type="button"
@@ -347,24 +347,14 @@ export default function GatePassReview() {
                   )}
 
                   {pass.status === 'Approved' && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => handleViewReceipt(pass)}
-                        className="flex-1 min-h-[42px] px-3 py-2.5 rounded-xl bg-sky-600 text-white font-extrabold text-xs shadow-md shadow-sky-600/30 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <Printer size={15} />
-                        <span>Receipt</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleCompletePass(pass)}
-                        className="px-3 min-h-[42px] py-2.5 rounded-xl bg-purple-600 text-white font-extrabold text-xs shadow-md shadow-purple-600/30 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
-                      >
-                        <CheckCircle2 size={15} />
-                        <span>Complete</span>
-                      </button>
-                    </>
+                    <button
+                      type="button"
+                      onClick={() => handleViewReceipt(pass)}
+                      className="flex-1 min-h-[42px] px-3 py-2.5 rounded-xl bg-sky-600 text-white font-extrabold text-xs shadow-md shadow-sky-600/30 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Printer size={15} />
+                      <span>Receipt & Barcode</span>
+                    </button>
                   )}
 
                   <button
@@ -479,24 +469,14 @@ export default function GatePassReview() {
                         )}
 
                         {pass.status === 'Approved' && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => handleViewReceipt(pass)}
-                              className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-sky-600/30 btn-shine flex items-center gap-1.5 cursor-pointer"
-                            >
-                              <Printer size={13} />
-                              <span>Receipt</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleCompletePass(pass)}
-                              className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-purple-600/30 btn-shine flex items-center gap-1 cursor-pointer"
-                            >
-                              <CheckCircle2 size={13} />
-                              <span>Complete</span>
-                            </button>
-                          </>
+                          <button
+                            type="button"
+                            onClick={() => handleViewReceipt(pass)}
+                            className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-sky-600/30 btn-shine flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Printer size={13} />
+                            <span>Receipt</span>
+                          </button>
                         )}
 
                         <button
