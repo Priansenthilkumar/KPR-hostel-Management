@@ -6,7 +6,80 @@ import { notificationService } from './notificationService';
 const STORAGE_GATEPASS_KEY = 'kpr_hostel_gatepasses_v2';
 const GATEPASS_COLLECTION = 'hostel_gate_passes';
 
-const DEFAULT_GATEPASSES = [];
+const DEFAULT_GATEPASSES = [
+  {
+    id: 'KPR-GP-2026-98104',
+    studentName: 'Praveen Kumar S',
+    rollNo: '7377221CS104',
+    wardenName: 'Dr. M. Senthil',
+    block: 'Pallavan Hostel',
+    department: 'Computer Science Engineering',
+    purpose: 'Medical Emergency / Hospital',
+    depDate: new Date().toISOString().split('T')[0],
+    depTime: '16:30',
+    arrDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+    arrTime: '20:00',
+    status: 'Pending',
+    wardenRemark: '',
+    approvedBy: null,
+    approvedAt: null,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'KPR-GP-2026-44192',
+    studentName: 'Kaviarasan M',
+    rollNo: '7377221IT052',
+    wardenName: 'Prof. K. Anand',
+    block: 'Cheran Hostel',
+    department: 'Information Technology',
+    purpose: 'Academic Project / Industrial Visit',
+    depDate: new Date().toISOString().split('T')[0],
+    depTime: '09:00',
+    arrDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+    arrTime: '18:00',
+    status: 'Pending',
+    wardenRemark: '',
+    approvedBy: null,
+    approvedAt: null,
+    createdAt: new Date(Date.now() - 3600000).toISOString(),
+  },
+  {
+    id: 'KPR-GP-2026-11029',
+    studentName: 'Sneha R',
+    rollNo: '7377221EC089',
+    wardenName: 'Dr. S. Ramya',
+    block: 'Kaviri Hostel (Girls)',
+    department: 'Electronics & Communication Engineering',
+    purpose: 'Home Visit (Weekend Outing)',
+    depDate: new Date(Date.now() - 86400000).toISOString().split('T')[0],
+    depTime: '17:00',
+    arrDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+    arrTime: '19:30',
+    status: 'Approved',
+    wardenRemark: 'Parent phone confirmation verified.',
+    approvedBy: 'Dr. S. Ramya',
+    approvedAt: new Date(Date.now() - 82000000).toISOString(),
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    id: 'KPR-GP-2026-66230',
+    studentName: 'Dinesh Karthik B',
+    rollNo: '7377221ME031',
+    wardenName: 'Dr. M. Senthil',
+    block: 'Cholan Hostel',
+    department: 'Mechanical Engineering',
+    purpose: 'Campus On-Duty Event',
+    depDate: new Date(Date.now() - 86400000 * 3).toISOString().split('T')[0],
+    depTime: '08:00',
+    arrDate: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
+    arrTime: '21:00',
+    status: 'Completed',
+    wardenRemark: 'Returned on schedule.',
+    approvedBy: 'Dr. M. Senthil',
+    approvedAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+  },
+];
 
 function purgeLegacyGatePassKeys() {
   try {
@@ -53,11 +126,14 @@ export const gatepassService = {
     purgeLegacyGatePassKeys();
     try {
       const raw = localStorage.getItem(STORAGE_GATEPASS_KEY);
-      if (raw) return JSON.parse(raw);
-      localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify([]));
-      return [];
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(DEFAULT_GATEPASSES));
+      return DEFAULT_GATEPASSES;
     } catch {
-      return [];
+      return DEFAULT_GATEPASSES;
     }
   },
 
