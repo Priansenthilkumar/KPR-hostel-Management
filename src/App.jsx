@@ -134,7 +134,7 @@ function MainAppLayout({ isDark, toggle }) {
           isDark={isDark}
           onToggleDark={toggle}
         />
-        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-3 sm:pt-6 pb-20 md:pb-12">
+        <main className="flex-1 w-full max-w-[1500px] mx-auto px-3 sm:px-6 pt-3 sm:pt-6 pb-20 md:pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Common Super Admin Home Route */}

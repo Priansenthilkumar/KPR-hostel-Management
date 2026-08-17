@@ -127,7 +127,7 @@ export default function FoodMenu() {
   const currentDayMenu = activeMenu[selectedDay] || {};
 
   return (
-    <div className="max-w-[1280px] w-full mx-auto px-6 pt-8 pb-12 page-enter">
+    <div className="max-w-[1500px] w-full mx-auto pt-2 sm:pt-6 pb-12 page-enter">
       
       {/* ── Executive Header Banner ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 mb-6 rounded-2xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white shadow-md border border-[#245767]">

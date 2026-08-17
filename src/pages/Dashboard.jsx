@@ -47,7 +47,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="welcome-dashboard max-w-[1280px] w-full mx-auto px-1 sm:px-6 pt-2 sm:pt-6 pb-12 flex flex-col gap-5 sm:gap-8 page-enter">
+    <div className="welcome-dashboard max-w-[1500px] w-full mx-auto pt-2 sm:pt-6 pb-12 flex flex-col gap-5 sm:gap-8 page-enter">
       
       {/* ── Welcome Hero Banner (Centered on Mobile) ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-4 sm:p-10 shadow-xl border border-[#245767]">

@@ -106,7 +106,7 @@ export default function GatePassForm() {
   };
 
   return (
-    <div className="max-w-[1000px] w-full mx-auto px-4 sm:px-6 pt-6 pb-12 page-enter">
+    <div className="max-w-[1500px] w-full mx-auto pt-2 sm:pt-4 pb-12 page-enter">
       
       {/* Banner */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white shadow-xl border border-[#245767] mb-8">

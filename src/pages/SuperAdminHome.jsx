@@ -319,7 +319,7 @@ export default function SuperAdminHome() {
   };
 
   return (
-    <div className="super-admin-home max-w-[1500px] w-full mx-auto px-1 sm:px-6 pt-2 sm:pt-4 pb-12 flex flex-col gap-5 sm:gap-6 page-enter">
+    <div className="super-admin-home max-w-[1500px] w-full mx-auto pt-2 sm:pt-4 pb-12 flex flex-col gap-5 sm:gap-6 page-enter">
       
       {/* ── Executive Super Admin Master Command Banner ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-950 via-[#164350] to-[#0E2730] text-white p-4 sm:p-8 shadow-2xl border border-purple-500/40">
