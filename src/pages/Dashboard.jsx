@@ -47,10 +47,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="welcome-dashboard max-w-[1280px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-12 flex flex-col gap-8 page-enter">
+    <div className="welcome-dashboard max-w-[1280px] w-full mx-auto px-1 sm:px-6 pt-2 sm:pt-6 pb-12 flex flex-col gap-5 sm:gap-8 page-enter">
       
       {/* ── Welcome Hero Banner (Centered on Mobile) ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-6 sm:p-10 shadow-xl border border-[#245767]">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-4 sm:p-10 shadow-xl border border-[#245767]">
         {/* Subtle background glow */}
         <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#52B74A]/15 blur-3xl pointer-events-none" />
         <div className="absolute right-1/3 -bottom-16 w-60 h-60 rounded-full bg-[#3DA1D1]/10 blur-2xl pointer-events-none" />

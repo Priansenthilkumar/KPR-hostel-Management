@@ -77,10 +77,10 @@ export default function HostelDashboard() {
   }, [remarks]);
 
   return (
-    <div className="hostel-dashboard-page max-w-[1500px] w-full mx-auto px-4 sm:px-6 pt-4 pb-12 flex flex-col gap-6 page-enter">
+    <div className="hostel-dashboard-page max-w-[1500px] w-full mx-auto px-1 sm:px-6 pt-2 sm:pt-4 pb-12 flex flex-col gap-5 sm:gap-6 page-enter">
       
       {/* ── Welcome Hero Banner ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-6 sm:p-8 shadow-xl border border-[#245767]">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-4 sm:p-8 shadow-xl border border-[#245767]">
         <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3DA1D1]/15 blur-3xl pointer-events-none" />
         <div className="absolute -left-16 -bottom-16 w-72 h-72 rounded-full bg-[#52B74A]/15 blur-3xl pointer-events-none" />
 
@@ -146,41 +146,41 @@ export default function HostelDashboard() {
       </div>
 
       {/* ── Live Metrics Summary ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="card p-3.5 sm:p-5 rounded-2xl border border-[var(--border)] shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-extrabold uppercase text-[var(--text-muted)]">Hostel Blocks</span>
-            <Building size={16} className="text-sky-500" />
+            <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] truncate">Hostel Blocks</span>
+            <Building size={16} className="text-sky-500 flex-shrink-0" />
           </div>
-          <span className="text-2xl font-black text-sky-500 mt-2 block">{blocks.length}</span>
-          <p className="text-[11px] text-[var(--text-muted)] font-semibold mt-0.5">Active campus blocks</p>
+          <span className="text-xl sm:text-2xl font-black text-sky-500 mt-1 sm:mt-2 block">{blocks.length}</span>
+          <p className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">Active campus blocks</p>
         </div>
 
-        <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs">
+        <div className="card p-3.5 sm:p-5 rounded-2xl border border-[var(--border)] shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-extrabold uppercase text-[var(--text-muted)]">Bed Capacity</span>
-            <Users size={16} className="text-purple-500" />
+            <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] truncate">Bed Capacity</span>
+            <Users size={16} className="text-purple-500 flex-shrink-0" />
           </div>
-          <span className="text-2xl font-black text-purple-500 mt-2 block">{totalCapacity}</span>
-          <p className="text-[11px] text-[var(--text-muted)] font-semibold mt-0.5">Total student beds</p>
+          <span className="text-xl sm:text-2xl font-black text-purple-500 mt-1 sm:mt-2 block">{totalCapacity}</span>
+          <p className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">Total student beds</p>
         </div>
 
-        <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs">
+        <div className="card p-3.5 sm:p-5 rounded-2xl border border-[var(--border)] shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-extrabold uppercase text-[var(--text-muted)]">Pending Passes</span>
-            <Clock size={16} className="text-amber-500" />
+            <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] truncate">Pending Passes</span>
+            <Clock size={16} className="text-amber-500 flex-shrink-0" />
           </div>
-          <span className="text-2xl font-black text-amber-500 mt-2 block">{pendingPassesCount}</span>
-          <p className="text-[11px] text-[var(--text-muted)] font-semibold mt-0.5">Awaiting Warden review</p>
+          <span className="text-xl sm:text-2xl font-black text-amber-500 mt-1 sm:mt-2 block">{pendingPassesCount}</span>
+          <p className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">Awaiting Warden review</p>
         </div>
 
-        <div className="card p-5 rounded-2xl border border-[var(--border)] shadow-xs">
+        <div className="card p-3.5 sm:p-5 rounded-2xl border border-[var(--border)] shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-extrabold uppercase text-[var(--text-muted)]">Pending Remarks</span>
-            <AlertCircle size={16} className="text-red-500" />
+            <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] truncate">Pending Issues</span>
+            <AlertCircle size={16} className="text-red-500 flex-shrink-0" />
           </div>
-          <span className="text-2xl font-black text-red-500 mt-2 block">{pendingRemarksCount}</span>
-          <p className="text-[11px] text-[var(--text-muted)] font-semibold mt-0.5">Student issues pending</p>
+          <span className="text-xl sm:text-2xl font-black text-red-500 mt-1 sm:mt-2 block">{pendingRemarksCount}</span>
+          <p className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-semibold mt-0.5 truncate">Student issues pending</p>
         </div>
       </div>
 

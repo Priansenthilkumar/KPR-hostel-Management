@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { Toaster } from 'react-hot-toast';
 import { Menu, PanelLeft, X } from 'lucide-react';
 import Sidebar from './components/Layout/Sidebar';
+import MobileHeader from './components/Layout/MobileHeader';
 import MobileBottomNav from './components/Layout/MobileBottomNav';
 import Footer from './components/Layout/Footer';
 import ComplaintBox from './components/Dashboard/ComplaintBox';
@@ -93,11 +94,11 @@ function MainAppLayout({ isDark, toggle }) {
   return (
     <div className="app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex">
       
-      {/* Small Icon-Only Green Toggle Button in Top-Left Corner */}
+      {/* Small Icon-Only Green Toggle Button in Top-Left Corner (Desktop Only) */}
       <button
         type="button"
         onClick={() => setSidebarVisible((prev) => !prev)}
-        className="fixed top-3 left-3 z-50 flex items-center justify-center w-9 h-9 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
+        className="fixed top-3 left-3 z-50 hidden md:flex items-center justify-center w-9 h-9 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
         title={sidebarVisible ? 'Close Navigation Sidebar' : 'Open Navigation Sidebar'}
         aria-label="Toggle Navigation Sidebar"
       >
@@ -128,7 +129,12 @@ function MainAppLayout({ isDark, toggle }) {
 
       {/* Main Area Flex Container: Occupies 100% full width with standard top padding */}
       <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col pl-0 transition-all duration-300">
-        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-20 md:pb-12">
+        <MobileHeader
+          onOpenSidebar={() => setSidebarVisible(true)}
+          isDark={isDark}
+          onToggleDark={toggle}
+        />
+        <main className="flex-1 w-full max-w-[1550px] mx-auto px-3 sm:px-6 pt-3 sm:pt-6 pb-20 md:pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Common Super Admin Home Route */}
