@@ -153,7 +153,7 @@ export default function Navbar() {
               onClick={() => navigate(user?.role === 'super_admin' ? '/admin-home' : user?.role === 'warden' ? '/hostel-dashboard' : '/')}
             >
               <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#52B74A] to-[#3DA1D1] rounded-xl blur-xs opacity-40 group-hover:opacity-80 transition duration-300"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-white/30 to-sky-400/30 rounded-xl blur-xs opacity-40 group-hover:opacity-80 transition duration-300"></div>
                 <img
                   src={kprLogo}
                   alt="KPR Logo"
@@ -166,8 +166,8 @@ export default function Navbar() {
                   <span>KPR HOSTELS & MESS</span>
                 </div>
                 <div className="flex items-center gap-1 mt-0.5">
-                  <span className="inline-flex items-center gap-1 text-[9px] sm:text-[9.5px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider hidden sm:flex">
-                    <Sparkles size={10} className="text-[#52B74A]" />
+                  <span className="inline-flex items-center gap-1 text-[9px] sm:text-[9.5px] font-extrabold text-white leading-none uppercase tracking-wider hidden sm:flex">
+                    <Sparkles size={10} className="text-white" />
                     {user ? (user.role === 'super_admin' ? 'Super Admin Portal' : user.role === 'warden' ? 'Hostel Warden Portal' : 'Mess Operations') : 'Management Suite'}
                   </span>
                 </div>
@@ -458,7 +458,7 @@ export default function Navbar() {
                     <h2 className="text-sm font-extrabold text-white leading-tight font-epic-pro">
                       KPR HOSTELS & MESS
                     </h2>
-                    <span className="text-[10px] font-extrabold text-[#52B74A] leading-none uppercase tracking-wider block mt-0.5">
+                    <span className="text-[10px] font-extrabold text-white leading-none uppercase tracking-wider block mt-0.5">
                       {user?.role === 'super_admin'
                         ? 'Super Admin Portal'
                         : user?.role === 'warden'

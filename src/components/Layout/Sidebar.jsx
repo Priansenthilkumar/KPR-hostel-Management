@@ -225,7 +225,7 @@ export default function Sidebar({
             <span className="text-sm font-black text-white leading-tight tracking-tight truncate">
               {brandTitle}
             </span>
-            <span className="text-[10px] font-extrabold text-[#52B74A] uppercase tracking-wider truncate flex items-center gap-1 mt-0.5">
+            <span className="text-[10px] font-extrabold text-white uppercase tracking-wider truncate flex items-center gap-1 mt-0.5">
               <Sparkles size={11} />
               <span>{brandSubtitle}</span>
             </span>

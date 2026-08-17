@@ -138,7 +138,7 @@ export default function HostelDashboard() {
               alt="KPR Logo"
               className="h-14 w-auto object-contain bg-white/95 p-2 rounded-2xl shadow-md mb-2"
             />
-            <span className="text-[11px] font-extrabold text-[#52B74A] uppercase tracking-wider">
+            <span className="text-[11px] font-extrabold text-white uppercase tracking-wider">
               KPR Hostels
             </span>
           </div>
