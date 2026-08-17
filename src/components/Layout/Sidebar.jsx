@@ -16,7 +16,7 @@ import {
   Activity,
   MessageSquare,
   FileSpreadsheet,
-  Settings,
+  User,
   LogOut,
   ChevronDown,
   ChevronRight,
@@ -190,12 +190,30 @@ export default function Sidebar({
       onClick: handleExport,
     },
     {
-      id: 'settings',
+      id: 'profile',
       type: 'action',
-      label: 'Settings',
-      icon: Settings,
-      onClick: onToggleDark,
-      subtitle: isDark ? 'Dark Mode Active' : 'Light Mode Active',
+      label: 'My Profile',
+      icon: User,
+      onClick: () => {
+        const targetPath = isSuperAdmin
+          ? '/admin-home'
+          : isHostelUser
+          ? '/hostel-dashboard'
+          : '/mess-dashboard';
+        navigate(targetPath);
+      },
+      subtitle: user?.name
+        ? `${user.name} (${isSuperAdmin ? 'Super Admin' : isHostelUser ? 'Hostel Warden' : 'Mess Staff'})`
+        : 'User Profile Details',
+    },
+    {
+      id: 'logout',
+      type: 'action',
+      label: 'Logout',
+      icon: LogOut,
+      isDanger: true,
+      onClick: handleLogout,
+      subtitle: 'Sign out of portal session',
     },
   ];
 
@@ -327,7 +345,7 @@ export default function Sidebar({
             );
           }
 
-          // Action Items (Complaints, Reports, Settings)
+          // Action Items (Complaints, Reports, Profile, Logout)
           if (section.type === 'action') {
             return (
               <button
@@ -337,13 +355,29 @@ export default function Sidebar({
                   section.onClick();
                   handleCloseDrawer();
                 }}
-                className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-300 hover:bg-white/10 hover:text-white transition-all text-left group"
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all text-left group cursor-pointer ${
+                  section.isDanger
+                    ? 'text-red-300 hover:bg-red-500/20 hover:text-red-200'
+                    : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                }`}
               >
-                <SectionIcon size={19} strokeWidth={2.2} className="flex-shrink-0 text-sky-400" />
+                <SectionIcon
+                  size={19}
+                  strokeWidth={2.2}
+                  className={`flex-shrink-0 ${
+                    section.isDanger ? 'text-red-400' : 'text-sky-400'
+                  }`}
+                />
                 <div className="flex flex-col min-w-0 text-left">
                   <span className="truncate text-[13px]">{section.label}</span>
                   {section.subtitle && (
-                    <span className="text-[10px] text-slate-400 font-semibold">{section.subtitle}</span>
+                    <span
+                      className={`text-[10px] font-semibold ${
+                        section.isDanger ? 'text-red-400/80' : 'text-slate-400'
+                      }`}
+                    >
+                      {section.subtitle}
+                    </span>
                   )}
                 </div>
               </button>

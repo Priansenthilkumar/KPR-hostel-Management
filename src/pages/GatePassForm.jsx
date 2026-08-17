@@ -54,8 +54,8 @@ export default function GatePassForm() {
   const [form, setForm] = useState({
     studentName: '',
     rollNo: '',
-    wardenName: activeBlocks[0]?.warden || 'Dr. M. Senthil',
-    block: activeBlocks[0]?.name || 'Pallavan Hostel',
+    wardenName: activeBlocks[0]?.warden || 'NAME',
+    block: activeBlocks[0]?.name || 'BLOCK NAME ',
     department: DEPARTMENTS[0],
     purpose: PURPOSES[0],
     depDate: todayStr,
