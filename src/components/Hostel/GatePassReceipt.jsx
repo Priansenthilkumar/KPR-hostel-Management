@@ -1,5 +1,5 @@
 // src/components/Hostel/GatePassReceipt.jsx
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { ShieldCheck, Download, Printer, Sparkles, CheckCircle2, QrCode, Calendar, Clock, MapPin, Building, User, FileText } from 'lucide-react';
 import kprLogo from '../../assets/kprLogo.png';
 import Button from '../UI/Button';
