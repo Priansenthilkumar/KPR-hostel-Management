@@ -327,14 +327,14 @@ export default function SuperAdminHome() {
     <div className="super-admin-home max-w-[1500px] w-full mx-auto pt-2 sm:pt-4 pb-12 flex flex-col gap-5 sm:gap-6 page-enter">
       
       {/* ── Executive Super Admin Master Command Banner ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-950 via-[#164350] to-[#0E2730] text-white p-5 sm:p-8 shadow-2xl border border-purple-500/40">
-        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-purple-600/20 blur-3xl pointer-events-none" />
-        <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-[#52B74A]/15 blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-950 via-[#164350] to-[#0E2730] max-md:from-[#1F0B3D] max-md:via-[#2D0F50] max-md:to-[#130726] text-white p-5 sm:p-8 shadow-2xl border border-purple-500/40">
+        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-purple-600/20 max-md:bg-purple-600/30 blur-3xl pointer-events-none" />
+        <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-[#52B74A]/15 max-md:bg-amber-500/15 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row items-center text-center lg:text-left justify-between gap-6">
           <div className="max-w-2xl flex flex-col items-center lg:items-start">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-xs font-extrabold text-purple-300 mb-3 backdrop-blur-xs">
-              <Crown size={15} className="text-purple-300" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/20 max-md:bg-amber-500/20 border border-purple-400/30 max-md:border-amber-400/40 text-xs font-extrabold text-purple-300 max-md:text-amber-300 mb-3 backdrop-blur-xs">
+              <Crown size={15} className="text-purple-300 max-md:text-amber-400" />
               <span>SUPER ADMIN EXECUTIVE CONTROL CENTER</span>
             </div>
 
@@ -342,7 +342,7 @@ export default function SuperAdminHome() {
               Executive Administration Suite
             </h1>
 
-            <p className="mt-2 text-xs sm:text-sm text-[#B0D0D8] leading-relaxed max-w-xl">
+            <p className="mt-2 text-xs sm:text-sm text-[#B0D0D8] max-md:text-purple-200/80 leading-relaxed max-w-xl">
               Full master CRUD authority over <strong>Mess Menu Schedule</strong>, <strong>Cook Assignments</strong>, and <strong>Hostel Block Infrastructure</strong>.
             </p>
           </div>
@@ -352,7 +352,7 @@ export default function SuperAdminHome() {
               variant="success"
               size="md"
               onClick={handleExportFullAudit}
-              className="shadow-lg text-xs font-extrabold flex items-center gap-2"
+              className="shadow-lg text-xs font-extrabold flex items-center gap-2 max-md:bg-gradient-to-r max-md:from-purple-600 max-md:to-indigo-600 max-md:border max-md:border-purple-400/40"
             >
               <Download size={15} />
               <span>Export Audit Report</span>
@@ -376,7 +376,7 @@ export default function SuperAdminHome() {
       />
 
       {/* ── Control Center Mode Tabs ── */}
-      <div className="flex items-center justify-between gap-3 p-2 rounded-2xl bg-[#123843]/40 border border-white/10 backdrop-blur-md overflow-x-auto no-scrollbar">
+      <div className="flex items-center justify-between gap-3 p-2 rounded-2xl bg-[#123843]/40 max-md:bg-[#1B0E33]/90 border border-white/10 max-md:border-purple-500/30 backdrop-blur-md overflow-x-auto no-scrollbar">
         <div className="flex items-center gap-2 whitespace-nowrap">
           <button
             type="button"

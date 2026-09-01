@@ -230,20 +230,40 @@ export default function Sidebar({
     : 'ADMIN SYSTEM';
 
   const sidebarContent = (
-    <div className="flex flex-col h-full select-none bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] text-white border-r border-white/10 shadow-2xl overflow-hidden w-[260px]">
-      
+    <div
+      className={`flex flex-col h-full select-none text-white border-r shadow-2xl overflow-hidden w-[260px] transition-all duration-300 ${
+        isSuperAdmin
+          ? 'bg-gradient-to-b from-[#180B2B] via-[#2A104E] to-[#0E061B] border-purple-500/30'
+          : 'bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] border-white/10'
+      }`}
+    >
       {/* ── Top KPR Logo & Branding + Hide Sidebar Toggle Button ── */}
-      <div className="h-20 px-4 flex items-center justify-between gap-2 border-b border-white/10 bg-[#0A1F26]/70 backdrop-blur-md flex-shrink-0">
+      <div
+        className={`h-20 px-4 flex items-center justify-between gap-2 border-b flex-shrink-0 backdrop-blur-md ${
+          isSuperAdmin ? 'bg-[#160A29]/90 border-purple-500/30' : 'bg-[#0A1F26]/70 border-white/10'
+        }`}
+      >
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-xl bg-white p-1.5 shadow-md flex items-center justify-center flex-shrink-0 border border-white/20">
+          <div
+            className={`w-11 h-11 rounded-xl p-1.5 shadow-md flex items-center justify-center flex-shrink-0 border transition-all ${
+              isSuperAdmin
+                ? 'bg-gradient-to-br from-amber-400 via-amber-300 to-amber-500 border-amber-200/80 shadow-amber-950/50'
+                : 'bg-white border-white/20'
+            }`}
+          >
             <img src={kprLogo} alt="KPR Logo" className="w-full h-full object-contain" />
           </div>
 
           <div className="flex flex-col min-w-0">
-            <span className="text-sm font-black text-white leading-tight tracking-tight truncate">
-              {brandTitle}
+            <span className="text-sm font-black text-white leading-tight tracking-tight truncate flex items-center gap-1">
+              <span>{brandTitle}</span>
+              {isSuperAdmin && <Crown size={12} className="text-amber-400" />}
             </span>
-            <span className="text-[10px] font-extrabold text-white uppercase tracking-wider truncate flex items-center gap-1 mt-0.5">
+            <span
+              className={`text-[10px] font-extrabold uppercase tracking-wider truncate flex items-center gap-1 mt-0.5 ${
+                isSuperAdmin ? 'text-amber-300' : 'text-white'
+              }`}
+            >
               <Sparkles size={11} />
               <span>{brandSubtitle}</span>
             </span>
@@ -254,10 +274,14 @@ export default function Sidebar({
         <button
           type="button"
           onClick={handleCloseDrawer}
-          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center border border-white/15 transition-all active:scale-95 flex-shrink-0 cursor-pointer"
+          className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all active:scale-95 flex-shrink-0 cursor-pointer ${
+            isSuperAdmin
+              ? 'bg-purple-900/50 hover:bg-purple-800/80 text-amber-300 border-purple-500/40'
+              : 'bg-white/10 hover:bg-white/20 text-white border-white/15'
+          }`}
           title="Close Sidebar"
         >
-          <X size={18} className="text-white" />
+          <X size={18} />
         </button>
       </div>
 

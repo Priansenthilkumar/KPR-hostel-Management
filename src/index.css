@@ -463,3 +463,58 @@ button:hover:not(:disabled) {
   background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%) !important;
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5) !important;
 }
+
+/* ═══════════════════════════════════════
+   SUPER ADMIN EXECUTIVE MOBILE THEME SYSTEM (Mobile View Only: < 768px)
+═══════════════════════════════════════ */
+@media (max-width: 767px) {
+  .super-admin-mobile-theme {
+    --bg-page: #0C0714;
+    --bg-card: #170C2A;
+    --bg-input: #120922;
+    --bg-subtle: #1F1038;
+    --border: #3A1B6E;
+    --border-focus: #8B5CF6;
+    --text-primary: #FFFFFF;
+    --text-secondary: #DDD6FE;
+    --text-muted: #A78BFA;
+    --primary: #7C3AED;
+    --primary-hover: #6D28D9;
+    --primary-light: #8B5CF6;
+    --primary-border: #9333EA;
+    --accent: #F59E0B;
+    --accent-hover: #D97706;
+    background-color: #0C0714 !important;
+  }
+
+  .super-admin-mobile-theme .glass-panel-card {
+    background: rgba(23, 12, 42, 0.88) !important;
+    border-color: rgba(139, 92, 246, 0.25) !important;
+    backdrop-filter: blur(16px);
+  }
+
+  .super-admin-mobile-theme .sa-mobile-card {
+    background: linear-gradient(145deg, rgba(30, 16, 56, 0.9) 0%, rgba(18, 9, 34, 0.95) 100%);
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.35);
+  }
+
+  .super-admin-mobile-theme .sa-gold-badge {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(217, 119, 6, 0.12) 100%);
+    border: 1px solid rgba(251, 191, 36, 0.45);
+    color: #FDE68A;
+  }
+
+  .super-admin-mobile-theme .sa-violet-badge {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.25) 0%, rgba(109, 40, 217, 0.15) 100%);
+    border: 1px solid rgba(167, 139, 250, 0.4);
+    color: #DDD6FE;
+  }
+
+  .super-admin-mobile-theme .sa-mobile-btn-primary {
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
+    border: 1px solid rgba(216, 180, 254, 0.3) !important;
+  }
+}

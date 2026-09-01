@@ -72,7 +72,9 @@ function HomeRedirect() {
 
 function MainAppLayout({ isDark, toggle }) {
   const location = useLocation();
+  const { user } = useAuth();
   const isLogin = location.pathname === '/login';
+  const isSuperAdmin = user?.role === 'super_admin';
 
   // Sidebar navigation is HIDDEN by default (slide-out drawer behavior)
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -92,7 +94,7 @@ function MainAppLayout({ isDark, toggle }) {
   }
 
   return (
-    <div className="app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex">
+    <div className={`app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex ${isSuperAdmin ? 'super-admin-mobile-theme' : ''}`}>
       
       {/* Small Icon-Only Green Toggle Button in Top-Left Corner (Desktop Only) */}
       <button
