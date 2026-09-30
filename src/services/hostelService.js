@@ -1,10 +1,11 @@
 // src/services/hostelService.js
 /**
- * KPR HOSTELS MANAGEMENT - Backend Storage & Data Service
+ * KPR HOSTELS MANAGEMENT - Backend Storage & Data Service with Cross-Device Sync
  */
 import { db } from './firebaseConfig';
-import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { notificationService } from './notificationService';
+import { realtimeSync } from './realtimeSync';
 
 const STORAGE_DUTY_KEY = 'kpr_warden_duty_logs_v6';
 const STORAGE_REMARKS_KEY = 'kpr_student_remarks_v6';
@@ -12,11 +13,7 @@ const DUTY_COLLECTION = 'hostel_duty_logs';
 const REMARKS_COLLECTION = 'hostel_student_remarks';
 
 function notifyChange() {
-  try {
-    window.dispatchEvent(new CustomEvent('kpr_data_updated'));
-  } catch (e) {
-    console.error('Hostel event dispatch notice:', e);
-  }
+  realtimeSync.broadcast('kpr_data_updated');
 }
 
 function purgeLegacyHostelKeys() {
@@ -30,32 +27,40 @@ function purgeLegacyHostelKeys() {
   }
 }
 
-// Background Cloud Sync Routine
-async function syncHostelFromCloud() {
-  if (!db) return;
+// Real-Time Cloud Listeners via Firestore onSnapshot
+if (db) {
   try {
-    const dutySnapshot = await getDocs(query(collection(db, DUTY_COLLECTION), orderBy('createdAt', 'desc')));
-    const cloudDuty = [];
-    dutySnapshot.forEach((d) => cloudDuty.push({ id: d.id, ...d.data() }));
-    if (cloudDuty.length > 0) {
-      localStorage.setItem(STORAGE_DUTY_KEY, JSON.stringify(cloudDuty));
-    }
+    const dutyQ = query(collection(db, DUTY_COLLECTION), orderBy('createdAt', 'desc'));
+    onSnapshot(
+      dutyQ,
+      (snapshot) => {
+        const cloudDuty = [];
+        snapshot.forEach((d) => cloudDuty.push({ id: d.id, ...d.data() }));
+        if (cloudDuty.length > 0) {
+          localStorage.setItem(STORAGE_DUTY_KEY, JSON.stringify(cloudDuty));
+          notifyChange();
+        }
+      },
+      (err) => console.warn('Duty logs Firestore listener notice:', err.message)
+    );
 
-    const remarksSnapshot = await getDocs(query(collection(db, REMARKS_COLLECTION), orderBy('createdAt', 'desc')));
-    const cloudRemarks = [];
-    remarksSnapshot.forEach((d) => cloudRemarks.push({ id: d.id, ...d.data() }));
-    if (cloudRemarks.length > 0) {
-      localStorage.setItem(STORAGE_REMARKS_KEY, JSON.stringify(cloudRemarks));
-    }
-
-    notifyChange();
-  } catch (err) {
-    console.warn('Hostel Firestore sync notice:', err.message);
+    const remarksQ = query(collection(db, REMARKS_COLLECTION), orderBy('createdAt', 'desc'));
+    onSnapshot(
+      remarksQ,
+      (snapshot) => {
+        const cloudRemarks = [];
+        snapshot.forEach((d) => cloudRemarks.push({ id: d.id, ...d.data() }));
+        if (cloudRemarks.length > 0) {
+          localStorage.setItem(STORAGE_REMARKS_KEY, JSON.stringify(cloudRemarks));
+          notifyChange();
+        }
+      },
+      (err) => console.warn('Remarks Firestore listener notice:', err.message)
+    );
+  } catch (e) {
+    console.warn('Hostel realtime listeners setup notice:', e);
   }
 }
-
-// Auto sync cloud data on load
-syncHostelFromCloud();
 
 export const hostelService = {
   // ── Warden Duty Logs ──
@@ -84,11 +89,13 @@ export const hostelService = {
       console.error('Failed to save duty log:', e);
     }
 
-    // Sync to Firestore Cloud DB
+    // Sync to Firestore Cloud DB for real-time cross-device sync
     try {
-      setDoc(doc(db, DUTY_COLLECTION, newLog.id), newLog).catch((err) =>
-        console.warn('Firestore setDoc duty warning:', err)
-      );
+      if (db) {
+        setDoc(doc(db, DUTY_COLLECTION, newLog.id), newLog).catch((err) =>
+          console.warn('Firestore setDoc duty warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud duty sync error:', e);
     }
@@ -119,9 +126,11 @@ export const hostelService = {
 
     // Delete from Firestore Cloud DB
     try {
-      deleteDoc(doc(db, DUTY_COLLECTION, id)).catch((err) =>
-        console.warn('Firestore delete duty warning:', err)
-      );
+      if (db) {
+        deleteDoc(doc(db, DUTY_COLLECTION, id)).catch((err) =>
+          console.warn('Firestore delete duty warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud delete duty error:', e);
     }
@@ -161,9 +170,11 @@ export const hostelService = {
 
     // Sync to Firestore Cloud DB
     try {
-      setDoc(doc(db, REMARKS_COLLECTION, newRemark.id), newRemark).catch((err) =>
-        console.warn('Firestore setDoc remark warning:', err)
-      );
+      if (db) {
+        setDoc(doc(db, REMARKS_COLLECTION, newRemark.id), newRemark).catch((err) =>
+          console.warn('Firestore setDoc remark warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud remark sync error:', e);
     }
@@ -210,9 +221,11 @@ export const hostelService = {
     // Sync update to Firestore Cloud DB
     if (targetRemark) {
       try {
-        setDoc(doc(db, REMARKS_COLLECTION, id), targetRemark, { merge: true }).catch((err) =>
-          console.warn('Firestore update remark warning:', err)
-        );
+        if (db) {
+          setDoc(doc(db, REMARKS_COLLECTION, id), targetRemark, { merge: true }).catch((err) =>
+            console.warn('Firestore update remark warning:', err)
+          );
+        }
       } catch (e) {
         console.warn('Cloud remark update error:', e);
       }
@@ -232,9 +245,11 @@ export const hostelService = {
 
     // Delete from Firestore Cloud DB
     try {
-      deleteDoc(doc(db, REMARKS_COLLECTION, id)).catch((err) =>
-        console.warn('Firestore delete remark warning:', err)
-      );
+      if (db) {
+        deleteDoc(doc(db, REMARKS_COLLECTION, id)).catch((err) =>
+          console.warn('Firestore delete remark warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud delete remark error:', e);
     }
@@ -258,12 +273,14 @@ export const hostelService = {
 
     // Clear cloud records
     try {
-      getDocs(collection(db, DUTY_COLLECTION)).then((snapshot) => {
-        snapshot.forEach((d) => deleteDoc(doc(db, DUTY_COLLECTION, d.id)));
-      });
-      getDocs(collection(db, REMARKS_COLLECTION)).then((snapshot) => {
-        snapshot.forEach((d) => deleteDoc(doc(db, REMARKS_COLLECTION, d.id)));
-      });
+      if (db) {
+        getDocs(collection(db, DUTY_COLLECTION)).then((snapshot) => {
+          snapshot.forEach((d) => deleteDoc(doc(db, DUTY_COLLECTION, d.id)));
+        });
+        getDocs(collection(db, REMARKS_COLLECTION)).then((snapshot) => {
+          snapshot.forEach((d) => deleteDoc(doc(db, REMARKS_COLLECTION, d.id)));
+        });
+      }
     } catch (e) {
       console.warn('Cloud clear hostel error:', e);
     }

@@ -1,9 +1,17 @@
 // src/services/adminManagementService.js
+import { db } from './firebaseConfig';
+import { collection, doc, setDoc, deleteDoc, getDocs, onSnapshot } from 'firebase/firestore';
 import { menuData } from '../data/menuData';
+import { realtimeSync } from './realtimeSync';
 
 const MENU_STORAGE_KEY = 'kpr_custom_food_menu';
 const COOKS_STORAGE_KEY = 'kpr_cooks_data_v2';
 const BLOCKS_STORAGE_KEY = 'kpr_hostel_blocks_data_v2';
+
+const MENU_DOC_ID = 'current_schedule';
+const MENU_COLLECTION = 'admin_menu_schedule';
+const COOKS_COLLECTION = 'admin_cooks';
+const BLOCKS_COLLECTION = 'admin_hostel_blocks';
 
 export const DEFAULT_COOKS = [
   { id: 'cook-1', name: 'Chef Nandhakumar', specialty: 'South Indian & Feast Special', shift: 'Morning / Day', contact: '+91 98421 12345', status: 'Active' },
@@ -28,11 +36,54 @@ export const DEFAULT_HOSTEL_BLOCKS = [
 ];
 
 function dispatchEvent(eventName) {
+  realtimeSync.broadcast(eventName);
+  realtimeSync.broadcast('kpr_data_updated');
+}
+
+// Subscribe to Realtime Cloud Updates for Menu, Cooks, and Hostel Blocks
+if (db) {
   try {
-    window.dispatchEvent(new CustomEvent(eventName));
-    window.dispatchEvent(new CustomEvent('storage'));
+    onSnapshot(
+      doc(db, MENU_COLLECTION, MENU_DOC_ID),
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data?.menu) {
+            localStorage.setItem(MENU_STORAGE_KEY, JSON.stringify(data.menu));
+            dispatchEvent('kpr_menu_updated');
+          }
+        }
+      },
+      (err) => console.warn('Menu Firestore listener notice:', err.message)
+    );
+
+    onSnapshot(
+      collection(db, COOKS_COLLECTION),
+      (snapshot) => {
+        const cloudCooks = [];
+        snapshot.forEach((d) => cloudCooks.push({ id: d.id, ...d.data() }));
+        if (cloudCooks.length > 0) {
+          localStorage.setItem(COOKS_STORAGE_KEY, JSON.stringify(cloudCooks));
+          dispatchEvent('kpr_cooks_updated');
+        }
+      },
+      (err) => console.warn('Cooks Firestore listener notice:', err.message)
+    );
+
+    onSnapshot(
+      collection(db, BLOCKS_COLLECTION),
+      (snapshot) => {
+        const cloudBlocks = [];
+        snapshot.forEach((d) => cloudBlocks.push({ id: d.id, ...d.data() }));
+        if (cloudBlocks.length > 0) {
+          localStorage.setItem(BLOCKS_STORAGE_KEY, JSON.stringify(cloudBlocks));
+          dispatchEvent('kpr_blocks_updated');
+        }
+      },
+      (err) => console.warn('Blocks Firestore listener notice:', err.message)
+    );
   } catch (e) {
-    console.warn('Dispatch event notice:', e);
+    console.warn('Admin management realtime listeners setup notice:', e);
   }
 }
 
@@ -50,6 +101,18 @@ export const adminManagementService = {
   saveFullMenu(updatedMenu) {
     localStorage.setItem(MENU_STORAGE_KEY, JSON.stringify(updatedMenu));
     dispatchEvent('kpr_menu_updated');
+
+    // Sync to Firestore Cloud DB
+    try {
+      if (db) {
+        setDoc(doc(db, MENU_COLLECTION, MENU_DOC_ID), { menu: updatedMenu, updatedAt: new Date().toISOString() }).catch(
+          (err) => console.warn('Firestore setDoc menu warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud menu sync error:', e);
+    }
+
     return updatedMenu;
   },
 
@@ -68,6 +131,17 @@ export const adminManagementService = {
   resetMenu() {
     localStorage.setItem(MENU_STORAGE_KEY, JSON.stringify(menuData));
     dispatchEvent('kpr_menu_updated');
+
+    try {
+      if (db) {
+        setDoc(doc(db, MENU_COLLECTION, MENU_DOC_ID), { menu: menuData, updatedAt: new Date().toISOString() }).catch(
+          (err) => console.warn('Firestore reset menu warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud reset menu error:', e);
+    }
+
     return menuData;
   },
 
@@ -102,6 +176,18 @@ export const adminManagementService = {
     };
     cooks.unshift(newCook);
     this.saveCooks(cooks);
+
+    // Sync to Firestore Cloud DB
+    try {
+      if (db) {
+        setDoc(doc(db, COOKS_COLLECTION, newCook.id), newCook).catch((err) =>
+          console.warn('Firestore setDoc cook warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud cook sync error:', e);
+    }
+
     return newCook;
   },
 
@@ -111,12 +197,33 @@ export const adminManagementService = {
     if (idx === -1) throw new Error(`Cook ID ${id} not found`);
     cooks[idx] = { ...cooks[idx], ...updates, updatedAt: new Date().toISOString() };
     this.saveCooks(cooks);
+
+    try {
+      if (db) {
+        setDoc(doc(db, COOKS_COLLECTION, id), cooks[idx], { merge: true }).catch((err) =>
+          console.warn('Firestore update cook warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud update cook error:', e);
+    }
+
     return cooks[idx];
   },
 
   deleteCook(id) {
     const cooks = this.getCooks().filter((c) => c.id !== id);
     this.saveCooks(cooks);
+
+    try {
+      if (db) {
+        deleteDoc(doc(db, COOKS_COLLECTION, id)).catch((err) =>
+          console.warn('Firestore delete cook warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud delete cook error:', e);
+    }
   },
 
   toggleCookStatus(id) {
@@ -125,6 +232,16 @@ export const adminManagementService = {
     if (idx !== -1) {
       cooks[idx].status = cooks[idx].status === 'Active' ? 'Inactive' : 'Active';
       this.saveCooks(cooks);
+
+      try {
+        if (db) {
+          setDoc(doc(db, COOKS_COLLECTION, id), cooks[idx], { merge: true }).catch((err) =>
+            console.warn('Firestore toggle cook warning:', err)
+          );
+        }
+      } catch (e) {
+        console.warn('Cloud toggle cook status error:', e);
+      }
     }
   },
 
@@ -161,6 +278,17 @@ export const adminManagementService = {
     };
     blocks.unshift(newBlock);
     this.saveBlocks(blocks);
+
+    try {
+      if (db) {
+        setDoc(doc(db, BLOCKS_COLLECTION, newBlock.id), newBlock).catch((err) =>
+          console.warn('Firestore setDoc block warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud block sync error:', e);
+    }
+
     return newBlock;
   },
 
@@ -170,12 +298,33 @@ export const adminManagementService = {
     if (idx === -1) throw new Error(`Hostel Block ID ${id} not found`);
     blocks[idx] = { ...blocks[idx], ...updates, updatedAt: new Date().toISOString() };
     this.saveBlocks(blocks);
+
+    try {
+      if (db) {
+        setDoc(doc(db, BLOCKS_COLLECTION, id), blocks[idx], { merge: true }).catch((err) =>
+          console.warn('Firestore update block warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud update block error:', e);
+    }
+
     return blocks[idx];
   },
 
   deleteBlock(id) {
     const blocks = this.getBlocks().filter((b) => b.id !== id);
     this.saveBlocks(blocks);
+
+    try {
+      if (db) {
+        deleteDoc(doc(db, BLOCKS_COLLECTION, id)).catch((err) =>
+          console.warn('Firestore delete block warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud delete block error:', e);
+    }
   },
 
   toggleBlockStatus(id) {
@@ -184,6 +333,16 @@ export const adminManagementService = {
     if (idx !== -1) {
       blocks[idx].status = blocks[idx].status === 'Active' ? 'Inactive' : 'Active';
       this.saveBlocks(blocks);
+
+      try {
+        if (db) {
+          setDoc(doc(db, BLOCKS_COLLECTION, id), blocks[idx], { merge: true }).catch((err) =>
+            console.warn('Firestore toggle block warning:', err)
+          );
+        }
+      } catch (e) {
+        console.warn('Cloud toggle block status error:', e);
+      }
     }
   },
 };

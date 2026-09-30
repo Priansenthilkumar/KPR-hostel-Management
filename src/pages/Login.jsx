@@ -495,7 +495,7 @@ export default function Login() {
                 onClick={() => handleTabChange('super_admin')}
                 className={`flex-1 py-2 px-1 rounded-xl text-[11px] font-bold transition-all duration-200 flex items-center justify-center gap-1.5 leading-tight ${
                   activeTab === 'super_admin'
-                    ? 'bg-gradient-to-r from-purple-700 to-indigo-800 text-white shadow-md shadow-purple-900/20 scale-[1.01]'
+                    ? 'bg-[#005555] text-white shadow-md shadow-[#005555]/20 scale-[1.01]'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-white/60'
                 }`}
               >

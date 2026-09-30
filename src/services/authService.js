@@ -419,7 +419,7 @@ export const authService = {
         picture: googleUser.photoURL,
         role: assignedRole,
         roleTitle: assignedRole === 'super_admin' ? 'Super Admin (Full Access)' : assignedRole === 'warden' ? 'Hostel Deputy Warden' : 'Mess Coordinator',
-        avatarBg: assignedRole === 'super_admin' ? '#8B5CF6' : assignedRole === 'warden' ? '#3DA1D1' : '#52B74A',
+        avatarBg: assignedRole === 'super_admin' ? '#005555' : assignedRole === 'warden' ? '#3DA1D1' : '#52B74A',
         salt,
         passwordHash: dummyHash,
         isVerified: true,

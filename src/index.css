@@ -469,34 +469,34 @@ button:hover:not(:disabled) {
 ═══════════════════════════════════════ */
 @media (max-width: 767px) {
   .super-admin-mobile-theme {
-    --bg-page: #0C0714;
-    --bg-card: #170C2A;
-    --bg-input: #120922;
-    --bg-subtle: #1F1038;
-    --border: #3A1B6E;
-    --border-focus: #8B5CF6;
+    --bg-page: #001f1f;
+    --bg-card: #002b2b;
+    --bg-input: #002222;
+    --bg-subtle: #003333;
+    --border: #004444;
+    --border-focus: #005555;
     --text-primary: #FFFFFF;
-    --text-secondary: #DDD6FE;
-    --text-muted: #A78BFA;
-    --primary: #7C3AED;
-    --primary-hover: #6D28D9;
-    --primary-light: #8B5CF6;
-    --primary-border: #9333EA;
+    --text-secondary: #B2D8D8;
+    --text-muted: #80BABA;
+    --primary: #005555;
+    --primary-hover: #004444;
+    --primary-light: #006666;
+    --primary-border: #007777;
     --accent: #F59E0B;
     --accent-hover: #D97706;
-    background-color: #0C0714 !important;
+    background-color: #001f1f !important;
   }
 
   .super-admin-mobile-theme .glass-panel-card {
-    background: rgba(23, 12, 42, 0.88) !important;
-    border-color: rgba(139, 92, 246, 0.25) !important;
+    background: rgba(0, 43, 43, 0.88) !important;
+    border-color: rgba(0, 85, 85, 0.25) !important;
     backdrop-filter: blur(16px);
   }
 
   .super-admin-mobile-theme .sa-mobile-card {
-    background: linear-gradient(145deg, rgba(30, 16, 56, 0.9) 0%, rgba(18, 9, 34, 0.95) 100%);
-    border: 1px solid rgba(167, 139, 250, 0.25);
-    box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.35);
+    background: linear-gradient(145deg, rgba(0, 51, 51, 0.9) 0%, rgba(0, 34, 34, 0.95) 100%);
+    border: 1px solid rgba(0, 85, 85, 0.25);
+    box-shadow: 0 10px 30px -10px rgba(0, 85, 85, 0.35);
   }
 
   .super-admin-mobile-theme .sa-gold-badge {
@@ -506,15 +506,15 @@ button:hover:not(:disabled) {
   }
 
   .super-admin-mobile-theme .sa-violet-badge {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.25) 0%, rgba(109, 40, 217, 0.15) 100%);
-    border: 1px solid rgba(167, 139, 250, 0.4);
-    color: #DDD6FE;
+    background: linear-gradient(135deg, rgba(0, 85, 85, 0.25) 0%, rgba(0, 68, 68, 0.15) 100%);
+    border: 1px solid rgba(0, 102, 102, 0.4);
+    color: #B2D8D8;
   }
 
   .super-admin-mobile-theme .sa-mobile-btn-primary {
-    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+    background: linear-gradient(135deg, #005555 0%, #004444 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
-    border: 1px solid rgba(216, 180, 254, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 85, 85, 0.4) !important;
+    border: 1px solid rgba(0, 102, 102, 0.3) !important;
   }
 }

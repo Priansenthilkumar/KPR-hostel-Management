@@ -1,7 +1,8 @@
 // src/services/gatepassService.js
 import { db } from './firebaseConfig';
-import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { notificationService } from './notificationService';
+import { realtimeSync } from './realtimeSync';
 
 const STORAGE_GATEPASS_KEY = 'kpr_hostel_gatepasses_v2';
 const GATEPASS_COLLECTION = 'hostel_gate_passes';
@@ -31,7 +32,7 @@ const DEFAULT_GATEPASSES = [
     rollNo: '7377221IT052',
     wardenName: 'Prof. K. Anand',
     block: 'Cheran Hostel',
-    department: 'Information Technology',
+    department:'Information Technology',
     purpose: 'Academic Project / Industrial Visit',
     depDate: new Date().toISOString().split('T')[0],
     depTime: '09:00',
@@ -93,33 +94,30 @@ function purgeLegacyGatePassKeys() {
 }
 
 function notifyChange() {
+  realtimeSync.broadcast('kpr_gatepass_updated');
+  realtimeSync.broadcast('kpr_data_updated');
+}
+
+// Real-Time Cloud Subscription via Firestore onSnapshot
+if (db) {
   try {
-    window.dispatchEvent(new CustomEvent('kpr_data_updated'));
-    window.dispatchEvent(new CustomEvent('kpr_gatepass_updated'));
-    window.dispatchEvent(new CustomEvent('storage'));
+    const q = query(collection(db, GATEPASS_COLLECTION), orderBy('createdAt', 'desc'));
+    onSnapshot(
+      q,
+      (snapshot) => {
+        const cloudPasses = [];
+        snapshot.forEach((d) => cloudPasses.push({ id: d.id, ...d.data() }));
+        if (cloudPasses.length > 0) {
+          localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(cloudPasses));
+          notifyChange();
+        }
+      },
+      (err) => console.warn('Gatepasses Firestore listener notice:', err.message)
+    );
   } catch (e) {
-    console.error('Gate pass event dispatch notice:', e);
+    console.warn('Gatepasses realtime subscription notice:', e);
   }
 }
-
-// Background Cloud Sync Routine
-async function syncGatepassesFromCloud() {
-  if (!db) return;
-  try {
-    const snapshot = await getDocs(query(collection(db, GATEPASS_COLLECTION), orderBy('createdAt', 'desc')));
-    const cloudPasses = [];
-    snapshot.forEach((d) => cloudPasses.push({ id: d.id, ...d.data() }));
-    if (cloudPasses.length > 0) {
-      localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(cloudPasses));
-      notifyChange();
-    }
-  } catch (err) {
-    console.warn('Gatepass Firestore sync notice:', err.message);
-  }
-}
-
-// Auto sync cloud data on load
-syncGatepassesFromCloud();
 
 export const gatepassService = {
   getGatePasses() {
@@ -154,11 +152,13 @@ export const gatepassService = {
     localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(passes));
     notifyChange();
 
-    // Sync to Firestore Cloud DB
+    // Sync to Firestore Cloud DB for real-time cross-device sync
     try {
-      setDoc(doc(db, GATEPASS_COLLECTION, newPass.id), newPass).catch((err) =>
-        console.warn('Firestore setDoc gatepass warning:', err)
-      );
+      if (db) {
+        setDoc(doc(db, GATEPASS_COLLECTION, newPass.id), newPass).catch((err) =>
+          console.warn('Firestore setDoc gatepass warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud gatepass sync error:', e);
     }
@@ -197,9 +197,11 @@ export const gatepassService = {
 
     // Sync update to Cloud DB
     try {
-      setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true }).catch((err) =>
-        console.warn('Firestore approve gatepass warning:', err)
-      );
+      if (db) {
+        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true }).catch((err) =>
+          console.warn('Firestore approve gatepass warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud approve gatepass error:', e);
     }
@@ -238,9 +240,11 @@ export const gatepassService = {
 
     // Sync update to Cloud DB
     try {
-      setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true }).catch((err) =>
-        console.warn('Firestore reject gatepass warning:', err)
-      );
+      if (db) {
+        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true }).catch((err) =>
+          console.warn('Firestore reject gatepass warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud reject gatepass error:', e);
     }
@@ -261,6 +265,18 @@ export const gatepassService = {
 
     localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(passes));
     notifyChange();
+
+    // Sync to Cloud DB
+    try {
+      if (db) {
+        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true }).catch((err) =>
+          console.warn('Firestore complete gatepass warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud complete gatepass error:', e);
+    }
+
     return passes[idx];
   },
 
@@ -270,9 +286,11 @@ export const gatepassService = {
     notifyChange();
 
     try {
-      deleteDoc(doc(db, GATEPASS_COLLECTION, id)).catch((err) =>
-        console.warn('Firestore delete gatepass warning:', err)
-      );
+      if (db) {
+        deleteDoc(doc(db, GATEPASS_COLLECTION, id)).catch((err) =>
+          console.warn('Firestore delete gatepass warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud delete gatepass error:', e);
     }
@@ -289,6 +307,16 @@ export const gatepassService = {
       notifyChange();
     } catch (e) {
       console.error('Failed to clear gate passes:', e);
+    }
+
+    try {
+      if (db) {
+        getDocs(collection(db, GATEPASS_COLLECTION)).then((snapshot) => {
+          snapshot.forEach((d) => deleteDoc(doc(db, GATEPASS_COLLECTION, d.id)));
+        });
+      }
+    } catch (e) {
+      console.warn('Cloud clear gatepass error:', e);
     }
   },
 };

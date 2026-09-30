@@ -1,7 +1,8 @@
 // src/services/storage.js
 import { db } from './firebaseConfig';
-import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, getDocs, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { notificationService } from './notificationService';
+import { realtimeSync } from './realtimeSync';
 
 const STORAGE_KEY = 'kpr_food_entries_v6';
 const MESS_COLLECTION = 'mess_entries';
@@ -20,33 +21,29 @@ function getAll() {
 
 function save(entries) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-  try {
-    window.dispatchEvent(new CustomEvent('kpr_data_updated'));
-  } catch (e) {
-    console.error('Event dispatch notice:', e);
-  }
+  realtimeSync.broadcast('kpr_data_updated');
 }
 
-// Background Cloud Sync Routine
-async function syncMessFromCloud() {
-  if (!db) return;
+// Subscribe to Realtime Cloud Updates via Firestore onSnapshot
+if (db) {
   try {
     const q = query(collection(db, MESS_COLLECTION), orderBy('createdAt', 'desc'));
-    const querySnapshot = await getDocs(q);
-    const cloudEntries = [];
-    querySnapshot.forEach((d) => {
-      cloudEntries.push({ id: d.id, ...d.data() });
-    });
-    if (cloudEntries.length > 0) {
-      save(cloudEntries);
-    }
-  } catch (err) {
-    console.warn('Mess entries Firestore sync notice:', err.message);
+    onSnapshot(
+      q,
+      (snapshot) => {
+        const cloudEntries = [];
+        snapshot.forEach((d) => cloudEntries.push({ id: d.id, ...d.data() }));
+        if (cloudEntries.length > 0) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudEntries));
+          realtimeSync.broadcast('kpr_data_updated');
+        }
+      },
+      (err) => console.warn('Mess entries Firestore listener notice:', err.message)
+    );
+  } catch (e) {
+    console.warn('Mess entries realtime sync setup notice:', e);
   }
 }
-
-// Auto sync cloud data on load
-syncMessFromCloud();
 
 export const storageService = {
   /** Return all entries */
@@ -54,7 +51,7 @@ export const storageService = {
     return getAll();
   },
 
-  /** Add a new entry — auto-assigns a unique id */
+  /** Add a new entry — auto-assigns a unique id and syncs to cloud & all devices */
   addEntry(entry) {
     const entries = getAll();
     const newEntry = {
@@ -63,6 +60,19 @@ export const storageService = {
       createdAt: new Date().toISOString(),
     };
     entries.unshift(newEntry);
+    save(entries);
+
+    // Sync to Firestore Cloud DB for real-time cross-device sync
+    try {
+      if (db) {
+        setDoc(doc(db, MESS_COLLECTION, newEntry.id), newEntry).catch((err) =>
+          console.warn('Firestore setDoc new meal entry warning:', err)
+        );
+      }
+    } catch (e) {
+      console.warn('Cloud new meal entry error:', e);
+    }
+
     // Trigger Super Admin Real-Time Notification
     try {
       notificationService.addNotification({
@@ -88,9 +98,11 @@ export const storageService = {
 
     // Sync update to Firestore Cloud DB
     try {
-      setDoc(doc(db, MESS_COLLECTION, id), entries[idx], { merge: true }).catch((err) =>
-        console.warn('Firestore update warning:', err)
-      );
+      if (db) {
+        setDoc(doc(db, MESS_COLLECTION, id), entries[idx], { merge: true }).catch((err) =>
+          console.warn('Firestore update warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud update error:', e);
     }
@@ -105,9 +117,11 @@ export const storageService = {
 
     // Delete from Firestore Cloud DB
     try {
-      deleteDoc(doc(db, MESS_COLLECTION, id)).catch((err) =>
-        console.warn('Firestore delete warning:', err)
-      );
+      if (db) {
+        deleteDoc(doc(db, MESS_COLLECTION, id)).catch((err) =>
+          console.warn('Firestore delete warning:', err)
+        );
+      }
     } catch (e) {
       console.warn('Cloud delete error:', e);
     }
@@ -123,9 +137,11 @@ export const storageService = {
 
     // Clear cloud records
     try {
-      getDocs(collection(db, MESS_COLLECTION)).then((snapshot) => {
-        snapshot.forEach((d) => deleteDoc(doc(db, MESS_COLLECTION, d.id)));
-      });
+      if (db) {
+        getDocs(collection(db, MESS_COLLECTION)).then((snapshot) => {
+          snapshot.forEach((d) => deleteDoc(doc(db, MESS_COLLECTION, d.id)));
+        });
+      }
     } catch (e) {
       console.warn('Cloud clear error:', e);
     }
