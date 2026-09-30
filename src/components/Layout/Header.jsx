@@ -129,7 +129,7 @@ export default function Header({
         <button
           type="button"
           onClick={onOpenComplaints}
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-400/30 text-xs font-bold transition-all"
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-400/30 text-xs font-bold transition-all"
           title="Open Complaints Box"
         >
           <MessageSquare size={14} strokeWidth={2} />

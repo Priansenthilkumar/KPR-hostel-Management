@@ -17,7 +17,7 @@ export default function MobileHeader({ onOpenSidebar, isDark, onToggleDark }) {
     <header
       className={`sticky top-0 z-30 w-full backdrop-blur-xl px-3 py-2.5 flex items-center justify-between transition-all duration-300 md:hidden ${
         isSuperAdmin
-          ? 'bg-gradient-to-r from-[#180B2B]/98 via-[#2B1050]/98 to-[#130826]/98 border-b border-purple-500/30 shadow-[0_4px_20px_rgba(124,58,237,0.3)] text-white'
+          ? 'bg-gradient-to-r from-[#001f1f]/98 via-[#003333]/98 to-[#001111]/98 border-b border-teal-500/30 shadow-[0_4px_20px_rgba(0,85,85,0.3)] text-white'
           : 'bg-[#0C242C]/95 border-b border-white/10 text-white shadow-md'
       }`}
     >
@@ -62,12 +62,12 @@ export default function MobileHeader({ onOpenSidebar, isDark, onToggleDark }) {
             onClick={onToggleDark}
             className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all cursor-pointer active:scale-95 ${
               isSuperAdmin
-                ? 'bg-purple-950/60 hover:bg-purple-900/80 text-amber-300 border-purple-500/40'
+                ? 'bg-teal-950/60 hover:bg-teal-900/80 text-amber-300 border-teal-500/40'
                 : 'bg-white/10 hover:bg-white/20 text-white border-white/15'
             }`}
             title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
-            {isDark ? <Sun size={15} className="text-amber-300" /> : <Moon size={15} className="text-purple-200" />}
+            {isDark ? <Sun size={15} className="text-amber-300" /> : <Moon size={15} className="text-teal-200" />}
           </button>
         )}
 
@@ -76,7 +76,7 @@ export default function MobileHeader({ onOpenSidebar, isDark, onToggleDark }) {
           onClick={onOpenSidebar}
           className={`w-8 h-8 rounded-lg text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 ${
             isSuperAdmin
-              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-400/40 shadow-md shadow-purple-900/50'
+              ? 'bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-500 hover:to-teal-600 border border-teal-400/40 shadow-md shadow-teal-900/50'
               : 'bg-[#52B74A] hover:bg-[#44A03C] shadow-xs'
           }`}
           title="Open Menu"

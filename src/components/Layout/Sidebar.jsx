@@ -233,14 +233,14 @@ export default function Sidebar({
     <div
       className={`flex flex-col h-full select-none text-white border-r shadow-2xl overflow-hidden w-[260px] transition-all duration-300 ${
         isSuperAdmin
-          ? 'bg-gradient-to-b from-[#180B2B] via-[#2A104E] to-[#0E061B] border-purple-500/30'
+          ? 'bg-gradient-to-b from-[#001f1f] via-[#003333] to-[#001111] border-teal-500/30'
           : 'bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] border-white/10'
       }`}
     >
       {/* ── Top KPR Logo & Branding + Hide Sidebar Toggle Button ── */}
       <div
         className={`h-20 px-4 flex items-center justify-between gap-2 border-b flex-shrink-0 backdrop-blur-md ${
-          isSuperAdmin ? 'bg-[#160A29]/90 border-purple-500/30' : 'bg-[#0A1F26]/70 border-white/10'
+          isSuperAdmin ? 'bg-[#002222]/90 border-teal-500/30' : 'bg-[#0A1F26]/70 border-white/10'
         }`}
       >
         <div className="flex items-center gap-3 min-w-0">
@@ -276,7 +276,7 @@ export default function Sidebar({
           onClick={handleCloseDrawer}
           className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all active:scale-95 flex-shrink-0 cursor-pointer ${
             isSuperAdmin
-              ? 'bg-purple-900/50 hover:bg-purple-800/80 text-amber-300 border-purple-500/40'
+              ? 'bg-teal-900/50 hover:bg-teal-800/80 text-amber-300 border-teal-500/40'
               : 'bg-white/10 hover:bg-white/20 text-white border-white/15'
           }`}
           title="Close Sidebar"
@@ -416,14 +416,14 @@ export default function Sidebar({
       <div className="p-3 bg-[#08181E]/90 border-t border-white/10 flex-shrink-0">
         <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white/5 border border-white/10">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-black text-sm shadow-md flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-600 to-teal-600 text-white flex items-center justify-center font-black text-sm shadow-md flex-shrink-0">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-xs font-extrabold text-white truncate leading-tight">
                 {user?.name || (isHostelUser ? 'Hostel Warden' : isMessUser ? 'Mess Staff' : 'Super Admin')}
               </span>
-              <span className="text-[10px] font-bold text-purple-300 uppercase tracking-wider truncate">
+              <span className="text-[10px] font-bold text-teal-300 uppercase tracking-wider truncate">
                 {user?.role === 'super_admin'
                   ? 'Super Admin'
                   : isHostelUser

@@ -969,7 +969,7 @@ export default function Login() {
                       setGoogleError('');
                       handleVerifyGoogleAccount(addr);
                     }}
-                    className="px-2 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 font-extrabold text-[11px] border border-purple-200 transition-all text-center truncate cursor-pointer active:scale-95"
+                    className="px-2 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-700 font-extrabold text-[11px] border border-teal-200 transition-all text-center truncate cursor-pointer active:scale-95"
                   >
                     Super Admin
                   </button>

@@ -214,7 +214,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setIsNotifOpen(true)}
-                  className="p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/35 transition-all shadow-xs active:scale-95"
+                  className="p-2 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/35 transition-all shadow-xs active:scale-95"
                   title="Super Admin Notifications"
                 >
                   {unreadNotifCount > 0 ? (
@@ -252,7 +252,7 @@ export default function Navbar() {
                   {/* Avatar Badge Tile */}
                   <div className="relative w-7.5 h-7.5 rounded-xl bg-gradient-to-br from-[#52B74A]/30 via-emerald-600/40 to-teal-700/40 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-xs">
                     {user.role === 'super_admin' ? (
-                      <Crown size={15} className="text-purple-300" />
+                      <Crown size={15} className="text-teal-300" />
                     ) : user.role === 'warden' ? (
                       <ShieldCheck size={15} className="text-sky-300" />
                     ) : (
@@ -269,7 +269,7 @@ export default function Navbar() {
                         {user.name}
                       </span>
                       {user.role === 'super_admin' ? (
-                        <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md bg-purple-600/40 text-purple-300 border border-purple-500/50 whitespace-nowrap flex-shrink-0 shadow-xs">
+                        <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md bg-teal-600/40 text-teal-300 border border-teal-500/50 whitespace-nowrap flex-shrink-0 shadow-xs">
                           Super Admin
                         </span>
                       ) : user.role === 'warden' ? (
@@ -304,9 +304,9 @@ export default function Navbar() {
                       
                       {/* Header User Card inside Dropdown */}
                       <div className="p-3 bg-white/5 rounded-xl border border-white/10 mb-2 flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#52B74A]/30 to-purple-600/30 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#52B74A]/30 to-teal-600/30 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-sm">
                           {user.role === 'super_admin' ? (
-                            <Crown size={20} className="text-purple-300" />
+                            <Crown size={20} className="text-teal-300" />
                           ) : user.role === 'warden' ? (
                             <ShieldCheck size={20} className="text-sky-300" />
                           ) : (
@@ -353,7 +353,7 @@ export default function Navbar() {
                             className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left text-white"
                           >
                             <div className="flex items-center gap-2.5">
-                              <Bell size={15} className="text-purple-300" />
+                              <Bell size={15} className="text-teal-300" />
                               <span>Live Notifications Desk</span>
                             </div>
                             {unreadNotifCount > 0 && (
@@ -483,7 +483,7 @@ export default function Navbar() {
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[#52B74A]/25 via-emerald-600/30 to-teal-700/30 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-xs">
                       {user.role === 'super_admin' ? (
-                        <Crown size={18} className="text-purple-300" />
+                        <Crown size={18} className="text-teal-300" />
                       ) : user.role === 'warden' ? (
                         <ShieldCheck size={18} className="text-sky-300" />
                       ) : (
@@ -495,7 +495,7 @@ export default function Navbar() {
                       <div className="flex items-center gap-1.5">
                         <span className="font-extrabold text-xs text-white truncate">{user.name}</span>
                         {user.role === 'super_admin' ? (
-                          <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-purple-600/30 text-purple-300 border border-purple-500/40">
+                          <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-teal-600/30 text-teal-300 border border-teal-500/40">
                             Admin
                           </span>
                         ) : user.role === 'warden' ? (
@@ -540,7 +540,7 @@ export default function Navbar() {
 
               {/* Super Admin Quick Switcher Bar in Mobile Drawer */}
               {user?.role === 'super_admin' && (
-                <div className="mx-4 mb-3 p-1.5 rounded-2xl bg-purple-950/90 border border-purple-500/40 flex items-center justify-between gap-1.5 text-[11px]">
+                <div className="mx-4 mb-3 p-1.5 rounded-2xl bg-teal-950/90 border border-teal-500/40 flex items-center justify-between gap-1.5 text-[11px]">
                   <button
                     type="button"
                     onClick={() => {
@@ -549,8 +549,8 @@ export default function Navbar() {
                     }}
                     className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
                       location.pathname === '/admin-home'
-                        ? 'bg-purple-600 text-white shadow-xs'
-                        : 'text-purple-300 hover:text-white'
+                        ? 'bg-teal-600 text-white shadow-xs'
+                        : 'text-teal-300 hover:text-white'
                     }`}
                   >
                     Master Home
@@ -564,7 +564,7 @@ export default function Navbar() {
                     className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
                       location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/add-entry')
                         ? 'bg-[#52B74A] text-white shadow-xs'
-                        : 'text-purple-300 hover:text-white'
+                        : 'text-teal-300 hover:text-white'
                     }`}
                   >
                     Mess Hub
@@ -578,7 +578,7 @@ export default function Navbar() {
                     className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
                       location.pathname.startsWith('/hostel')
                         ? 'bg-sky-600 text-white shadow-xs'
-                        : 'text-purple-300 hover:text-white'
+                        : 'text-teal-300 hover:text-white'
                     }`}
                   >
                     Hostel Hub
