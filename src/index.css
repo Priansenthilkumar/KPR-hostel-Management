@@ -468,34 +468,34 @@ button:hover:not(:disabled) {
    SUPER ADMIN EXECUTIVE THEME SYSTEM (All Views)
 ═══════════════════════════════════════ */
 .super-admin-mobile-theme {
-  --bg-page: #001f1f;
-  --bg-card: #002b2b;
-  --bg-input: #002222;
-  --bg-subtle: #003333;
-  --border: #004444;
+  --bg-page: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --bg-subtle: #F1F5F9;
+  --border: #E2E8F0;
   --border-focus: #005555;
-  --text-primary: #FFFFFF;
-  --text-secondary: #B2D8D8;
-  --text-muted: #80BABA;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
   --primary: #005555;
   --primary-hover: #004444;
   --primary-light: #006666;
   --primary-border: #007777;
   --accent: #F59E0B;
   --accent-hover: #D97706;
-  background-color: #001f1f !important;
+  background-color: #F8FAFC !important;
 }
 
 .super-admin-mobile-theme .glass-panel-card {
-  background: rgba(0, 43, 43, 0.88) !important;
-  border-color: rgba(0, 85, 85, 0.25) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(0, 85, 85, 0.15) !important;
   backdrop-filter: blur(16px);
 }
 
 .super-admin-mobile-theme .sa-mobile-card {
-  background: linear-gradient(145deg, rgba(0, 51, 51, 0.9) 0%, rgba(0, 34, 34, 0.95) 100%);
-  border: 1px solid rgba(0, 85, 85, 0.25);
-  box-shadow: 0 10px 30px -10px rgba(0, 85, 85, 0.35);
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(0, 85, 85, 0.15);
+  box-shadow: 0 4px 15px -3px rgba(0, 85, 85, 0.08);
 }
 
 .super-admin-mobile-theme .sa-gold-badge {
