@@ -247,24 +247,29 @@ export default function Sidebar({
 
   const sidebarContent = (
     <div
-      className={`flex flex-col h-full select-none text-white border-r shadow-2xl overflow-hidden w-[260px] transition-all duration-300 ${
+      className={`flex flex-col h-full select-none text-white border-r shadow-[20px_0_40px_rgba(0,0,0,0.5)] overflow-hidden w-[260px] transition-all duration-300 relative ${
         isSuperAdmin
-          ? 'bg-gradient-to-b from-[#001f1f] via-[#003333] to-[#001111] border-teal-500/30'
-          : 'bg-gradient-to-b from-[#0C242C] via-[#123843] to-[#091B22] border-white/10'
+          ? 'bg-[#040D12] border-teal-900/50'
+          : 'bg-[#060D14] border-white/5'
       }`}
     >
+      {/* Dynamic Ambient Glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#52B74A]/15 blur-[70px] pointer-events-none rounded-full" />
+      <div className="absolute bottom-0 right-0 w-64 h-64 bg-teal-600/10 blur-[80px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/2 -left-10 w-32 h-32 bg-sky-500/10 blur-[50px] pointer-events-none rounded-full" />
+
       {/* ── Top KPR Logo & Branding + Hide Sidebar Toggle Button ── */}
       <div
-        className={`h-20 px-4 flex items-center justify-between gap-2 border-b flex-shrink-0 backdrop-blur-md ${
-          isSuperAdmin ? 'bg-[#002222]/90 border-teal-500/30' : 'bg-[#0A1F26]/70 border-white/10'
+        className={`h-20 px-4 flex items-center justify-between gap-2 border-b flex-shrink-0 relative z-10 ${
+          isSuperAdmin ? 'bg-transparent border-teal-900/40' : 'bg-transparent border-white/10'
         }`}
       >
         <div className="flex items-center gap-3 min-w-0">
           <div
-            className={`w-11 h-11 rounded-xl p-1.5 shadow-md flex items-center justify-center flex-shrink-0 border transition-all ${
+            className={`w-11 h-11 rounded-xl p-1.5 shadow-lg flex items-center justify-center flex-shrink-0 border transition-all ${
               isSuperAdmin
-                ? 'bg-gradient-to-br from-amber-400 via-amber-300 to-amber-500 border-amber-200/80 shadow-amber-950/50'
-                : 'bg-white border-white/20'
+                ? 'bg-gradient-to-br from-[#1c5362] to-[#0a232b] border-[#52B74A]/40 shadow-[#1c5362]/50'
+                : 'bg-white/5 border-white/10 backdrop-blur-sm'
             }`}
           >
             <img src={kprLogo} alt="KPR Logo" className="w-full h-full object-contain" />
@@ -276,24 +281,23 @@ export default function Sidebar({
               {isSuperAdmin && <Crown size={12} className="text-amber-400" />}
             </span>
             <span
-              className={`text-[10px] font-extrabold uppercase tracking-wider truncate flex items-center gap-1 mt-0.5 ${
-                isSuperAdmin ? 'text-amber-300' : 'text-white'
+              className={`text-[10px] font-extrabold uppercase tracking-widest truncate flex items-center gap-1 mt-0.5 ${
+                isSuperAdmin ? 'text-[#52B74A]' : 'text-slate-400'
               }`}
             >
-              <Sparkles size={11} />
+              <Sparkles size={11} className={isSuperAdmin ? 'text-[#52B74A]' : 'text-slate-400'} />
               <span>{brandSubtitle}</span>
             </span>
           </div>
         </div>
 
-        {/* Close Sidebar Drawer Button */}
         <button
           type="button"
           onClick={handleCloseDrawer}
           className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all active:scale-95 flex-shrink-0 cursor-pointer ${
             isSuperAdmin
-              ? 'bg-teal-900/50 hover:bg-teal-800/80 text-amber-300 border-teal-500/40'
-              : 'bg-white/10 hover:bg-white/20 text-white border-white/15'
+              ? 'bg-teal-900/30 hover:bg-teal-800/60 text-[#52B74A] border-teal-900/50'
+              : 'bg-white/5 hover:bg-white/10 text-white border-white/10'
           }`}
           title="Close Sidebar"
         >
@@ -302,14 +306,16 @@ export default function Sidebar({
       </div>
 
       {/* ── 260px Navigation Items List ── */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 custom-sidebar-scroll">
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 custom-sidebar-scroll relative z-10">
         {navSections.map((section) => {
           if (section.type === 'label') {
             return (
-              <div key={section.id} className="px-3 pt-4 pb-1">
-                <span className={`text-[10px] font-extrabold uppercase tracking-wider ${isSuperAdmin ? 'text-amber-400/80' : 'text-slate-400'}`}>
+              <div key={section.id} className="px-3 pt-5 pb-1 flex items-center gap-2">
+                <div className={`h-[1px] flex-1 ${isSuperAdmin ? 'bg-teal-900/40' : 'bg-white/5'}`} />
+                <span className={`text-[9px] font-extrabold uppercase tracking-[0.2em] ${isSuperAdmin ? 'text-teal-500/70' : 'text-slate-500'}`}>
                   {section.label}
                 </span>
+                <div className={`h-[1px] flex-1 ${isSuperAdmin ? 'bg-teal-900/40' : 'bg-white/5'}`} />
               </div>
             );
           }
@@ -327,13 +333,13 @@ export default function Sidebar({
                 key={section.id}
                 to={section.to}
                 onClick={handleCloseDrawer}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 group ${
                   isActive
-                    ? 'bg-gradient-to-r from-[#52B74A] to-[#44A03C] text-white shadow-lg shadow-emerald-900/30'
-                    : 'text-slate-200 hover:bg-white/10 hover:text-white'
+                    ? 'bg-gradient-to-r from-[#1C5362]/80 to-[#15424F]/80 text-white shadow-[0_8px_16px_-6px_rgba(28,83,98,0.5)] border border-[#52B74A]/30'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1'
                 }`}
               >
-                <SectionIcon size={19} strokeWidth={2.2} className="flex-shrink-0" />
+                <SectionIcon size={19} strokeWidth={isActive ? 2.5 : 2} className={`flex-shrink-0 transition-colors duration-300 ${isActive ? 'text-[#52B74A]' : 'group-hover:text-emerald-400'}`} />
                 <span className="truncate text-[13px]">{section.label}</span>
               </NavLink>
             );
@@ -349,14 +355,14 @@ export default function Sidebar({
                 <button
                   type="button"
                   onClick={() => toggleSubmenu(section.id)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 group ${
                     isAnySubActive
-                      ? 'bg-white/10 text-white border border-white/15'
-                      : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                      ? 'bg-white/5 text-white border border-[#52B74A]/20 shadow-[0_4px_12px_rgba(0,0,0,0.2)]'
+                      : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <SectionIcon size={19} strokeWidth={2.2} className={isAnySubActive ? 'text-[#52B74A]' : 'text-slate-300'} />
+                    <SectionIcon size={19} strokeWidth={isAnySubActive ? 2.5 : 2} className={`transition-colors duration-300 ${isAnySubActive ? 'text-[#52B74A]' : 'text-slate-400 group-hover:text-emerald-400'}`} />
                     <span className="truncate text-[13px]">{section.label}</span>
                   </div>
                   {isOpen ? (
@@ -378,13 +384,13 @@ export default function Sidebar({
                           key={sub.to + sub.label}
                           to={sub.to}
                           onClick={handleCloseDrawer}
-                          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-150 ${
+                          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${
                             isSubActive
-                              ? 'bg-[#52B74A] text-white shadow-sm font-extrabold'
-                              : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                              ? 'bg-gradient-to-r from-[#1C5362] to-transparent text-white border-l-2 border-[#52B74A]'
+                              : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1'
                           }`}
                         >
-                          <SubIcon size={16} strokeWidth={2.2} className="flex-shrink-0" />
+                          <SubIcon size={15} strokeWidth={isSubActive ? 2.5 : 2} className={`flex-shrink-0 ${isSubActive ? 'text-[#52B74A]' : 'text-slate-500'}`} />
                           <span className="truncate text-[12.5px]">{sub.label}</span>
                         </NavLink>
                       );
@@ -405,10 +411,10 @@ export default function Sidebar({
                   section.onClick();
                   handleCloseDrawer();
                 }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all text-left group cursor-pointer ${
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 text-left group cursor-pointer hover:translate-x-1 ${
                   section.isDanger
-                    ? 'text-red-300 hover:bg-red-500/20 hover:text-red-200'
-                    : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                    ? 'text-red-400 hover:bg-red-500/10 hover:text-red-300 hover:border-red-500/20 border border-transparent'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-white hover:border-white/10 border border-transparent'
                 }`}
               >
                 <SectionIcon
@@ -439,17 +445,17 @@ export default function Sidebar({
       </div>
 
       {/* ── Bottom User Profile & Logout Section ── */}
-      <div className="p-3 bg-[#08181E]/90 border-t border-white/10 flex-shrink-0">
-        <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white/5 border border-white/10">
+      <div className="p-3 bg-black/20 backdrop-blur-md border-t border-white/5 flex-shrink-0 relative z-10">
+        <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-600 to-teal-600 text-white flex items-center justify-center font-black text-sm shadow-md flex-shrink-0">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-extrabold text-white truncate leading-tight">
+              <span className="text-xs font-extrabold text-white truncate leading-tight tracking-wide">
                 {user?.name || (isHostelUser ? 'Hostel Warden' : isMessUser ? 'Mess Staff' : 'Super Admin')}
               </span>
-              <span className="text-[10px] font-bold text-teal-300 uppercase tracking-wider truncate">
+              <span className="text-[9px] font-black text-emerald-400/80 uppercase tracking-widest truncate">
                 {user?.role === 'super_admin'
                   ? 'Super Admin'
                   : isHostelUser

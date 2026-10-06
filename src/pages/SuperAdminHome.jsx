@@ -1,23 +1,14 @@
 // src/pages/SuperAdminHome.jsx
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import {
   Crown,
-  ShieldCheck,
   Utensils,
-  BarChart3,
   PlusCircle,
   Download,
   AlertCircle,
   ArrowRight,
-  Sparkles,
   Users,
-  CheckCircle2,
-  Clock,
-  FileText,
-  ChevronRight,
-  UserCheck,
-  MessageSquare,
   Edit3,
   Trash2,
   Search,
@@ -26,12 +17,7 @@ import {
   RotateCcw,
   ChefHat,
   Building,
-  Calendar,
-  Filter,
-  Check,
   Power,
-  Phone,
-  Layers,
 } from 'lucide-react';
 import { storageService } from '../services/storage';
 import { hostelService } from '../services/hostelService';
@@ -43,7 +29,6 @@ import Button from '../components/UI/Button';
 import toast from 'react-hot-toast';
 
 export default function SuperAdminHome() {
-  const navigate = useNavigate();
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
 
   // Active Control Center Tab: 'overview' | 'menu' | 'cooks' | 'blocks'
@@ -51,8 +36,6 @@ export default function SuperAdminHome() {
 
   // Dynamic Live State
   const [messEntries, setMessEntries] = useState(() => storageService.getEntries());
-  const [dutyLogs, setDutyLogs] = useState(() => hostelService.getDutyLogs());
-  const [remarksList, setRemarksList] = useState(() => hostelService.getStudentRemarks());
 
   // Management State
   const [menuState, setMenuState] = useState(() => adminManagementService.getMenu());

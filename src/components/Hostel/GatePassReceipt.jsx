@@ -6,43 +6,44 @@ import Button from '../UI/Button';
 import toast from 'react-hot-toast';
 
 export default function GatePassReceipt({ gatePass, onClose }) {
-  if (!gatePass) return null;
 
   const formattedDepDate = useMemo(() => {
     try {
+      if (!gatePass?.depDate) return '';
       return new Date(gatePass.depDate).toLocaleDateString('en-GB', {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
       });
     } catch {
-      return gatePass.depDate;
+      return gatePass?.depDate;
     }
-  }, [gatePass.depDate]);
+  }, [gatePass?.depDate]);
 
   const formattedArrDate = useMemo(() => {
     try {
+      if (!gatePass?.arrDate) return '';
       return new Date(gatePass.arrDate).toLocaleDateString('en-GB', {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
       });
     } catch {
-      return gatePass.arrDate;
+      return gatePass?.arrDate;
     }
-  }, [gatePass.arrDate]);
+  }, [gatePass?.arrDate]);
 
   const formattedApprovedAt = useMemo(() => {
-    if (!gatePass.approvedAt) return 'N/A';
+    if (!gatePass?.approvedAt) return 'N/A';
     try {
       return new Date(gatePass.approvedAt).toLocaleString('en-GB', {
         dateStyle: 'medium',
         timeStyle: 'short',
       });
     } catch {
-      return gatePass.approvedAt;
+      return gatePass?.approvedAt;
     }
-  }, [gatePass.approvedAt]);
+  }, [gatePass?.approvedAt]);
 
   const [isPrinting, setIsPrinting] = useState(false);
 
@@ -57,7 +58,7 @@ export default function GatePassReceipt({ gatePass, onClose }) {
 
   // SVG Barcode Line Generator based on Gate Pass ID string
   const barcodeBars = useMemo(() => {
-    const str = gatePass.id || 'KPR-GP-2026-00000';
+    const str = gatePass?.id || 'KPR-GP-2026-00000';
     const bars = [];
     for (let i = 0; i < str.length; i++) {
       const charCode = str.charCodeAt(i);
@@ -67,7 +68,9 @@ export default function GatePassReceipt({ gatePass, onClose }) {
       bars.push(<rect key={`b2-${i}`} x={i * 9 + width1 + 1} y="0" width={width2} height="48" fill="#000000" />);
     }
     return bars;
-  }, [gatePass.id]);
+  }, [gatePass?.id]);
+
+  if (!gatePass) return null;
 
   return (
     <div className="flex flex-col gap-4">

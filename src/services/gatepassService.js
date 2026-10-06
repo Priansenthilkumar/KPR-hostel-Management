@@ -27,7 +27,7 @@ const DEFAULT_GATEPASSES = [
     createdAt: new Date().toISOString(),
   },
   {
-    id: 'KPR-GP-2026-44192',
+    id:'KPR-GP-2026-44192',
     studentName: 'Kaviarasan M',
     rollNo: '7377221IT052',
     wardenName: 'Prof. K. Anand',

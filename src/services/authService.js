@@ -6,7 +6,7 @@ import {
 } from '../utils/cryptoUtils';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth, db } from './firebaseConfig';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 /**
  * KPR HOSTELS & MESS MANAGEMENT - Production Authentication Backend Service
@@ -603,7 +603,8 @@ export const authService = {
       const userDocRef = doc(db, 'users', inputEmail);
       setDoc(userDocRef, { ...newUser, createdAt: new Date().toISOString() }, { merge: true }).catch(() => {});
     } catch (fbErr) {
-      // Ignore background Firebase errors
+      // Log background Firebase errors instead of ignoring completely
+      console.warn('Background Firebase sync failed:', fbErr);
     }
 
     const session = this.createSession(newUser);

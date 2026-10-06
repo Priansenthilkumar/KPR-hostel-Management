@@ -173,6 +173,7 @@ export default function Login() {
         console.log('Google Auth status notice:', errMessage);
       }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   // ── Open Google SSO Verification Modal & Trigger Google One-Tap ──
