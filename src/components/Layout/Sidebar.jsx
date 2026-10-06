@@ -49,10 +49,13 @@ export default function Sidebar({
 
   // Accordion state for expandable submenus
   const [openSubmenus, setOpenSubmenus] = useState({
-    admin: true,
-    mess: true,
-    hostel: true,
-    logs: true,
+    hostel_mgmt: false,
+    hostel_schedule: false,
+    hostel_records: false,
+    mess_mgmt: false,
+    cook_mgmt: false,
+    mess_schedule: false,
+    mess_records: false,
   });
 
   const toggleSubmenu = (key) => {
@@ -89,89 +92,102 @@ export default function Sidebar({
   const isMessUser = user?.role === 'mess_staff';
   const isSuperAdmin = user?.role === 'super_admin';
 
-  // Determine home dashboard target path based on user role
-  const homePath =
-    isSuperAdmin
-      ? '/admin-home'
-      : isHostelUser
-      ? '/hostel-dashboard'
-      : '/mess-dashboard';
-
   // Role-based Navigation Structure
   const navSections = [
-    {
-      id: 'dashboard',
-      type: 'item',
-      label: 'Dashboard',
-      icon: LayoutDashboard,
-      to: homePath,
-    },
-
     // Super Admin Control Center Section
     ...(isSuperAdmin
       ? [
           {
             id: 'admin',
-            type: 'group',
-            label: 'Super Admin Access',
+            type: 'item',
+            label: 'Admin Control Center',
             icon: Crown,
-            items: [
-              { label: 'Control Center', to: '/admin-home', icon: Crown },
-              { label: 'Mess Menu Manager', to: '/menu', icon: Utensils },
-              { label: 'Mess Operations', to: '/mess-dashboard', icon: FileText },
-              { label: 'Hostel Operations', to: '/hostel-dashboard', icon: Building },
-            ],
+            to: '/admin-home',
           },
         ]
       : []),
 
-    // Mess Management — Hidden if Hostel Warden logged in
-    ...(!isHostelUser
-      ? [
-          {
-            id: 'mess',
-            type: 'group',
-            label: 'Mess Management',
-            icon: UtensilsCrossed,
-            items: [
-              { label: 'Food Maintenance', to: '/add-entry', icon: PlusCircle },
-              { label: 'Mess Menu', to: '/menu', icon: Utensils },
-              { label: 'Mess Records', to: '/mess-dashboard', icon: FileText },
-            ],
-          },
-        ]
-      : []),
-
-    // Hostel Management — Hidden if Mess Staff logged in
+    // HOSTEL SECTION
     ...(!isMessUser
       ? [
+          { id: 'hostel_header', type: 'label', label: 'HOSTEL' },
+          { id: 'hostel_dashboard', type: 'item', label: 'Hostel Dashboard', icon: LayoutDashboard, to: '/hostel-dashboard' },
           {
-            id: 'hostel',
+            id: 'hostel_mgmt',
             type: 'group',
             label: 'Hostel Management',
             icon: Building,
             items: [
-              { label: 'Hostel Blocks', to: '/hostel-dashboard', icon: Building },
               { label: 'Create Gate Pass', to: '/hostel-gatepass', icon: Ticket },
               { label: 'Gate Pass Review', to: '/gatepass-review', icon: ShieldCheck },
-              { label: 'Hostel Logs', to: '/hostel-overview', icon: FileText },
+            ],
+          },
+          {
+            id: 'hostel_schedule',
+            type: 'group',
+            label: 'Hostel Schedule',
+            icon: UserCheck,
+            items: [
               { label: 'Log Shift / Remark', to: '/hostel-add-entry', icon: UserCheck },
+            ],
+          },
+          {
+            id: 'hostel_records',
+            type: 'group',
+            label: 'Hostel Records',
+            icon: FileText,
+            items: [
+              { label: 'Hostel Logs', to: '/hostel-overview', icon: Activity },
             ],
           },
         ]
       : []),
 
-    // Logs Section — Filtered by role
-    {
-      id: 'logs',
-      type: 'group',
-      label: 'Logs',
-      icon: ClipboardList,
-      items: [
-        ...(!isHostelUser ? [{ label: 'Mess Logs', to: '/overview', icon: BarChart2 }] : []),
-        ...(!isMessUser ? [{ label: 'Hostel Logs', to: '/hostel-overview', icon: Activity }] : []),
-      ],
-    },
+    // MESS SECTION
+    ...(!isHostelUser
+      ? [
+          { id: 'mess_header', type: 'label', label: 'MESS' },
+          { id: 'mess_dashboard', type: 'item', label: 'Mess Dashboard', icon: LayoutDashboard, to: '/mess-dashboard' },
+          {
+            id: 'mess_mgmt',
+            type: 'group',
+            label: 'Food/Mess Management',
+            icon: UtensilsCrossed,
+            items: [
+              { label: 'Food Maintenance', to: '/add-entry', icon: PlusCircle },
+            ],
+          },
+          {
+            id: 'cook_mgmt',
+            type: 'group',
+            label: 'Cook Management',
+            icon: ChefHat,
+            items: [
+              { label: 'Cook Details', to: '/overview', icon: Users },
+            ],
+          },
+          {
+            id: 'mess_schedule',
+            type: 'group',
+            label: 'Mess Schedule',
+            icon: Utensils,
+            items: [
+              { label: 'Mess Menu', to: '/menu', icon: Utensils },
+            ],
+          },
+          {
+            id: 'mess_records',
+            type: 'group',
+            label: 'Mess Records',
+            icon: FileText,
+            items: [
+              { label: 'Mess Logs', to: '/overview', icon: BarChart2 },
+            ],
+          },
+        ]
+      : []),
+
+    { id: 'actions_header', type: 'label', label: 'ACTIONS' },
     {
       id: 'complaints',
       type: 'action',
@@ -288,6 +304,16 @@ export default function Sidebar({
       {/* ── 260px Navigation Items List ── */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 custom-sidebar-scroll">
         {navSections.map((section) => {
+          if (section.type === 'label') {
+            return (
+              <div key={section.id} className="px-3 pt-4 pb-1">
+                <span className={`text-[10px] font-extrabold uppercase tracking-wider ${isSuperAdmin ? 'text-amber-400/80' : 'text-slate-400'}`}>
+                  {section.label}
+                </span>
+              </div>
+            );
+          }
+
           const SectionIcon = section.icon;
 
           // Single Direct Item (Dashboard)
