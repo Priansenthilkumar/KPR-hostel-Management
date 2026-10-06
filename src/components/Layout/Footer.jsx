@@ -15,7 +15,7 @@ export default function Footer() {
 
   return (
     <footer className="w-full shrink-0 bg-[#08181E] border-t border-white/10 text-slate-400 py-3 sm:py-4">
-      <div className="max-w-[1550px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs">
+      <div className="w-full px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs">
         <div className="font-semibold text-center sm:text-left text-slate-300">
           {isSuperAdmin
             ? 'KPR EXECUTIVE ADMINISTRATION'
