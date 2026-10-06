@@ -1,5 +1,5 @@
 // src/components/Dashboard/ChartSection.jsx
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { UtensilsCrossed, TrendingDown, ChefHat } from 'lucide-react';
 
 const MealChart    = lazy(() => import('../Charts/MealChart'));

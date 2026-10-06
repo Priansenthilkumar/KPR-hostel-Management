@@ -8,12 +8,8 @@ import {
   Calendar,
   Clock,
   ShieldCheck,
-  CheckCircle2,
   AlertCircle,
   Sparkles,
-  ArrowRight,
-  BookOpen,
-  FileText,
 } from 'lucide-react';
 import { gatepassService } from '../services/gatepassService';
 import { adminManagementService } from '../services/adminManagementService';

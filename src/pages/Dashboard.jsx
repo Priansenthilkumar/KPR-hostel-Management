@@ -1,5 +1,5 @@
 // src/pages/Dashboard.jsx
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   PlusCircle,
@@ -7,18 +7,14 @@ import {
   Download,
   ArrowRight,
   ShieldCheck,
-  Sparkles,
-  Utensils,
   Clock,
   ChevronRight,
-  MessageSquareWarning,
-  AlertCircle,
 } from 'lucide-react';
 import { useEntries } from '../hooks/useEntries';
 import { formatDisplayDate, formatKg } from '../utils/dateUtils';
 import { exportToExcel } from '../utils/exportExcel';
 import Badge from '../components/UI/Badge';
-import Button from '../components/UI/Button';
+
 import ComplaintBox from '../components/Dashboard/ComplaintBox';
 import kprLogo from '../assets/kprLogo.png';
 import toast from 'react-hot-toast';

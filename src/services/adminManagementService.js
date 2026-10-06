@@ -1,6 +1,6 @@
 // src/services/adminManagementService.js
 import { db } from './firebaseConfig';
-import { collection, doc, setDoc, deleteDoc, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { menuData } from '../data/menuData';
 import { realtimeSync } from './realtimeSync';
 

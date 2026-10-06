@@ -1,11 +1,11 @@
 // src/components/Hostel/GatePassReceipt.jsx
 import { useState, useMemo } from 'react';
-import { ShieldCheck, Download, Printer, Sparkles, CheckCircle2, QrCode, Calendar, Clock, MapPin, Building, User, FileText } from 'lucide-react';
+import { Download, Printer, QrCode, Clock } from 'lucide-react';
 import kprLogo from '../../assets/kprLogo.png';
 import Button from '../UI/Button';
 import toast from 'react-hot-toast';
 
-export default function GatePassReceipt({ gatePass, onClose }) {
+export default function GatePassReceipt({ gatePass }) {
 
   const formattedDepDate = useMemo(() => {
     try {

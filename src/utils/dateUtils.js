@@ -1,5 +1,5 @@
 // src/utils/dateUtils.js
-import { format, parseISO, isToday } from 'date-fns';
+import { format, isToday } from 'date-fns';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 

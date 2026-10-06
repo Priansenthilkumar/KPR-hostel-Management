@@ -5,15 +5,12 @@ import {
   Bell,
   BellRing,
   X,
-  CheckCircle2,
   Utensils,
   ShieldCheck,
   MessageSquare,
   Bug,
   Trash2,
   Check,
-  ChevronRight,
-  Sparkles,
 } from 'lucide-react';
 import { notificationService } from '../../services/notificationService';
 import toast from 'react-hot-toast';

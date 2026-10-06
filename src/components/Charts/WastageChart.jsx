@@ -1,5 +1,5 @@
 // src/components/Charts/WastageChart.jsx
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Dot } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { formatDisplayDate } from '../../utils/dateUtils';
 
 const CustomTooltip = ({ active, payload, label }) => {

@@ -1,5 +1,5 @@
 // src/components/Records/FilterBar.jsx
-import { X, Filter, Search, RotateCcw } from 'lucide-react';
+import { X, Search, RotateCcw } from 'lucide-react';
 import { days, mealTypes } from '../../data/menuData';
 import { COOKS } from '../../constants/cooks';
 

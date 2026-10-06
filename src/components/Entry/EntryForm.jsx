@@ -19,8 +19,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Sun,
-  Coffee,
-  Sunset,
   MoonStar,
 } from 'lucide-react';
 import { useEntries } from '../../hooks/useEntries';
@@ -88,17 +86,6 @@ export default function EntryForm({ editEntry = null }) {
     }
   }, [watchDate, setValue]);
 
-  // Calculations for day index for sliding pill
-  const dayIndex = useMemo(() => {
-    const idx = days.indexOf(watchDay);
-    return idx >= 0 ? idx : 0;
-  }, [watchDay]);
-
-  // Calculations for meal index for sliding pill
-  const mealIndex = useMemo(() => {
-    const idx = mealTypes.indexOf(watchMeal);
-    return idx >= 0 ? idx : 0;
-  }, [watchMeal]);
 
   // Wastage live severity calculations
   const wastageVal = parseFloat(watchWastage) || 0;

@@ -1,5 +1,5 @@
 // src/pages/Login.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { googleAuthService } from '../services/googleAuthService';
@@ -16,20 +16,13 @@ import {
   KeyRound,
   UserPlus,
   ArrowLeft,
-  CheckCircle2,
-  AlertCircle,
-  ChefHat,
-  ShieldCheck,
-  Crown,
-  Sparkles,
   LogIn,
-  X
 } from 'lucide-react';
 import { evaluatePasswordStrength, validateKprietEmail } from '../utils/cryptoUtils';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { user, login, logout, signInWithGoogleOAuth, completeRegistration, completePasswordReset } = useAuth();
+  const { login, signInWithGoogleOAuth, completeRegistration, completePasswordReset } = useAuth();
 
   // Mode: 'login' | 'signup' | 'forgot'
   const [authMode, setAuthMode] = useState('login');
@@ -154,7 +147,7 @@ export default function Login() {
       } else {
         toast.error(res.message || 'Google Authentication failed.');
       }
-    } catch (err) {
+    } catch (_err) {
       setIsAuthenticatingGoogle(false);
       handleOpenGoogleModal();
     }
@@ -173,8 +166,7 @@ export default function Login() {
         console.log('Google Auth status notice:', errMessage);
       }
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [handleVerifyGoogleAccount]);
 
   // ── Open Google SSO Verification Modal & Trigger Google One-Tap ──
   const handleOpenGoogleModal = () => {
@@ -202,7 +194,7 @@ export default function Login() {
   };
 
   // ── Verify Google Account Email & Complete Authentication ──
-  const handleVerifyGoogleAccount = async (emailToVerify) => {
+  const handleVerifyGoogleAccount = useCallback(async (emailToVerify) => {
     const targetEmail = (emailToVerify || googleEmailInput).trim();
     setGoogleError('');
 
@@ -244,13 +236,13 @@ export default function Login() {
           setGoogleError(res.message || 'Google Authentication failed.');
           toast.error(res.message || 'Google Authentication failed.');
         }
-      } catch (err) {
+      } catch (_err) {
         setIsVerifyingGoogle(false);
         setGoogleError('Google Authentication failed. Please try again.');
         toast.error('Google Verification Error');
       }
     }, 900);
-  };
+  }, [googleEmailInput, activeTab, navigate, signInWithGoogleOAuth]);
 
   // ── Direct Account Registration ──
   const handleCompleteRegistration = async (e) => {
@@ -331,7 +323,7 @@ export default function Login() {
   };
 
   // Evaluated password strength & email validity
-  const passStrength = evaluatePasswordStrength(newPassword);
+
   const emailVal = validateKprietEmail(email);
 
   // Active Session View

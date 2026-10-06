@@ -18,7 +18,6 @@ import {
 import { getCustomMenu, saveCustomMenu, menuData, days } from '../data/menuData';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import Button from '../components/UI/Button';
 
 const MEAL_ICONS = {
   Breakfast: Sun,
@@ -32,14 +31,9 @@ const MEAL_TIMINGS = {
   Dinner: '7:30 PM - 9:00 PM',
 };
 
-const MEAL_COLORS = {
-  Breakfast: 'from-amber-500/10 to-orange-500/10 border-amber-500/30 text-amber-600',
-  Lunch: 'from-[#52B74A]/10 to-emerald-500/10 border-[#52B74A]/30 text-[#52B74A]',
-  Dinner: 'from-[#174351]/10 to-blue-900/10 border-[#174351]/30 text-[#174351]',
-};
+
 
 export default function FoodMenu() {
-  const { user } = useAuth();
   const todayDayName = useMemo(() => {
     const d = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     return days.includes(d) ? d : 'Monday';

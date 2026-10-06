@@ -1,19 +1,11 @@
 // src/pages/AddHostelEntry.jsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   PlusCircle,
-  UserCheck,
-  MessageSquare,
-  Building,
   Calendar,
   Clock,
   ShieldCheck,
-  CheckCircle2,
-  ArrowRight,
-  User,
-  FileText,
-  Wrench,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from '../components/UI/Button';
