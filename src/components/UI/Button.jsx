@@ -26,7 +26,7 @@ export default function Button({
 
   return (
     <button
-      className={`${sizeClass} ${globalGreenStyle} ${(className || '').replace(/\bbg-\S+|\btext-\S+|\bshadow-\S+|\bfrom-\S+|\bto-\S+/g, '')}`}
+      className={`${sizeClass} ${globalGreenStyle} ${String(className || '').replace(/\bbg-\S+|\btext-\S+|\bshadow-\S+|\bfrom-\S+|\bto-\S+/g, '')}`}
       disabled={disabled || loading}
       {...props}
     >
