@@ -9,11 +9,15 @@ import {
   ShieldCheck,
   Clock,
   ChevronRight,
+  Sparkles,
+  AlertCircle,
+  Utensils,
 } from 'lucide-react';
 import { useEntries } from '../hooks/useEntries';
 import { formatDisplayDate, formatKg } from '../utils/dateUtils';
 import { exportToExcel } from '../utils/exportExcel';
 import Badge from '../components/UI/Badge';
+import Button from '../components/UI/Button';
 
 import ComplaintBox from '../components/Dashboard/ComplaintBox';
 import kprLogo from '../assets/kprLogo.png';

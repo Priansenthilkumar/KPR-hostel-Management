@@ -6,6 +6,13 @@ import {
   Calendar,
   Clock,
   ShieldCheck,
+  UserCheck,
+  MessageSquare,
+  User,
+  Building,
+  CheckCircle2,
+  FileText,
+  Wrench,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from '../components/UI/Button';

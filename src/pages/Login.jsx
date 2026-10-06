@@ -17,6 +17,13 @@ import {
   UserPlus,
   ArrowLeft,
   LogIn,
+  Sparkles,
+  ChefHat,
+  ShieldCheck,
+  Crown,
+  CheckCircle2,
+  AlertCircle,
+  X,
 } from 'lucide-react';
 import { evaluatePasswordStrength, validateKprietEmail } from '../utils/cryptoUtils';
 
@@ -147,7 +154,7 @@ export default function Login() {
       } else {
         toast.error(res.message || 'Google Authentication failed.');
       }
-    } catch (_err) {
+    } catch {
       setIsAuthenticatingGoogle(false);
       handleOpenGoogleModal();
     }
@@ -236,7 +243,7 @@ export default function Login() {
           setGoogleError(res.message || 'Google Authentication failed.');
           toast.error(res.message || 'Google Authentication failed.');
         }
-      } catch (_err) {
+      } catch {
         setIsVerifyingGoogle(false);
         setGoogleError('Google Authentication failed. Please try again.');
         toast.error('Google Verification Error');
@@ -428,7 +435,7 @@ export default function Login() {
         {/* Auth Mode Toggle Bar (Log In vs Sign Up) */}
         {authMode !== 'forgot' && (
           <div className="w-full bg-gray-100/90 p-1.5 rounded-2xl flex mb-4 border border-gray-200/80 shadow-inner">
-            <button
+            <Button
               type="button"
               onClick={() => handleSwitchMode('login')}
               className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 ${
@@ -439,8 +446,8 @@ export default function Login() {
             >
               <LogIn size={14} />
               <span>Sign In</span>
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => handleSwitchMode('signup')}
               className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 ${
@@ -451,7 +458,7 @@ export default function Login() {
             >
               <UserPlus size={14} />
               <span>Create Account</span>
-            </button>
+            </Button>
           </div>
         )}
 
@@ -549,13 +556,13 @@ export default function Login() {
                   className="w-full h-11 pl-9 pr-10 text-xs rounded-xl bg-gray-50/80 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#1C5362]/15 focus:border-[#1C5362] focus:bg-white font-semibold transition-all"
                 />
                 <Lock size={16} className="absolute left-3 top-3.5 text-gray-400" />
-                <button
+                <Button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-700 transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -570,13 +577,13 @@ export default function Login() {
                 <span className="text-xs font-semibold">Remember me</span>
               </label>
 
-              <button
+              <Button
                 type="button"
                 onClick={() => handleSwitchMode('forgot')}
                 className="text-[#1C5362] hover:text-[#0F323C] hover:underline font-bold text-xs transition-colors"
               >
                 Forgot Password?
-              </button>
+              </Button>
             </div>
 
             <Button
@@ -688,13 +695,13 @@ export default function Login() {
                   required
                 />
                 <KeyRound size={16} className="absolute left-3 top-3.5 text-gray-400" />
-                <button
+                <Button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
                   className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+                </Button>
               </div>
 
               {/* Password Strength Indicator */}
@@ -734,14 +741,14 @@ export default function Login() {
             </div>
 
             <div className="flex items-center gap-2 pt-2">
-              <button
+              <Button
                 type="button"
                 onClick={() => handleSwitchMode('login')}
                 className="px-4 py-3 rounded-xl border border-gray-200 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-1.5 shadow-xs"
               >
                 <ArrowLeft size={14} />
                 <span>Back</span>
-              </button>
+              </Button>
 
               <Button
                 type="submit"
@@ -811,14 +818,14 @@ export default function Login() {
             </div>
 
             <div className="flex items-center gap-2 pt-2">
-              <button
+              <Button
                 type="button"
                 onClick={() => handleSwitchMode('login')}
                 className="px-4 py-3 rounded-xl border border-gray-200 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-1.5 shadow-xs"
               >
                 <ArrowLeft size={14} />
                 <span>Back</span>
-              </button>
+              </Button>
 
               <Button
                 type="submit"
@@ -954,7 +961,7 @@ export default function Login() {
                   Quick KPRIET Account Selectors:
                 </span>
                 <div className="grid grid-cols-3 gap-2">
-                  <button
+                  <Button
                     type="button"
                     onClick={() => {
                       const addr = '24cb042@kpriet.ac.in';
@@ -965,8 +972,8 @@ export default function Login() {
                     className="px-2 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-700 font-extrabold text-[11px] border border-teal-200 transition-all text-center truncate cursor-pointer active:scale-95"
                   >
                     Super Admin
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
                     onClick={() => {
                       const addr = 'warden@kpriet.ac.in';
@@ -977,8 +984,8 @@ export default function Login() {
                     className="px-2 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 font-extrabold text-[11px] border border-sky-200 transition-all text-center truncate cursor-pointer active:scale-95"
                   >
                     Warden
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
                     onClick={() => {
                       const addr = 'mess.staff@kpriet.ac.in';
@@ -989,7 +996,7 @@ export default function Login() {
                     className="px-2 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-extrabold text-[11px] border border-emerald-200 transition-all text-center truncate cursor-pointer active:scale-95"
                   >
                     Mess Staff
-                  </button>
+                  </Button>
                 </div>
               </div>
 

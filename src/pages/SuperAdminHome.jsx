@@ -678,14 +678,14 @@ export default function SuperAdminHome() {
                   className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-extrabold text-[var(--text-primary)] shadow-xs"
                 >
                   <span>{dish}</span>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => handleDeleteMenuItem(selectedDay, selectedMeal, dish)}
                     className="text-red-500 hover:text-red-700 p-0.5 rounded hover:bg-red-500/10 transition-colors cursor-pointer"
                     title="Remove item"
                   >
                     <X size={14} />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
@@ -809,22 +809,22 @@ export default function SuperAdminHome() {
                           >
                             <Power size={14} />
                           </button>
-                          <button
+                          <Button
                             type="button"
                             onClick={() => handleOpenEditCook(cook)}
                             className="p-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 transition-colors cursor-pointer"
                             title="Edit Cook"
                           >
                             <Edit3 size={14} />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             type="button"
                             onClick={() => handleDeleteCook(cook)}
                             className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer"
                             title="Delete Cook"
                           >
                             <Trash2 size={14} />
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -1058,22 +1058,22 @@ export default function SuperAdminHome() {
                           >
                             <Power size={14} />
                           </button>
-                          <button
+                          <Button
                             type="button"
                             onClick={() => handleOpenEditBlock(block)}
                             className="p-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 transition-colors cursor-pointer"
                             title="Edit Block"
                           >
                             <Edit3 size={14} />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             type="button"
                             onClick={() => handleDeleteBlock(block)}
                             className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer"
                             title="Delete Block"
                           >
                             <Trash2 size={14} />
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>

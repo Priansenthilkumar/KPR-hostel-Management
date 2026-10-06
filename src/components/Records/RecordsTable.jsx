@@ -10,6 +10,7 @@ import FilterBar from './FilterBar';
 import { formatDisplayDate, formatKg } from '../../utils/dateUtils';
 import { useEntries } from '../../hooks/useEntries';
 import toast from 'react-hot-toast';
+import Button from '../UI/Button';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -201,22 +202,22 @@ export default function RecordsTable() {
                         </td>
                         <td>
                           <div className="inline-flex items-center gap-1">
-                            <button
+                            <Button
                               onClick={() => navigate(`/add-entry/${entry.id}`)}
                               className="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-[#52B74A]/15 text-[#52B74A] transition-colors"
                               title="Edit entry"
                               aria-label={`Edit entry from ${entry.date}`}
                             >
                               <Edit2 size={14} strokeWidth={2} />
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               onClick={() => setDeleteId(entry.id)}
                               className="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-red-500/15 text-red-500 transition-colors"
                               title="Delete entry"
                               aria-label={`Delete entry from ${entry.date}`}
                             >
                               <Trash2 size={14} strokeWidth={2} />
-                            </button>
+                            </Button>
                           </div>
                         </td>
                       </tr>

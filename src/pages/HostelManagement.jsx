@@ -4,16 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
   UserCheck,
-  Clock,
-  Building,
   CheckCircle2,
   AlertCircle,
   PlusCircle,
-  User,
-  Calendar,
   Check,
   Trash2,
-  Sparkles,
   MessageSquare,
   Wrench,
   Search,
@@ -95,7 +90,6 @@ export default function HostelManagement() {
   });
 
   const pendingCount = remarks.filter((r) => !r.rectified).length;
-  const rectifiedCount = remarks.filter((r) => r.rectified).length;
 
   return (
     <div className="hostel-management-page max-w-[1500px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-12 flex flex-col gap-8 page-enter">
@@ -233,7 +227,7 @@ export default function HostelManagement() {
                     </td>
                     <td className="py-3 px-4 text-right">
                       {pass.status === 'Approved' ? (
-                        <button
+                        <Button
                           type="button"
                           onClick={() => {
                             setSelectedPass(pass);
@@ -243,15 +237,15 @@ export default function HostelManagement() {
                         >
                           <Printer size={13} />
                           <span>Receipt</span>
-                        </button>
+                        </Button>
                       ) : (
-                        <button
+                        <Button
                           type="button"
                           onClick={() => navigate('/gatepass-review')}
                           className="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-500 font-extrabold text-[11px] border border-amber-500/30"
                         >
                           Review
-                        </button>
+                        </Button>
                       )}
                     </td>
                   </tr>
@@ -339,7 +333,7 @@ export default function HostelManagement() {
                       </span>
                     </td>
                     <td className="text-center">
-                      <button
+                      <Button
                         type="button"
                         onClick={() => {
                           if (window.confirm(`Delete duty log for ${log.name}?`)) {
@@ -351,7 +345,7 @@ export default function HostelManagement() {
                         title="Delete Duty Log"
                       >
                         <Trash2 size={14} />
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -402,7 +396,7 @@ export default function HostelManagement() {
 
             <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-lg border border-[var(--border)]">
               {['All', 'Pending', 'Rectified'].map((tab) => (
-                <button
+                <Button
                   type="button"
                   key={tab}
                   onClick={() => setFilterTab(tab)}
@@ -413,7 +407,7 @@ export default function HostelManagement() {
                   }`}
                 >
                   {tab}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -501,20 +495,20 @@ export default function HostelManagement() {
                               onChange={(e) => setResolutionText(e.target.value)}
                               className="form-input text-xs h-9 py-1"
                             />
-                            <button
+                            <Button
                               type="button"
                               onClick={() => handleConfirmRectified(item.id)}
                               className="px-3.5 py-1.5 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-bold whitespace-nowrap shadow-xs"
                             >
                               Confirm Rectified
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               type="button"
                               onClick={() => setResolvingId(null)}
                               className="px-2 py-1 text-xs text-[var(--text-muted)] font-semibold"
                             >
                               Cancel
-                            </button>
+                            </Button>
                           </div>
                         ) : (
                           <button
@@ -530,14 +524,14 @@ export default function HostelManagement() {
                     )}
                   </div>
 
-                  <button
+                  <Button
                     type="button"
                     onClick={() => handleDeleteRemark(item.id)}
                     className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-500 transition-colors"
                     title="Delete Remark"
                   >
                     <Trash2 size={15} />
-                  </button>
+                  </Button>
                 </div>
 
               </div>
@@ -555,13 +549,13 @@ export default function HostelManagement() {
               <h3 className="text-base font-extrabold text-[var(--text-primary)]">
                 Official Gate Pass & Barcode Receipt
               </h3>
-              <button
+              <Button
                 type="button"
                 onClick={() => setIsReceiptModalOpen(false)}
                 className="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
               >
                 <X size={18} />
-              </button>
+              </Button>
             </div>
 
             <GatePassReceipt

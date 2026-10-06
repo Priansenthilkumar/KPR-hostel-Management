@@ -8,16 +8,11 @@ import {
   XCircle,
   Clock,
   Search,
-  Filter,
-  Eye,
   Check,
   X,
   Printer,
-  Download,
   PlusCircle,
   Sparkles,
-  Building,
-  UserCheck,
   Trash2,
 } from 'lucide-react';
 import { gatepassService } from '../services/gatepassService';
@@ -240,7 +235,7 @@ export default function GatePassReview() {
 
           <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
             {['all', 'pending', 'approved', 'rejected'].map((st) => (
-              <button
+              <Button
                 key={st}
                 type="button"
                 onClick={() => setFilterStatus(st)}
@@ -251,7 +246,7 @@ export default function GatePassReview() {
                 }`}
               >
                 {st}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -326,55 +321,55 @@ export default function GatePassReview() {
                   {pass.status === 'Pending' && (
                     <>
                       {/* Prominent Mobile Redesigned Approve Button */}
-                      <button
+                      <Button
                         type="button"
                         onClick={() => handleOpenActionModal(pass, 'approve')}
                         className="flex-1 min-h-[42px] px-4 py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-lg shadow-emerald-600/30 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-emerald-400/30"
                       >
                         <Check size={16} strokeWidth={3} />
                         <span>Approve Pass</span>
-                      </button>
+                      </Button>
 
-                      <button
+                      <Button
                         type="button"
                         onClick={() => handleOpenActionModal(pass, 'reject')}
                         className="px-3 min-h-[42px] py-2.5 rounded-xl font-bold text-xs bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
                       >
                         <X size={15} />
                         <span>Reject</span>
-                      </button>
+                      </Button>
                     </>
                   )}
 
                   {pass.status === 'Approved' && (
                     <>
-                      <button
+                      <Button
                         type="button"
                         onClick={() => handleViewReceipt(pass)}
                         className="flex-1 min-h-[42px] px-3 py-2.5 rounded-xl bg-sky-600 text-white font-extrabold text-xs shadow-md shadow-sky-600/30 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
                         <Printer size={15} />
                         <span>Receipt & Barcode</span>
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
                         onClick={() => handleCompletePass(pass)}
                         className="p-2.5 min-h-[42px] min-w-[42px] rounded-xl bg-[#52B74A]/10 text-[#52B74A] border border-[#52B74A]/30 hover:bg-[#52B74A]/20 transition-colors flex items-center justify-center cursor-pointer"
                         title="Mark Student Returned"
                       >
                         <CheckCircle2 size={18} />
-                      </button>
+                      </Button>
                     </>
                   )}
 
-                  <button
+                  <Button
                     type="button"
                     onClick={() => handleDeletePass(pass)}
                     className="p-2.5 min-h-[42px] min-w-[42px] rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 flex items-center justify-center cursor-pointer"
                     title="Delete Record"
                   >
                     <Trash2 size={15} />
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))
@@ -459,36 +454,36 @@ export default function GatePassReview() {
                       <div className="flex items-center justify-end gap-1.5">
                         {pass.status === 'Pending' && (
                           <>
-                            <button
+                            <Button
                               type="button"
                               onClick={() => handleOpenActionModal(pass, 'approve')}
                               className="px-3.5 py-1.5 rounded-xl font-extrabold text-[11px] border-0 transition-all btn-shine bg-gradient-to-r from-emerald-500 to-teal-600 text-white active:scale-95 shadow-md shadow-emerald-600/30 flex items-center gap-1 cursor-pointer"
                             >
                               <Check size={14} strokeWidth={2.5} />
                               <span>Approve</span>
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               type="button"
                               onClick={() => handleOpenActionModal(pass, 'reject')}
                               className="px-3 py-1.5 rounded-xl font-extrabold text-[11px] border-0 transition-all btn-shine btn-reject-glow active:scale-95 shadow-md flex items-center gap-1 cursor-pointer"
                             >
                               <X size={13} />
                               <span>Reject</span>
-                            </button>
+                            </Button>
                           </>
                         )}
 
                         {pass.status === 'Approved' && (
                           <>
-                            <button
+                            <Button
                               type="button"
                               onClick={() => handleViewReceipt(pass)}
                               className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-sky-600/30 btn-shine flex items-center gap-1.5 cursor-pointer"
                             >
                               <Printer size={13} />
                               <span>Receipt</span>
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               type="button"
                               onClick={() => handleCompletePass(pass)}
                               className="px-3 py-1.5 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-emerald-600/30 btn-shine flex items-center gap-1.5 cursor-pointer"
@@ -496,18 +491,18 @@ export default function GatePassReview() {
                             >
                               <CheckCircle2 size={13} />
                               <span>Returned</span>
-                            </button>
+                            </Button>
                           </>
                         )}
 
-                        <button
+                        <Button
                           type="button"
                           onClick={() => handleDeletePass(pass)}
                           className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
                           title="Delete Record"
                         >
                           <Trash2 size={14} />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -605,13 +600,13 @@ export default function GatePassReview() {
               <h3 className="text-base font-extrabold text-[var(--text-primary)]">
                 Official Gate Pass & Barcode Receipt
               </h3>
-              <button
+              <Button
                 type="button"
                 onClick={() => setIsReceiptModalOpen(false)}
                 className="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
               >
                 <X size={18} />
-              </button>
+              </Button>
             </div>
 
             <GatePassReceipt

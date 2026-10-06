@@ -16,8 +16,8 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { getCustomMenu, saveCustomMenu, menuData, days } from '../data/menuData';
-import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import Button from '../components/UI/Button';
 
 const MEAL_ICONS = {
   Breakfast: Sun,
@@ -154,23 +154,23 @@ export default function FoodMenu() {
             />
             <Search size={14} className="absolute left-3 top-3 text-white/60" />
             {searchQuery && (
-              <button
+              <Button
                 onClick={() => setSearchQuery('')}
                 className="absolute right-3 top-2.5 text-xs text-white/60 hover:text-white"
               >
                 ✕
-              </button>
+              </Button>
             )}
           </div>
 
-          <button
+          <Button
             type="button"
             onClick={() => setIsEditModalOpen(true)}
             className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-extrabold shadow-sm flex items-center justify-center gap-2 transition-all flex-shrink-0"
           >
             <Edit3 size={15} />
             <span>Edit Weekly Menu</span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -557,13 +557,13 @@ export default function FoodMenu() {
                   <p className="text-xs text-[var(--text-muted)] mt-1">Select day and meal session to update dishes</p>
                 </div>
               </div>
-              <button
+              <Button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
                 className="w-8 h-8 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[var(--text-primary)] flex items-center justify-center transition-colors"
               >
                 <X size={18} />
-              </button>
+              </Button>
             </div>
 
             <form onSubmit={handleSaveMenuChanges} className="flex flex-col gap-4 text-xs">
@@ -625,21 +625,21 @@ export default function FoodMenu() {
                 </button>
 
                 <div className="flex items-center gap-2">
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setIsEditModalOpen(false)}
                     className="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--border)] text-[var(--text-primary)] text-xs font-bold transition-colors"
                   >
                     Cancel
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors"
+                    
                   >
                     <Save size={14} />
                     <span>Save Menu</span>
-                  </button>
+                  </Button>
                 </div>
               </div>
             </form>

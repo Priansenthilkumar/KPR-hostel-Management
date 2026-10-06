@@ -33,6 +33,7 @@ import NotificationCenter from '../Notification/NotificationCenter';
 import { notificationService } from '../../services/notificationService';
 import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
+import Button from '../UI/Button';
 
 const messNavLinks = [
   { to: '/', label: 'Home', icon: Home, desc: 'Dashboard Hub' },
@@ -387,7 +388,7 @@ export default function Navbar() {
                           <span>System Operations Log</span>
                         </button>
 
-                        <button
+                        <Button
                           type="button"
                           onClick={() => {
                             setIsProfileDropdownOpen(false);
@@ -397,11 +398,11 @@ export default function Navbar() {
                         >
                           <ArrowRightLeft size={15} />
                           <span>Switch Role / Portal</span>
-                        </button>
+                        </Button>
 
                         <div className="my-1 border-t border-white/10" />
 
-                        <button
+                        <Button
                           type="button"
                           onClick={() => {
                             setIsProfileDropdownOpen(false);
@@ -411,7 +412,7 @@ export default function Navbar() {
                         >
                           <LogOut size={15} />
                           <span>Sign Out</span>
-                        </button>
+                        </Button>
                       </div>
 
                     </div>
@@ -511,7 +512,7 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  <button
+                  <Button
                     onClick={() => {
                       closeDrawer();
                       logout();
@@ -520,7 +521,7 @@ export default function Navbar() {
                     title="Sign Out"
                   >
                     <LogOut size={16} />
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div className="m-4">
@@ -552,7 +553,7 @@ export default function Navbar() {
                   >
                     Master Home
                   </button>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => {
                       closeDrawer();
@@ -565,7 +566,7 @@ export default function Navbar() {
                     }`}
                   >
                     Mess Hub
-                  </button>
+                  </Button>
                   <button
                     type="button"
                     onClick={() => {

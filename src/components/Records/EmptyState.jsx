@@ -1,6 +1,7 @@
 // src/components/Records/EmptyState.jsx
 import { useNavigate } from 'react-router-dom';
 import { ClipboardList, PlusCircle, Sparkles } from 'lucide-react';
+import Button from '../UI/Button';
 
 export default function EmptyState({ isFiltered = false }) {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function EmptyState({ isFiltered = false }) {
       </p>
 
       {!isFiltered && (
-        <button
+        <Button
           type="button"
           onClick={() => navigate('/add-entry')}
           className="mt-6 inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#52B74A] via-emerald-500 to-[#3DA1D1] text-white text-sm font-extrabold shadow-lg shadow-[#52B74A]/25 hover:shadow-xl hover:shadow-[#52B74A]/40 hover:scale-[1.04] active:scale-95 transition-all duration-200 cursor-pointer border border-white/20 group"
@@ -37,7 +38,7 @@ export default function EmptyState({ isFiltered = false }) {
           </div>
           <span className="tracking-wide">Add First Entry</span>
           <Sparkles size={16} className="text-amber-300 animate-pulse" />
-        </button>
+        </Button>
       )}
     </div>
   );

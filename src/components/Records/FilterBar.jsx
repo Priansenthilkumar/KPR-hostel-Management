@@ -1,7 +1,8 @@
 // src/components/Records/FilterBar.jsx
-import { X, Search, RotateCcw } from 'lucide-react';
+import { Filter, Search, RotateCcw } from 'lucide-react';
 import { days, mealTypes } from '../../data/menuData';
 import { COOKS } from '../../constants/cooks';
+import Button from '../UI/Button';
 
 function FilterField({ children, className = '' }) {
   return <div className={`relative ${className}`}>{children}</div>;
@@ -24,13 +25,13 @@ export default function FilterBar({ filters, onChange, onReset }) {
         </div>
 
         {hasFilters && (
-          <button
+          <Button
             onClick={onReset}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 text-xs font-bold transition-colors"
+            
           >
             <RotateCcw size={12} strokeWidth={2.2} />
             <span>Reset Filters</span>
-          </button>
+          </Button>
         )}
       </div>
 

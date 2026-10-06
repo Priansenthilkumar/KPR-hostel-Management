@@ -18,6 +18,7 @@ import { storageService } from '../../services/storage';
 import NotificationCenter from '../Notification/NotificationCenter';
 import { notificationService } from '../../services/notificationService';
 import toast from 'react-hot-toast';
+import Button from '../UI/Button';
 
 const BREADCRUMB_MAP = {
   '/': { title: 'Dashboard', page: 'Overview & Statistics' },
@@ -137,14 +138,14 @@ export default function Header({
 
         {/* Quick Add Entry Button */}
         {currentPath !== '/add-entry' && (
-          <button
+          <Button
             type="button"
             onClick={() => navigate('/add-entry')}
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#52B74A] to-[#44A03C] hover:from-[#44A03C] hover:to-[#388E32] text-white text-xs font-bold shadow-md transition-all duration-150 active:scale-[0.98] border border-emerald-400/30"
           >
             <PlusCircle size={14} strokeWidth={2} />
             <span>Add Entry</span>
-          </button>
+          </Button>
         )}
 
         {/* Export Excel Button */}

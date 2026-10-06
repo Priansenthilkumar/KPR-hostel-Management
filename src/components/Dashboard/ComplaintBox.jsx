@@ -272,7 +272,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
 
                 <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-lg border border-[var(--border)]">
                   {['All', 'Pending', 'Solved'].map((tab) => (
-                    <button
+                    <Button
                       type="button"
                       key={tab}
                       onClick={() => setFilterTab(tab)}
@@ -283,7 +283,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
                       }`}
                     >
                       {tab}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -353,20 +353,20 @@ export default function ComplaintBox({ isOpen, onClose }) {
                                     onChange={(e) => setSolutionNote(e.target.value)}
                                     className="form-input text-[11px] h-8 py-1"
                                   />
-                                  <button
+                                  <Button
                                     type="button"
                                     onClick={() => handleMarkAsSolved(item.id)}
                                     className="px-3 py-1 rounded-md bg-[#52B74A] text-[#52B74A] text-white text-[11px] font-bold whitespace-nowrap"
                                   >
                                     Confirm Solved
-                                  </button>
-                                  <button
+                                  </Button>
+                                  <Button
                                     type="button"
                                     onClick={() => setResolvingId(null)}
                                     className="px-2 py-1 text-[11px] text-[var(--text-muted)] font-semibold"
                                   >
                                     Cancel
-                                  </button>
+                                  </Button>
                                 </div>
                               ) : (
                                 <button
@@ -382,14 +382,14 @@ export default function ComplaintBox({ isOpen, onClose }) {
                           )}
                         </div>
 
-                        <button
+                        <Button
                           type="button"
                           onClick={() => handleDeleteFault(item.id)}
                           className="p-1 rounded-md hover:bg-red-500/10 text-red-500 transition-colors"
                           title="Delete Fault Log"
                         >
                           <Trash2 size={14} />
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   ))}

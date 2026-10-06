@@ -1,5 +1,4 @@
 // src/pages/Overview.jsx
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   PlusCircle,
@@ -109,7 +108,7 @@ export default function Overview() {
             </p>
 
             {/* Super Attractive Action Button */}
-            <button
+            <Button
               type="button"
               onClick={() => navigate('/add-entry')}
               className="mt-6 inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#52B74A] via-emerald-500 to-[#3DA1D1] text-white text-sm font-extrabold shadow-lg shadow-[#52B74A]/25 hover:shadow-xl hover:shadow-[#52B74A]/40 hover:scale-[1.04] active:scale-95 transition-all duration-200 cursor-pointer border border-white/20 group"
@@ -119,7 +118,7 @@ export default function Overview() {
               </div>
               <span className="tracking-wide">Add First Entry</span>
               <Sparkles size={16} className="text-amber-300 animate-pulse" />
-            </button>
+            </Button>
           </div>
         )}
       </div>

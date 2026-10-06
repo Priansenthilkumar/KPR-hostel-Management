@@ -4,20 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
   Users,
-  UserCheck,
   AlertCircle,
-  CheckCircle2,
   Building,
   PlusCircle,
-  BarChart2,
   Ticket,
   FileText,
   Clock,
-  MessageSquare,
-  Sparkles,
   ArrowRight,
-  Printer,
-  Wrench,
   Trash2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -187,15 +180,15 @@ export default function HostelDashboard() {
       {/* ── Quick Access Operations Grid ── */}
       <div className="flex flex-wrap items-center justify-between gap-3 mt-2">
         <h2 className="text-lg font-black text-[var(--text-primary)]">Warden Quick Operations</h2>
-        <button
+        <Button
           type="button"
           onClick={handleClearAllData}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-extrabold text-xs border border-red-500/20 shadow-xs transition-all cursor-pointer active:scale-95"
+          
           title="Remove all old gate passes, student remarks, and warden duty logs"
         >
           <Trash2 size={14} />
           <span>Clear All Old Data</span>
-        </button>
+        </Button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

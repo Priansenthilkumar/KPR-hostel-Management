@@ -1,6 +1,6 @@
 // src/pages/Records.jsx
 import { useNavigate } from 'react-router-dom';
-import { PlusCircle, Download, Database, ShieldCheck } from 'lucide-react';
+import { PlusCircle, Download, Database } from 'lucide-react';
 import RecordsTable from '../components/Records/RecordsTable';
 import Button from '../components/UI/Button';
 import { exportToExcel } from '../utils/exportExcel';

@@ -19,12 +19,14 @@ import {
   Crown,
   ChefHat,
   Ticket,
+  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';
 import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
+import Button from '../UI/Button';
 
 export default function Sidebar({
   sidebarVisible = false,
@@ -456,7 +458,7 @@ export default function Sidebar({
             </div>
           </div>
 
-          <button
+          <Button
             type="button"
             onClick={() => {
               handleLogout();
@@ -466,7 +468,7 @@ export default function Sidebar({
             title="Logout"
           >
             <LogOut size={16} strokeWidth={2.2} />
-          </button>
+          </Button>
         </div>
       </div>
     </div>

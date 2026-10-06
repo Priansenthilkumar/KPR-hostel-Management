@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { notificationService } from '../../services/notificationService';
 import toast from 'react-hot-toast';
+import Button from '../UI/Button';
 
 export default function NotificationCenter({ isOpen, onClose }) {
   const navigate = useNavigate();
@@ -142,7 +143,7 @@ export default function NotificationCenter({ isOpen, onClose }) {
         <div className="p-3 bg-[var(--bg-subtle)] border-b border-[var(--border)] flex flex-wrap items-center justify-between gap-2 flex-shrink-0">
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
             {['All', 'Unread', 'Mess', 'Hostel', 'Bugs'].map((tab) => (
-              <button
+              <Button
                 type="button"
                 key={tab}
                 onClick={() => setFilterTab(tab)}
@@ -153,7 +154,7 @@ export default function NotificationCenter({ isOpen, onClose }) {
                 }`}
               >
                 {tab}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -169,14 +170,14 @@ export default function NotificationCenter({ isOpen, onClose }) {
               </button>
             )}
             {notifications.length > 0 && (
-              <button
+              <Button
                 type="button"
                 onClick={handleClearAll}
-                className="text-[11px] font-bold text-red-400 hover:underline flex items-center gap-1"
+                
               >
                 <Trash2 size={13} />
                 <span>Clear</span>
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -217,7 +218,7 @@ export default function NotificationCenter({ isOpen, onClose }) {
                   </p>
                 </div>
 
-                <button
+                <Button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -227,7 +228,7 @@ export default function NotificationCenter({ isOpen, onClose }) {
                   title="Remove Notification"
                 >
                   <Trash2 size={13} />
-                </button>
+                </Button>
               </div>
             ))
           )}

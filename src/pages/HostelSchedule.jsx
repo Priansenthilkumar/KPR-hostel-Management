@@ -1,17 +1,12 @@
 // src/pages/HostelSchedule.jsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Calendar,
   Clock,
   ShieldCheck,
-  Building,
   CheckCircle2,
-  AlertCircle,
   FileText,
-  Bell,
-  Sparkles,
 } from 'lucide-react';
-import Button from '../components/UI/Button';
 
 const WEEKDAYS = [
   {
