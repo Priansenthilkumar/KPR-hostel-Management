@@ -251,133 +251,8 @@ export default function GatePassReview() {
           </div>
         </div>
 
-        {/* ── Mobile Card List View (Visible on < md screens) ── */}
-        <div className="block md:hidden space-y-3.5">
-          {filteredPasses.length === 0 ? (
-            <div className="text-center py-10 text-xs font-semibold text-[var(--text-muted)] bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] p-6">
-              No gate passes found matching your filter criteria.
-            </div>
-          ) : (
-            filteredPasses.map((pass) => (
-              <div
-                key={pass.id}
-                className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm flex flex-col gap-3 transition-all"
-              >
-                {/* Header: ID & Status Badge */}
-                <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-                  <span className="font-mono font-bold text-xs text-sky-500 bg-sky-500/10 px-2 py-0.5 rounded-lg border border-sky-500/20">
-                    {pass.id}
-                  </span>
-                  <span
-                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                      pass.status === 'Approved'
-                        ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
-                        : pass.status === 'Pending'
-                        ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
-                        : pass.status === 'Rejected'
-                        ? 'bg-red-500/15 text-red-500 border border-red-500/30'
-                        : 'bg-sky-500/15 text-sky-500 border border-sky-500/30'
-                    }`}
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        pass.status === 'Approved'
-                          ? 'bg-emerald-500'
-                          : pass.status === 'Pending'
-                          ? 'bg-amber-500 animate-pulse'
-                          : pass.status === 'Rejected'
-                          ? 'bg-red-500'
-                          : 'bg-sky-500'
-                      }`}
-                    />
-                    {pass.status}
-                  </span>
-                </div>
-
-                {/* Student Info */}
-                <div>
-                  <h3 className="text-base font-black text-[var(--text-primary)] leading-tight">
-                    {pass.studentName}
-                  </h3>
-                  <p className="text-xs text-[var(--text-muted)] font-medium mt-0.5">
-                    {pass.department} • Block: <strong className="text-[var(--text-primary)]">{pass.block}</strong>
-                  </p>
-                </div>
-
-                {/* Departure & Arrival Schedule */}
-                <div className="grid grid-cols-2 gap-2 text-[11px] bg-[var(--bg-subtle)] p-2.5 rounded-xl border border-[var(--border)] font-semibold">
-                  <div>
-                    <span className="text-[var(--text-muted)] block text-[9.5px] uppercase font-bold">Departure</span>
-                    <span className="text-amber-500 font-extrabold">{pass.depDate} ({pass.depTime})</span>
-                  </div>
-                  <div>
-                    <span className="text-[var(--text-muted)] block text-[9.5px] uppercase font-bold">Arrival</span>
-                    <span className="text-sky-500 font-extrabold">{pass.arrDate} ({pass.arrTime})</span>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="pt-2 border-t border-[var(--border)] flex items-center gap-2">
-                  {pass.status === 'Pending' && (
-                    <>
-                      {/* Prominent Mobile Redesigned Approve Button */}
-                      <Button
-                        type="button"
-                        onClick={() => handleOpenActionModal(pass, 'approve')}
-                        className="flex-1 min-h-[42px] px-4 py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-lg shadow-emerald-600/30 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-emerald-400/30"
-                      >
-                        <Check size={16} strokeWidth={3} />
-                        <span>Approve Pass</span>
-                      </Button>
-
-                      <Button
-                        type="button"
-                        onClick={() => handleOpenActionModal(pass, 'reject')}
-                        className="px-3 min-h-[42px] py-2.5 rounded-xl font-bold text-xs bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
-                      >
-                        <X size={15} />
-                        <span>Reject</span>
-                      </Button>
-                    </>
-                  )}
-
-                  {pass.status === 'Approved' && (
-                    <>
-                      <Button
-                        type="button"
-                        onClick={() => handleViewReceipt(pass)}
-                        className="flex-1 min-h-[42px] px-3 py-2.5 rounded-xl bg-sky-600 text-white font-extrabold text-xs shadow-md shadow-sky-600/30 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <Printer size={15} />
-                        <span>Receipt & Barcode</span>
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={() => handleCompletePass(pass)}
-                        className="p-2.5 min-h-[42px] min-w-[42px] rounded-xl bg-[#52B74A]/10 text-[#52B74A] border border-[#52B74A]/30 hover:bg-[#52B74A]/20 transition-colors flex items-center justify-center cursor-pointer"
-                        title="Mark Student Returned"
-                      >
-                        <CheckCircle2 size={18} />
-                      </Button>
-                    </>
-                  )}
-
-                  <Button
-                    type="button"
-                    onClick={() => handleDeletePass(pass)}
-                    className="p-2.5 min-h-[42px] min-w-[42px] rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 flex items-center justify-center cursor-pointer"
-                    title="Delete Record"
-                  >
-                    <Trash2 size={15} />
-                  </Button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
         {/* ── Desktop Datatable View (Visible on >= md screens) ── */}
-        <div className="hidden md:block overflow-x-auto rounded-2xl border border-[var(--border)] shadow-xs">
+        <div className="overflow-x-auto rounded-2xl border border-[var(--border)] shadow-xs">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border)] text-[11px] font-extrabold uppercase text-[var(--text-muted)] tracking-wider">
@@ -464,6 +339,7 @@ export default function GatePassReview() {
                             </Button>
                             <Button
                               type="button"
+                              variant="danger"
                               onClick={() => handleOpenActionModal(pass, 'reject')}
                               className="px-3 py-1.5 rounded-xl font-extrabold text-[11px] border-0 transition-all btn-shine btn-reject-glow active:scale-95 shadow-md flex items-center gap-1 cursor-pointer"
                             >
@@ -497,6 +373,7 @@ export default function GatePassReview() {
 
                         <Button
                           type="button"
+                          variant="danger"
                           onClick={() => handleDeletePass(pass)}
                           className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
                           title="Delete Record"

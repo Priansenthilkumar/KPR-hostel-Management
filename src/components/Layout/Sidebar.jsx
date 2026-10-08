@@ -480,12 +480,8 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Slide-out Sidebar Drawer with Smooth Slide-In/Out */}
-      <aside
-        className={`fixed top-0 left-0 h-screen w-[260px] max-w-[85vw] z-50 transition-transform duration-300 ease-in-out ${
-          sidebarVisible || mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
+      {/* Static Fixed Sidebar */}
+      <aside className="fixed top-0 left-0 h-screen w-[260px] z-50">
         {sidebarContent}
       </aside>
     </>
