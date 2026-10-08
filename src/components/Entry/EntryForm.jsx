@@ -20,6 +20,7 @@ import {
   ChevronRight,
   Sun,
   MoonStar,
+  Coffee,
 } from 'lucide-react';
 import { useEntries } from '../../hooks/useEntries';
 import { getDayFromDate, getTodayString } from '../../utils/dateUtils';
