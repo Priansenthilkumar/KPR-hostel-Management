@@ -1,7 +1,15 @@
 // src/components/Records/RecordsTable.jsx
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Edit2, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ChefHat } from 'lucide-react';
+import {
+  Edit2,
+  Trash2,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  ChefHat,
+  UserCheck
+} from 'lucide-react';
 import Badge from '../UI/Badge';
 import ConfirmDialog from '../UI/ConfirmDialog';
 import Pagination from './Pagination';

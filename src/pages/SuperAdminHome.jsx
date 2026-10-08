@@ -18,6 +18,9 @@ import {
   ChefHat,
   Building,
   Power,
+  UserCheck,
+  Wrench,
+  CheckCircle2
 } from 'lucide-react';
 import { storageService } from '../services/storage';
 import { hostelService } from '../services/hostelService';

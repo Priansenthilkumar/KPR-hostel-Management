@@ -14,6 +14,7 @@ import {
   X,
   Save,
   RotateCcw,
+  ChefHat
 } from 'lucide-react';
 import { getCustomMenu, saveCustomMenu, menuData, days } from '../data/menuData';
 import toast from 'react-hot-toast';
@@ -27,7 +28,7 @@ const MEAL_ICONS = {
 
 const MEAL_TIMINGS = {
   Breakfast: '7:30 AM - 9:00 AM',
-  Lunch: '12:30 PM - 2:00 PM',
+  Lunch: '12:45 PM - 1:45 PM',
   Dinner: '7:30 PM - 9:00 PM',
 };
 

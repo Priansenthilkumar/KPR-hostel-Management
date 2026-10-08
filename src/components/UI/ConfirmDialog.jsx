@@ -1,5 +1,8 @@
 // src/components/UI/ConfirmDialog.jsx
-import { AlertTriangle } from 'lucide-react';
+import {
+  AlertTriangle,
+  AlertCircle
+} from 'lucide-react';
 import Button from './Button';
 
 export default function ConfirmDialog({

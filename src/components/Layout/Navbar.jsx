@@ -24,6 +24,7 @@ import {
   ArrowRightLeft,
   Sparkles,
   ChefHat,
+  UserCheck
 } from 'lucide-react';
 import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';

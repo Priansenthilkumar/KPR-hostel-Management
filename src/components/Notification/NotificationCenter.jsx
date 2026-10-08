@@ -11,6 +11,7 @@ import {
   Bug,
   Trash2,
   Check,
+  CheckCircle2
 } from 'lucide-react';
 import { notificationService } from '../../services/notificationService';
 import toast from 'react-hot-toast';

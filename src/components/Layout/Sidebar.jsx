@@ -20,6 +20,7 @@ import {
   ChefHat,
   Ticket,
   Sparkles,
+  UserCheck
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';

@@ -8,6 +8,7 @@ import {
   Layers,
   Database,
   Sparkles,
+  CheckCircle2
 } from 'lucide-react';
 import SummaryCards from '../components/Dashboard/SummaryCards';
 import ChartSection from '../components/Dashboard/ChartSection';

@@ -10,6 +10,7 @@ import {
   Utensils,
   Building,
   FileText,
+  UserCheck
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 

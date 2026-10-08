@@ -12,6 +12,7 @@ import {
   Clock,
   ArrowRight,
   Trash2,
+  UserCheck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ComplaintBox from '../components/Dashboard/ComplaintBox';

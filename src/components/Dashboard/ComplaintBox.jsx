@@ -11,6 +11,8 @@ import {
   ShieldCheck,
   Check,
   X,
+  AlertCircle,
+  MessageSquare
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from '../UI/Button';

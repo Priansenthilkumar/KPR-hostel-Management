@@ -2,7 +2,11 @@
 import { useState, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { Menu, X } from 'lucide-react';
+import {
+  Menu,
+  X,
+  CheckCircle2
+} from 'lucide-react';
 import Sidebar from './components/Layout/Sidebar';
 import MobileHeader from './components/Layout/MobileHeader';
 import MobileBottomNav from './components/Layout/MobileBottomNav';

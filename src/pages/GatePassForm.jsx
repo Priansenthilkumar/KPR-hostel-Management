@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   AlertCircle,
   Sparkles,
+  CheckCircle2
 } from 'lucide-react';
 import { gatepassService } from '../services/gatepassService';
 import { adminManagementService } from '../services/adminManagementService';

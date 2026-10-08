@@ -12,6 +12,8 @@ import {
   Activity,
   Bell,
   MessageSquare,
+  CheckCircle2,
+  Utensils
 } from 'lucide-react';
 import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';
