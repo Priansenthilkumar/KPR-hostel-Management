@@ -29,7 +29,7 @@ import { evaluatePasswordStrength, validateKprietEmail } from '../utils/cryptoUt
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login, signInWithGoogleOAuth, completeRegistration, completePasswordReset } = useAuth();
+  const { login, logout, user, signInWithGoogleOAuth, completeRegistration, completePasswordReset } = useAuth();
 
   // Mode: 'login' | 'signup' | 'forgot'
   const [authMode, setAuthMode] = useState('login');
@@ -160,46 +160,6 @@ export default function Login() {
     }
   };
 
-  // Initialize Google OAuth 2.0 Identity API on mount
-  useEffect(() => {
-    googleAuthService.initializeGoogleAuth(
-      (googleData) => {
-        if (googleData?.email) {
-          setGoogleEmailInput(googleData.email);
-          handleVerifyGoogleAccount(googleData.email);
-        }
-      },
-      (errMessage) => {
-        console.log('Google Auth status notice:', errMessage);
-      }
-    );
-  }, [handleVerifyGoogleAccount]);
-
-  // ── Open Google SSO Verification Modal & Trigger Google One-Tap ──
-  const handleOpenGoogleModal = () => {
-    const currentEmail = email.trim();
-    if (currentEmail) {
-      setGoogleEmailInput(currentEmail);
-    } else {
-      setGoogleEmailInput(
-        activeTab === 'super_admin'
-          ? '24cb042@kpriet.ac.in'
-          : activeTab === 'warden'
-          ? 'warden@kpriet.ac.in'
-          : 'mess.staff@kpriet.ac.in'
-      );
-    }
-    setGoogleError('');
-    setIsGoogleModalOpen(true);
-
-    // Attempt Google API One-Tap Popup
-    try {
-      googleAuthService.promptGoogleSignIn();
-    } catch {
-      // Ignore if prompt suppressed
-    }
-  };
-
   // ── Verify Google Account Email & Complete Authentication ──
   const handleVerifyGoogleAccount = useCallback(async (emailToVerify) => {
     const targetEmail = (emailToVerify || googleEmailInput).trim();
@@ -250,6 +210,48 @@ export default function Login() {
       }
     }, 900);
   }, [googleEmailInput, activeTab, navigate, signInWithGoogleOAuth]);
+
+  // Initialize Google OAuth 2.0 Identity API on mount
+  useEffect(() => {
+    googleAuthService.initializeGoogleAuth(
+      (googleData) => {
+        if (googleData?.email) {
+          setGoogleEmailInput(googleData.email);
+          handleVerifyGoogleAccount(googleData.email);
+        }
+      },
+      (errMessage) => {
+        console.log('Google Auth status notice:', errMessage);
+      }
+    );
+  }, [handleVerifyGoogleAccount]);
+
+  // ── Open Google SSO Verification Modal & Trigger Google One-Tap ──
+  const handleOpenGoogleModal = () => {
+    const currentEmail = email.trim();
+    if (currentEmail) {
+      setGoogleEmailInput(currentEmail);
+    } else {
+      setGoogleEmailInput(
+        activeTab === 'super_admin'
+          ? '24cb042@kpriet.ac.in'
+          : activeTab === 'warden'
+          ? 'warden@kpriet.ac.in'
+          : 'mess.staff@kpriet.ac.in'
+      );
+    }
+    setGoogleError('');
+    setIsGoogleModalOpen(true);
+
+    // Attempt Google API One-Tap Popup
+    try {
+      googleAuthService.promptGoogleSignIn();
+    } catch {
+      // Ignore if prompt suppressed
+    }
+  };
+
+
 
   // ── Direct Account Registration ──
   const handleCompleteRegistration = async (e) => {
