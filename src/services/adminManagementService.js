@@ -26,11 +26,11 @@ export const DEFAULT_COOKS = [
 export const DEFAULT_HOSTEL_BLOCKS = [
   { id: 'blk-1', name: 'Pallavan Hostel', code: 'BLK-PAL', type: 'Boys Hostel', capacity: 250, rooms: 62, warden: 'Dr. M. Senthil', status: 'Active' },
   { id: 'blk-2', name: 'Cheran Hostel', code: 'BLK-CHE', type: 'Boys Hostel', capacity: 230, rooms: 58, warden: 'Mr. K. Ramu', status: 'Active' },
-  { id: 'blk-3', name: 'Thiruvalluvar GF', code: 'BLK-TVG', type: 'Girls Hostel', capacity: 160, rooms: 40, warden: 'Mrs. S. Lakshmi', status: 'Active' },
-  { id: 'blk-4', name: 'Thiruvalluvar 1st F', code: 'BLK-TV1', type: 'Girls Hostel', capacity: 160, rooms: 40, warden: 'Ms. P. Revathi', status: 'Active' },
-  { id: 'blk-5', name: 'Thiruvalluvar 2nd F', code: 'BLK-TV2', type: 'Girls Hostel', capacity: 160, rooms: 40, warden: 'Dr. R. Anuradha', status: 'Active' },
-  { id: 'blk-6', name: 'Thiruvalluvar 3rd F', code: 'BLK-TV3', type: 'Girls Hostel', capacity: 160, rooms: 40, warden: 'Mrs. V. Gomathi', status: 'Active' },
-  { id: 'blk-7', name: 'Thiruvalluvar 4th F', code: 'BLK-TV4', type: 'Girls Hostel', capacity: 160, rooms: 40, warden: 'Mrs. K. Malathi', status: 'Active' },
+  { id: 'blk-3', name: 'Thiruvalluvar GF', code: 'BLK-TVG', type: ' Boys Hostel', capacity: 160, rooms: 40, warden: 'Mrs. S. Lakshmi', status: 'Active' },
+  { id: 'blk-4', name: 'Thiruvalluvar 1st F', code: 'BLK-TV1', type: ' Boys Hostel', capacity: 160, rooms: 40, warden: 'Ms. P. Revathi', status: 'Active' },
+  { id: 'blk-5', name: 'Thiruvalluvar 2nd F', code: 'BLK-TV2', type: ' Boys Hostel', capacity: 160, rooms: 40, warden: 'Dr. R. Anuradha', status: 'Active' },
+  { id: 'blk-6', name: 'Thiruvalluvar 3rd F', code: 'BLK-TV3', type: ' Boys Hostel', capacity: 160, rooms: 40, warden: 'Mrs. V. Gomathi', status: 'Active' },
+  { id: 'blk-7', name: 'Thiruvalluvar 4th F', code: 'BLK-TV4', type: ' Boys Hostel', capacity: 160, rooms: 40, warden: 'Mrs. K. Malathi', status: 'Active' },
   { id: 'blk-8', name: 'Bharathi Dorm', code: 'BLK-BHA', type: 'Boys Dormitory', capacity: 120, rooms: 15, warden: 'Mr. P. Sundar', status: 'Active' },
   { id: 'blk-9', name: 'Bharathi Intl.', code: 'BLK-INT', type: 'International PG', capacity: 80, rooms: 20, warden: 'Dr. G. Vignesh', status: 'Active' },
 ];
