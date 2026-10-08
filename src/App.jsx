@@ -8,6 +8,8 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import Sidebar from './components/Layout/Sidebar';
+import MobileHeader from './components/Layout/MobileHeader';
+import MobileBottomNav from './components/Layout/MobileBottomNav';
 import Footer from './components/Layout/Footer';
 import ComplaintBox from './components/Dashboard/ComplaintBox';
 import { useDarkMode } from './hooks/useDarkMode';
@@ -98,7 +100,28 @@ function MainAppLayout({ isDark, toggle }) {
   return (
     <div className={`app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex ${isSuperAdmin ? 'super-admin-mobile-theme' : ''}`}>
       
+      {/* Small Icon-Only Green Toggle Button in Top-Left Corner (Desktop Only) */}
+      <button
+        type="button"
+        onClick={() => setSidebarVisible((prev) => !prev)}
+        className="fixed top-3 left-3 z-50 hidden md:flex items-center justify-center w-9 h-9 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
+        title={sidebarVisible ? 'Close Navigation Sidebar' : 'Open Navigation Sidebar'}
+        aria-label="Toggle Navigation Sidebar"
+      >
+        {sidebarVisible ? (
+          <X size={18} strokeWidth={2.5} className="text-white" />
+        ) : (
+          <Menu size={18} strokeWidth={2.5} className="text-white" />
+        )}
+      </button>
 
+      {/* Dark Transparent Backdrop Overlay when Sidebar Drawer is Open */}
+      {sidebarVisible && (
+        <div
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 transition-opacity duration-300 animate-fade-in cursor-pointer"
+          onClick={() => setSidebarVisible(false)}
+        />
+      )}
 
       {/* Slide-out Left Sidebar Drawer */}
       <Sidebar
@@ -111,8 +134,13 @@ function MainAppLayout({ isDark, toggle }) {
       />
 
       {/* Main Area Flex Container: Occupies 100% full width with standard top padding */}
-      <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col pl-[260px] transition-all duration-300">
-        <main className="flex-1 w-full max-w-[1500px] mx-auto px-3 sm:px-6 pt-6 pb-12">
+      <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col pl-0 transition-all duration-300">
+        <MobileHeader
+          onOpenSidebar={() => setSidebarVisible(true)}
+          isDark={isDark}
+          onToggleDark={toggle}
+        />
+        <main className="flex-1 w-full max-w-[1500px] mx-auto px-3 sm:px-6 pt-3 sm:pt-6 pb-20 md:pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Common Super Admin Home Route */}
@@ -141,6 +169,9 @@ function MainAppLayout({ isDark, toggle }) {
         {/* Global Footer sits inside main-area at bottom */}
         <Footer />
       </div>
+
+      {/* Mobile Bottom Navigation Bar (Visible only on mobile < md) */}
+      <MobileBottomNav onOpenSidebar={() => setSidebarVisible(true)} />
 
       {/* Complaints Modal Overlay */}
       <ComplaintBox

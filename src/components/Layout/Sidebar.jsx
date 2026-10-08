@@ -20,10 +20,7 @@ import {
   ChefHat,
   Ticket,
   Sparkles,
-  UserCheck,
-  Users,
-  BarChart2,
-  MessageSquare
+  UserCheck
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';
@@ -480,8 +477,12 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Static Fixed Sidebar */}
-      <aside className="fixed top-0 left-0 h-screen w-[260px] z-50">
+      {/* Slide-out Sidebar Drawer with Smooth Slide-In/Out */}
+      <aside
+        className={`fixed top-0 left-0 h-screen w-[260px] max-w-[85vw] z-50 transition-transform duration-300 ease-in-out ${
+          sidebarVisible || mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
         {sidebarContent}
       </aside>
     </>
