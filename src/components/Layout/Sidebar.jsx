@@ -22,7 +22,8 @@ import {
   Sparkles,
   UserCheck,
   Users,
-  BarChart2
+  BarChart2,
+  MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportExcel';
