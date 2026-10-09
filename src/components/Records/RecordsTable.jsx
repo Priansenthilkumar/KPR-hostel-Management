@@ -37,10 +37,10 @@ const columns = [
 
 function SortIcon({ colKey, sortKey, sortDir }) {
   if (sortKey !== colKey)
-    return <ArrowUpDown size={12} strokeWidth={2} className="text-gray-400 flex-shrink-0" />;
+    return <ArrowUpDown size={12} strokeWidth={2} className="text-slate-400 flex-shrink-0" />;
   return sortDir === 'asc'
-    ? <ArrowUp size={12} strokeWidth={2} className="text-[#52B74A] flex-shrink-0" />
-    : <ArrowDown size={12} strokeWidth={2} className="text-[#52B74A] flex-shrink-0" />;
+    ? <ArrowUp size={12} strokeWidth={2} className="text-[#00A859] flex-shrink-0" />
+    : <ArrowDown size={12} strokeWidth={2} className="text-[#00A859] flex-shrink-0" />;
 }
 
 export default function RecordsTable() {
@@ -139,7 +139,7 @@ export default function RecordsTable() {
           {/* Count bar */}
           <div className="records-count flex items-center justify-between mb-3 px-1">
             <p className="text-xs font-semibold text-[var(--text-secondary)]">
-              Showing <span className="font-extrabold text-[#52B74A]">{sorted.length}</span>{' '}
+              Showing <span className="font-extrabold text-[#1B924B]">{sorted.length}</span>{' '}
               {hasFilters ? 'matching' : 'total'} meal maintenance records
             </p>
           </div>
@@ -185,16 +185,16 @@ export default function RecordsTable() {
                         <td className="max-w-[180px] truncate text-xs font-medium text-[var(--text-secondary)]" title={entry.mainCourse}>
                           {entry.mainCourse}
                         </td>
-                        <td className="font-bold text-[#52B74A] text-xs tabular-nums">
+                        <td className="font-bold text-[#1B924B] text-xs tabular-nums">
                           {formatKg(entry.rawMaterial)}
                         </td>
                         <td>
                           <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold text-[var(--text-secondary)]">
-                            <ChefHat size={13} className="text-[#52B74A]" />
+                            <ChefHat size={13} className="text-[#1B924B]" />
                             <span>{entry.cookName}</span>
                           </div>
                         </td>
-                        <td className="font-bold text-[#52B74A] text-xs tabular-nums">
+                        <td className="font-bold text-[#1B924B] text-xs tabular-nums">
                           {parseInt(entry.strength).toLocaleString()}
                         </td>
                         <td>
@@ -212,7 +212,7 @@ export default function RecordsTable() {
                           <div className="inline-flex items-center gap-1">
                             <Button
                               onClick={() => navigate(`/add-entry/${entry.id}`)}
-                              className="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-[#52B74A]/15 text-[#52B74A] transition-colors"
+                              className="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-[#1B924B]/15 text-[#1B924B] transition-colors"
                               title="Edit entry"
                               aria-label={`Edit entry from ${entry.date}`}
                             >

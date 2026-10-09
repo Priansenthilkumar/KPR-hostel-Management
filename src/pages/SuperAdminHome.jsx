@@ -315,7 +315,7 @@ export default function SuperAdminHome() {
       {/* ── Executive Super Admin Master Command Banner ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-950 via-[#164350] to-[#0E2730] max-md:from-[#1F0B3D] max-md:via-[#2D0F50] max-md:to-[#130726] text-white p-5 sm:p-8 shadow-2xl border border-teal-500/40">
         <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-teal-600/20 max-md:bg-teal-600/30 blur-3xl pointer-events-none" />
-        <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-[#52B74A]/15 max-md:bg-amber-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-[#1B924B]/15 max-md:bg-amber-500/15 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row items-center text-center lg:text-left justify-between gap-6">
           <div className="max-w-2xl flex flex-col items-center lg:items-start">
@@ -382,7 +382,7 @@ export default function SuperAdminHome() {
             onClick={() => setActiveTab('menu')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
               activeTab === 'menu'
-                ? 'bg-[#52B74A] text-white shadow-lg shadow-emerald-900/40 scale-102'
+                ? 'bg-[#1B924B] text-white shadow-lg shadow-emerald-900/40 scale-102'
                 : 'text-slate-300 hover:bg-white/10 hover:text-white'
             }`}
           >
@@ -430,7 +430,7 @@ export default function SuperAdminHome() {
                 <span className="text-[11px] sm:text-xs font-extrabold uppercase text-[var(--text-muted)] tracking-wider truncate">
                   Mess Records
                 </span>
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#52B74A]/20 to-emerald-600/20 text-[#52B74A] flex items-center justify-center font-bold flex-shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#1B924B]/20 to-emerald-600/20 text-[#1B924B] flex items-center justify-center font-bold flex-shrink-0">
                   <Utensils size={18} />
                 </div>
               </div>
@@ -490,10 +490,10 @@ export default function SuperAdminHome() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             <div
               onClick={() => setActiveTab('menu')}
-              className="card p-6 rounded-3xl border border-[var(--border)] hover:border-[#52B74A] shadow-md hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between"
+              className="card p-6 rounded-3xl border border-[var(--border)] hover:border-[#1B924B] shadow-md hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between"
             >
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center mb-4 font-bold group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-[#1B924B]/15 text-[#1B924B] flex items-center justify-center mb-4 font-bold group-hover:scale-110 transition-transform">
                   <Utensils size={24} />
                 </div>
                 <h3 className="text-lg font-black text-[var(--text-primary)]">Menu Management</h3>
@@ -501,7 +501,7 @@ export default function SuperAdminHome() {
                   Add, edit, or remove breakfast, lunch, and dinner food items for any day of the week.
                 </p>
               </div>
-              <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center justify-between text-xs font-extrabold text-[#52B74A]">
+              <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center justify-between text-xs font-extrabold text-[#1B924B]">
                 <span>Manage Food Menu</span>
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -555,7 +555,7 @@ export default function SuperAdminHome() {
         <div className="card p-5 sm:p-8 rounded-3xl border border-[var(--border)] shadow-md flex flex-col gap-6 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#1B924B]/15 text-[#1B924B] flex items-center justify-center font-bold flex-shrink-0">
                 <Utensils size={20} />
               </div>
               <div>
@@ -590,7 +590,7 @@ export default function SuperAdminHome() {
                   onClick={() => setSelectedDay(d)}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
                     selectedDay === d
-                      ? 'bg-[#52B74A] text-white shadow-md shadow-emerald-900/30'
+                      ? 'bg-[#1B924B] text-white shadow-md shadow-emerald-900/30'
                       : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]'
                   }`}
                 >
@@ -617,7 +617,7 @@ export default function SuperAdminHome() {
                   onClick={() => setSelectedMeal(m.type)}
                   className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col ${
                     selectedMeal === m.type
-                      ? 'bg-[#52B74A]/10 border-[#52B74A] text-[#52B74A] ring-2 ring-[#52B74A]/30'
+                      ? 'bg-[#1B924B]/10 border-[#1B924B] text-[#1B924B] ring-2 ring-[#1B924B]/30'
                       : 'bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--text-secondary)] hover:border-slate-400'
                   }`}
                 >

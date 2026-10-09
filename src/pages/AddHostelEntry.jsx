@@ -110,12 +110,12 @@ export default function AddHostelEntry() {
       
       {/* ── Header Banner ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-6 sm:p-8 shadow-xl border border-[#245767]">
-        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3DA1D1]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3BB5DD]/15 blur-3xl pointer-events-none" />
         
         <div className="relative z-10 flex flex-col md:flex-row items-center text-center md:text-left justify-between gap-6">
           <div className="max-w-2xl flex flex-col items-center md:items-start">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#3DA1D1] mb-3 backdrop-blur-xs">
-              <PlusCircle size={14} className="text-[#3DA1D1]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#3BB5DD] mb-3 backdrop-blur-xs">
+              <PlusCircle size={14} className="text-[#3BB5DD]" />
               <span>Log New Hostel Entry</span>
             </div>
 
@@ -137,7 +137,7 @@ export default function AddHostelEntry() {
           onClick={() => setActiveTab('duty')}
           className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all ${
             activeTab === 'duty'
-              ? 'bg-[#3DA1D1] text-white shadow-md'
+              ? 'bg-[#3BB5DD] text-white shadow-md'
               : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border border-[var(--border)] hover:bg-[var(--bg-subtle)]'
           }`}
         >
@@ -150,7 +150,7 @@ export default function AddHostelEntry() {
           onClick={() => setActiveTab('remark')}
           className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all ${
             activeTab === 'remark'
-              ? 'bg-[#52B74A] text-white shadow-md'
+              ? 'bg-[#1B924B] text-white shadow-md'
               : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border border-[var(--border)] hover:bg-[var(--bg-subtle)]'
           }`}
         >
@@ -166,14 +166,14 @@ export default function AddHostelEntry() {
           /* ── FORM 1: Warden Duty Shift ── */
           <form onSubmit={handleSubmitDuty} className="flex flex-col gap-5">
             <h3 className="font-extrabold text-base text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border)] pb-3">
-              <UserCheck size={18} className="text-[#3DA1D1]" />
+              <UserCheck size={18} className="text-[#3BB5DD]" />
               <span>Log Supervisory Staff Duty Shift</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4.5 text-xs">
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <User size={14} className="text-[#3DA1D1]" />
+                  <User size={14} className="text-[#3BB5DD]" />
                   <span>Staff Name *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -185,13 +185,13 @@ export default function AddHostelEntry() {
                     className="form-input form-input-has-icon"
                     required
                   />
-                  <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
+                  <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3BB5DD] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <ShieldCheck size={14} className="text-[#3DA1D1]" />
+                  <ShieldCheck size={14} className="text-[#3BB5DD]" />
                   <span>Designation *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -205,13 +205,13 @@ export default function AddHostelEntry() {
                     <option value="Resident Tutor">Resident Tutor</option>
                     <option value="Floor Tutor">Floor Tutor</option>
                   </select>
-                  <ShieldCheck size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
+                  <ShieldCheck size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3BB5DD] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <Building size={14} className="text-[#3DA1D1]" />
+                  <Building size={14} className="text-[#3BB5DD]" />
                   <span>Hostel Block *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -226,13 +226,13 @@ export default function AddHostelEntry() {
                       </option>
                     ))}
                   </select>
-                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
+                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3BB5DD] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <Calendar size={14} className="text-[#3DA1D1]" />
+                  <Calendar size={14} className="text-[#3BB5DD]" />
                   <span>Duty Date *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -243,13 +243,13 @@ export default function AddHostelEntry() {
                     className="form-input form-input-has-icon"
                     required
                   />
-                  <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
+                  <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3BB5DD] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <Clock size={14} className="text-[#3DA1D1]" />
+                  <Clock size={14} className="text-[#3BB5DD]" />
                   <span>In Time *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -261,13 +261,13 @@ export default function AddHostelEntry() {
                     className="form-input form-input-has-icon"
                     required
                   />
-                  <Clock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
+                  <Clock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3BB5DD] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <Clock size={14} className="text-[#3DA1D1]" />
+                  <Clock size={14} className="text-[#3BB5DD]" />
                   <span>Out Time</span>
                 </label>
                 <div className="relative flex items-center">
@@ -278,7 +278,7 @@ export default function AddHostelEntry() {
                     onChange={(e) => setOutTime(e.target.value)}
                     className="form-input form-input-has-icon"
                   />
-                  <Clock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3DA1D1] pointer-events-none" />
+                  <Clock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3BB5DD] pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -297,14 +297,14 @@ export default function AddHostelEntry() {
           /* ── FORM 2: Student Remark ── */
           <form onSubmit={handleSubmitRemark} className="flex flex-col gap-5">
             <h3 className="font-extrabold text-base text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border)] pb-3">
-              <MessageSquare size={18} className="text-[#52B74A]" />
+              <MessageSquare size={18} className="text-[#1B924B]" />
               <span>Record New Student Remark / Grievance</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5 text-xs">
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <User size={14} className="text-[#52B74A]" />
+                  <User size={14} className="text-[#1B924B]" />
                   <span>Student Name *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -316,13 +316,13 @@ export default function AddHostelEntry() {
                     className="form-input form-input-has-icon"
                     required
                   />
-                  <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
+                  <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1B924B] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <FileText size={14} className="text-[#52B74A]" />
+                  <FileText size={14} className="text-[#1B924B]" />
                   <span>Roll No / ID</span>
                 </label>
                 <div className="relative flex items-center">
@@ -333,13 +333,13 @@ export default function AddHostelEntry() {
                     onChange={(e) => setRollNo(e.target.value)}
                     className="form-input form-input-has-icon"
                   />
-                  <FileText size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
+                  <FileText size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1B924B] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <Building size={14} className="text-[#52B74A]" />
+                  <Building size={14} className="text-[#1B924B]" />
                   <span>Room No</span>
                 </label>
                 <div className="relative flex items-center">
@@ -350,13 +350,13 @@ export default function AddHostelEntry() {
                     onChange={(e) => setRoomNo(e.target.value)}
                     className="form-input form-input-has-icon"
                   />
-                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
+                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1B924B] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <Building size={14} className="text-[#52B74A]" />
+                  <Building size={14} className="text-[#1B924B]" />
                   <span>Hostel Block *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -371,7 +371,7 @@ export default function AddHostelEntry() {
                       </option>
                     ))}
                   </select>
-                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
+                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1B924B] pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -379,7 +379,7 @@ export default function AddHostelEntry() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4.5 text-xs">
               <div className="flex flex-col gap-1.5 sm:col-span-1">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <Wrench size={14} className="text-[#52B74A]" />
+                  <Wrench size={14} className="text-[#1B924B]" />
                   <span>Category *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -395,13 +395,13 @@ export default function AddHostelEntry() {
                     <option value="Discipline/Noise">Discipline & Quiet Hours</option>
                     <option value="General Query">General Hostel Query</option>
                   </select>
-                  <Wrench size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
+                  <Wrench size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1B924B] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5 sm:col-span-2">
                 <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                  <MessageSquare size={14} className="text-[#52B74A]" />
+                  <MessageSquare size={14} className="text-[#1B924B]" />
                   <span>Student Remark Details *</span>
                 </label>
                 <div className="relative flex items-center">
@@ -413,7 +413,7 @@ export default function AddHostelEntry() {
                     className="form-input form-input-has-icon"
                     required
                   />
-                  <MessageSquare size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52B74A] pointer-events-none" />
+                  <MessageSquare size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1B924B] pointer-events-none" />
                 </div>
               </div>
             </div>

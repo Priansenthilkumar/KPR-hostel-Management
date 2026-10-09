@@ -3,11 +3,10 @@ import { useState, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import {
-  Menu,
-  X,
   CheckCircle2
 } from 'lucide-react';
 import Sidebar from './components/Layout/Sidebar';
+import Header from './components/Layout/Header';
 import MobileHeader from './components/Layout/MobileHeader';
 import MobileBottomNav from './components/Layout/MobileBottomNav';
 import Footer from './components/Layout/Footer';
@@ -36,18 +35,21 @@ const PageLoader = () => (
     <div className="flex flex-col items-center gap-4">
       <img
         src={kprLogo}
-        alt="KPR Logo"
-        className="h-10 w-auto object-contain bg-white/95 p-1.5 rounded-xl shadow-xs"
+        alt="KPRIET Logo"
+        className="h-12 w-auto object-contain bg-white p-2 rounded-xl shadow-md"
       />
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="w-2 h-2 rounded-full bg-[#52B74A] animate-bounce"
+            className="w-2 h-2 rounded-full bg-[#00A859] animate-bounce"
             style={{ animationDelay: `${i * 0.15}s` }}
           />
         ))}
       </div>
+      <p className="text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wide">
+        Loading KPRIET Portal…
+      </p>
     </div>
   </div>
 );
@@ -78,44 +80,25 @@ function MainAppLayout({ isDark, toggle }) {
   const location = useLocation();
   const { user } = useAuth();
   const isLogin = location.pathname === '/login';
-  const isSuperAdmin = user?.role === 'super_admin';
 
-  // Sidebar navigation is HIDDEN by default (slide-out drawer behavior)
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [isComplaintOpen, setIsComplaintOpen] = useState(false);
 
   if (isLogin) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white flex flex-col justify-center">
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        </Suspense>
-      </div>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Suspense>
     );
   }
 
   return (
-    <div className={`app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex ${isSuperAdmin ? 'super-admin-mobile-theme' : ''}`}>
-      
-      {/* Small Icon-Only Green Toggle Button in Top-Left Corner (Desktop Only) */}
-      <button
-        type="button"
-        onClick={() => setSidebarVisible((prev) => !prev)}
-        className="fixed top-3 left-3 z-50 hidden md:flex items-center justify-center w-9 h-9 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30"
-        title={sidebarVisible ? 'Close Navigation Sidebar' : 'Open Navigation Sidebar'}
-        aria-label="Toggle Navigation Sidebar"
-      >
-        {sidebarVisible ? (
-          <X size={18} strokeWidth={2.5} className="text-white" />
-        ) : (
-          <Menu size={18} strokeWidth={2.5} className="text-white" />
-        )}
-      </button>
+    <div className={`app-layout min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-300 relative flex`}>
 
-      {/* Dark Transparent Backdrop Overlay when Sidebar Drawer is Open */}
+      {/* Dark Backdrop when Sidebar Open */}
       {sidebarVisible && (
         <div
           className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 transition-opacity duration-300 animate-fade-in cursor-pointer"
@@ -133,20 +116,35 @@ function MainAppLayout({ isDark, toggle }) {
         onToggleDark={toggle}
       />
 
-      {/* Main Area Flex Container: Occupies 100% full width with standard top padding */}
-      <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col pl-0 transition-all duration-300">
+      {/* Main Content Area */}
+      <div className="main-area flex-1 min-w-0 min-h-screen flex flex-col">
+        
+        {/* Desktop Top Header (hidden on mobile) */}
+        <div className="hidden md:block">
+          <Header
+            sidebarVisible={sidebarVisible}
+            onToggleSidebar={() => setSidebarVisible((prev) => !prev)}
+            isDark={isDark}
+            onToggleDark={toggle}
+            onOpenComplaints={() => setIsComplaintOpen(true)}
+          />
+        </div>
+
+        {/* Mobile Top Header (visible on mobile only) */}
         <MobileHeader
           onOpenSidebar={() => setSidebarVisible(true)}
           isDark={isDark}
           onToggleDark={toggle}
         />
-        <main className="flex-1 w-full max-w-[1500px] mx-auto px-3 sm:px-6 pt-3 sm:pt-6 pb-20 md:pb-12">
+
+        {/* Page Content */}
+        <main className="flex-1 w-full max-w-[1500px] mx-auto px-3 sm:px-5 lg:px-8 pt-4 sm:pt-6 pb-20 md:pb-12">
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              {/* Common Super Admin Home Route */}
+              {/* Super Admin */}
               <Route path="/admin-home" element={<ProtectedRoute allowedRole="super_admin"><SuperAdminHome /></ProtectedRoute>} />
 
-              {/* Mess Protected Routes */}
+              {/* Mess Routes */}
               <Route path="/" element={<ProtectedRoute allowedRole="mess_staff"><HomeRedirect /></ProtectedRoute>} />
               <Route path="/mess-dashboard" element={<ProtectedRoute allowedRole="mess_staff"><Dashboard /></ProtectedRoute>} />
               <Route path="/overview" element={<ProtectedRoute allowedRole="mess_staff"><Overview /></ProtectedRoute>} />
@@ -154,7 +152,7 @@ function MainAppLayout({ isDark, toggle }) {
               <Route path="/add-entry" element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
               <Route path="/add-entry/:id" element={<ProtectedRoute allowedRole="mess_staff"><AddEntry /></ProtectedRoute>} />
 
-              {/* Hostel Management Suite Routes */}
+              {/* Hostel Routes */}
               <Route path="/hostel-dashboard" element={<ProtectedRoute allowedRole="warden"><HostelDashboard /></ProtectedRoute>} />
               <Route path="/hostel-overview" element={<ProtectedRoute allowedRole="warden"><HostelManagement /></ProtectedRoute>} />
               <Route path="/hostel-add-entry" element={<ProtectedRoute allowedRole="warden"><AddHostelEntry /></ProtectedRoute>} />
@@ -166,14 +164,13 @@ function MainAppLayout({ isDark, toggle }) {
           </Suspense>
         </main>
 
-        {/* Global Footer sits inside main-area at bottom */}
         <Footer />
       </div>
 
-      {/* Mobile Bottom Navigation Bar (Visible only on mobile < md) */}
+      {/* Mobile Bottom Navigation Bar */}
       <MobileBottomNav onOpenSidebar={() => setSidebarVisible(true)} />
 
-      {/* Complaints Modal Overlay */}
+      {/* Complaints Modal */}
       <ComplaintBox
         isOpen={isComplaintOpen}
         onClose={() => setIsComplaintOpen(false)}
@@ -195,22 +192,22 @@ export default function App() {
             toastOptions={{
               duration: 3500,
               style: {
-                fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                fontSize: '13.5px',
-                fontWeight: 500,
-                borderRadius: '10px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '13px',
+                fontWeight: 600,
+                borderRadius: '12px',
+                boxShadow: '0 8px 24px rgba(0,43,73,0.12)',
                 border: '1px solid var(--border)',
                 background: 'var(--toast-bg)',
                 color: 'var(--text-primary)',
               },
               success: {
-                iconTheme: { primary: '#52B74A', secondary: '#fff' },
-                style: { borderLeft: '4px solid #52B74A' },
+                iconTheme: { primary: '#00A859', secondary: '#fff' },
+                style: { borderLeft: '4px solid #00A859' },
               },
               error: {
-                iconTheme: { primary: '#D32F2F', secondary: '#fff' },
-                style: { borderLeft: '4px solid #D32F2F' },
+                iconTheme: { primary: '#DC2626', secondary: '#fff' },
+                style: { borderLeft: '4px solid #DC2626' },
               },
             }}
           />

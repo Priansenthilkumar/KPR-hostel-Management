@@ -13,7 +13,7 @@ const ChartSkeleton = () => (
 const CHART_DEFS = [
   { title: 'Meal-wise Entries',       icon: UtensilsCrossed, accent: '#174351', bg: '#EBF4F6', Component: MealChart },
   { title: 'Daily Wastage Trend',     icon: TrendingDown,    accent: '#E65100', bg: '#FFF7ED', Component: WastageChart },
-  { title: 'Cook-wise Distribution',  icon: ChefHat,         accent: '#52B74A', bg: '#EAF7EA', Component: CookChart },
+  { title: 'Cook-wise Distribution',  icon: ChefHat,         accent: '#1B924B', bg: '#EAF7EA', Component: CookChart },
 ];
 
 export default function ChartSection({ entries }) {

@@ -161,7 +161,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
                 <h3 className="font-extrabold text-sm sm:text-base text-white leading-tight">
                   App Fault & Bug Resolution Desk
                 </h3>
-                <span className="text-[9.5px] sm:text-[10px] bg-[#52B74A]/25 text-[#52B74A] border border-[#52B74A]/40 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider whitespace-nowrap">
+                <span className="text-[9.5px] sm:text-[10px] bg-[#1B924B]/25 text-[#1B924B] border border-[#1B924B]/40 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider whitespace-nowrap">
                   Active Desk
                 </span>
               </div>
@@ -203,7 +203,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
           {/* Form */}
           <form onSubmit={handleSubmitFault} className="flex flex-col gap-4 bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border)]">
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2 leading-snug">
-              <Wrench size={14} className="text-[#52B74A] flex-shrink-0" />
+              <Wrench size={14} className="text-[#1B924B] flex-shrink-0" />
               <span className="leading-normal">Report an App Fault or Bug</span>
             </h4>
 
@@ -229,7 +229,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
               {/* Reporter Name */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1 leading-normal whitespace-normal">
-                  <User size={12} className="text-[#3DA1D1] flex-shrink-0" />
+                  <User size={12} className="text-[#3BB5DD] flex-shrink-0" />
                   <span>Your Name / Staff ID (Optional)</span>
                 </label>
                 <input
@@ -268,7 +268,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
             <div className="flex flex-col gap-3 pt-1">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-[var(--border)]">
                 <h4 className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5 leading-snug">
-                  <ShieldCheck size={15} className="text-[#52B74A] flex-shrink-0" />
+                  <ShieldCheck size={15} className="text-[#1B924B] flex-shrink-0" />
                   <span className="leading-normal">App Fault Resolution Log ({faults.length})</span>
                 </h4>
 
@@ -280,7 +280,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
                       onClick={() => setFilterTab(tab)}
                       className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
                         filterTab === tab
-                          ? 'bg-[#52B74A] text-white shadow-xs'
+                          ? 'bg-[#1B924B] text-white shadow-xs'
                           : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                       }`}
                     >
@@ -358,7 +358,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
                                   <Button
                                     type="button"
                                     onClick={() => handleMarkAsSolved(item.id)}
-                                    className="px-3 py-1 rounded-md bg-[#52B74A] text-[#52B74A] text-white text-[11px] font-bold whitespace-nowrap"
+                                    className="px-3 py-1 rounded-md bg-[#1B924B] text-[#1B924B] text-white text-[11px] font-bold whitespace-nowrap"
                                   >
                                     Confirm Solved
                                   </Button>
@@ -374,7 +374,7 @@ export default function ComplaintBox({ isOpen, onClose }) {
                                 <button
                                   type="button"
                                   onClick={() => setResolvingId(item.id)}
-                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#52B74A] hover:bg-[#44A03C] text-white text-[11px] font-bold shadow-xs transition-all"
+                                  className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#1B924B] hover:bg-[#44A03C] text-white text-[11px] font-bold shadow-xs transition-all"
                                 >
                                   <CheckCircle2 size={13} />
                                   <span>Mark as Solved</span>

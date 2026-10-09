@@ -83,7 +83,7 @@ export default function GatePassReceipt({ gatePass }) {
     <div className="flex flex-col gap-4">
       {/* Action Bar (Screen only) */}
       <div className="flex items-center justify-between gap-3 p-3 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-2xl print:hidden">
-        <div className="flex items-center gap-2 text-xs font-extrabold text-[#52B74A]">
+        <div className="flex items-center gap-2 text-xs font-extrabold text-[#1B924B]">
           <ShieldCheck size={16} />
           <span>Approved Official Gate Pass Receipt</span>
         </div>
@@ -108,7 +108,7 @@ export default function GatePassReceipt({ gatePass }) {
         className="bg-white text-slate-900 p-6 sm:p-8 rounded-3xl border-2 border-slate-900 shadow-2xl relative overflow-hidden font-sans"
       >
         {/* Top Watermark Accent */}
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#174351] via-[#52B74A] to-[#3DA1D1]" />
+        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#174351] via-[#1B924B] to-[#3BB5DD]" />
         
         {/* Header Branding */}
         <div className="flex items-center justify-between pb-5 border-b-2 border-slate-900 gap-4">

@@ -77,12 +77,12 @@ export default function HostelSchedule() {
       
       {/* ── Header Banner ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-6 sm:p-8 shadow-xl border border-[#245767]">
-        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3DA1D1]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3BB5DD]/15 blur-3xl pointer-events-none" />
         
         <div className="relative z-10 flex flex-col md:flex-row items-center text-center md:text-left justify-between gap-6">
           <div className="max-w-2xl flex flex-col items-center md:items-start">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#3DA1D1] mb-3 backdrop-blur-xs">
-              <FileText size={14} className="text-[#3DA1D1]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#3BB5DD] mb-3 backdrop-blur-xs">
+              <FileText size={14} className="text-[#3BB5DD]" />
               <span>Official Hostel Timings & Guidelines</span>
             </div>
 
@@ -96,7 +96,7 @@ export default function HostelSchedule() {
           </div>
 
           <div className="flex flex-col items-center justify-center bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 shadow-inner">
-            <Clock size={32} className="text-[#52B74A] mb-1" />
+            <Clock size={32} className="text-[#1B924B] mb-1" />
             <span className="text-[11px] font-extrabold text-white">Curfew: 08:30 PM</span>
           </div>
         </div>
@@ -111,7 +111,7 @@ export default function HostelSchedule() {
             onClick={() => setSelectedDay(w.day)}
             className={`px-4 py-2.5 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all ${
               selectedDay === w.day
-                ? 'bg-[#52B74A] text-white shadow-md scale-105'
+                ? 'bg-[#1B924B] text-white shadow-md scale-105'
                 : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border border-[var(--border)] hover:bg-[var(--bg-subtle)]'
             }`}
           >
@@ -124,14 +124,14 @@ export default function HostelSchedule() {
       <div className="card p-6 rounded-3xl border border-[var(--border)] shadow-md flex flex-col gap-6">
         <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-[#52B74A]/10 text-[#52B74A] flex items-center justify-center font-extrabold text-lg">
+            <div className="w-11 h-11 rounded-2xl bg-[#1B924B]/10 text-[#1B924B] flex items-center justify-center font-extrabold text-lg">
               <Calendar size={22} />
             </div>
             <div>
               <h2 className="text-xl font-extrabold text-[var(--text-primary)] leading-tight">
                 {currentSchedule.day} Hostel Schedule
               </h2>
-              <span className="text-xs font-semibold text-[#3DA1D1]">
+              <span className="text-xs font-semibold text-[#3BB5DD]">
                 {currentSchedule.specialNote}
               </span>
             </div>
@@ -159,7 +159,7 @@ export default function HostelSchedule() {
 
           <div className="p-4 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border)] flex flex-col gap-1.5">
             <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase">Study & Quiet Hours</span>
-            <strong className="text-lg font-extrabold text-[#3DA1D1]">
+            <strong className="text-lg font-extrabold text-[#3BB5DD]">
               {currentSchedule.studyHours}
             </strong>
             <span className="text-[10px] text-[var(--text-secondary)]">Corridor Quiet Period</span>
@@ -179,21 +179,21 @@ export default function HostelSchedule() {
       {/* ── Official Rules & Guidelines ── */}
       <div className="card p-6 rounded-3xl border border-[var(--border)] shadow-xs flex flex-col gap-4">
         <h3 className="font-extrabold text-base text-[var(--text-primary)] flex items-center gap-2">
-          <ShieldCheck size={18} className="text-[#3DA1D1]" />
+          <ShieldCheck size={18} className="text-[#3BB5DD]" />
           <span>General Hostel Code of Conduct</span>
         </h3>
 
         <ul className="flex flex-col gap-2.5 text-xs text-[var(--text-secondary)]">
           <li className="flex items-start gap-2 p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)]">
-            <CheckCircle2 size={16} className="text-[#52B74A] mt-0.5 flex-shrink-0" />
+            <CheckCircle2 size={16} className="text-[#1B924B] mt-0.5 flex-shrink-0" />
             <span><strong>Institutional ID Card:</strong> Students must produce their official KPR ID Card at the gate security counter when entering or leaving.</span>
           </li>
           <li className="flex items-start gap-2 p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)]">
-            <CheckCircle2 size={16} className="text-[#52B74A] mt-0.5 flex-shrink-0" />
+            <CheckCircle2 size={16} className="text-[#1B924B] mt-0.5 flex-shrink-0" />
             <span><strong>Gate Pass Requirement:</strong> Overnight leave or out-of-station travel requires an approved Gate Pass generated via the portal.</span>
           </li>
           <li className="flex items-start gap-2 p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)]">
-            <CheckCircle2 size={16} className="text-[#52B74A] mt-0.5 flex-shrink-0" />
+            <CheckCircle2 size={16} className="text-[#1B924B] mt-0.5 flex-shrink-0" />
             <span><strong>Maintenance Complaints:</strong> Report water, electrical, or room maintenance issues directly using the Warden Remarks Desk.</span>
           </li>
         </ul>

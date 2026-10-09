@@ -1,7 +1,7 @@
 // src/components/UI/Button.jsx
 export default function Button({
   children,
-  variant = 'primary', // support variant explicitly
+  variant = 'primary',
   size = 'md',
   className = '',
   loading = false,
@@ -10,26 +10,50 @@ export default function Button({
 }) {
   const sizeClass = {
     sm: 'px-3 py-1.5 text-xs',
-    md: 'px-5 py-2.5 text-sm',
-    lg: 'px-6 py-3 text-base',
-  }[size] || 'px-5 py-2.5 text-sm';
+    md: 'px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm',
+    lg: 'px-6 py-3 text-sm sm:text-base',
+  }[size] || 'px-4 py-2 text-xs sm:text-sm';
 
-  const baseStyle = 'inline-flex items-center justify-center gap-2 rounded-xl font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:!opacity-60 disabled:!bg-none disabled:!bg-gray-400 disabled:!from-gray-400 disabled:!to-gray-500 disabled:!text-gray-100 disabled:!shadow-none disabled:!transform-none disabled:cursor-not-allowed cursor-pointer hover:-translate-y-[1.5px] hover:scale-[1.02] active:scale-[0.98] active:translate-y-[0.5px]';
+  const baseStyle =
+    'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:!opacity-50 disabled:!cursor-not-allowed cursor-pointer hover:-translate-y-[1px] active:scale-[0.97] select-none';
 
   let variantStyle = '';
-  
-  if (variant === 'danger') {
-    variantStyle = '!bg-gradient-to-r !from-red-500 !to-red-600 !text-white shadow-[0_4px_14px_rgba(239,68,68,0.35)] hover:shadow-[0_6px_20px_rgba(239,68,68,0.45)] focus-visible:ring-red-500';
-  } else if (variant === 'outline') {
-    variantStyle = 'bg-transparent border-2 border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] focus-visible:ring-gray-400';
-  } else {
-    // Default green theme
-    variantStyle = '!bg-gradient-to-r !from-[#44A03C] !to-[#388A31] !text-white shadow-[0_4px_14px_rgba(82,183,74,0.35)] hover:shadow-[0_6px_20px_rgba(82,183,74,0.45)] focus-visible:ring-[#52B74A]';
+
+  switch (variant) {
+    case 'danger':
+      variantStyle =
+        'bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20 hover:shadow-lg focus-visible:ring-red-500 border border-red-500/30';
+      break;
+    case 'success':
+    case 'accent':
+      // KPRIET Official Green: #1B924B
+      variantStyle =
+        'bg-[#1B924B] hover:bg-[#167A3E] text-white shadow-md shadow-[#1B924B]/25 hover:shadow-lg hover:shadow-[#1B924B]/35 focus-visible:ring-[#1B924B] border border-green-400/20';
+      break;
+    case 'outline':
+      variantStyle =
+        'bg-transparent border border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] focus-visible:ring-slate-400';
+      break;
+    case 'ghost':
+      variantStyle =
+        'bg-transparent text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] focus-visible:ring-slate-400';
+      break;
+    case 'warning':
+    case 'gold':
+      variantStyle =
+        'bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-md shadow-amber-500/20 hover:shadow-lg focus-visible:ring-amber-500 border border-amber-300/30';
+      break;
+    case 'primary':
+    default:
+      // KPRIET Official Blue: #1B345F
+      variantStyle =
+        'bg-[#1B345F] hover:bg-[#112547] text-white shadow-md shadow-[#1B345F]/25 hover:shadow-lg hover:shadow-[#1B345F]/35 focus-visible:ring-[#1B345F] border border-blue-400/15';
+      break;
   }
 
   return (
     <button
-      className={`${sizeClass} ${baseStyle} ${variantStyle} ${String(className || '').replace(/bg-\S+|text-\S+|shadow-\S+|from-\S+|to-\S+/g, '')}`}
+      className={`${baseStyle} ${sizeClass} ${variantStyle} ${className}`}
       disabled={disabled || loading}
       {...props}
     >

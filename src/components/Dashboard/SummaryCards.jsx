@@ -1,5 +1,6 @@
 // src/components/Dashboard/SummaryCards.jsx
-import { Users, AlertTriangle, ClipboardList, Calendar, TrendingUp } from 'lucide-react';
+// KPRIET Official Colors: --blue: #1B345F | --green: #1B924B | --s1: #19909B | --s5: #3BB5DD
+import { Users, AlertTriangle, ClipboardList, Calendar, ArrowUpRight } from 'lucide-react';
 import { useMemo } from 'react';
 import { isDateToday, formatKg } from '../../utils/dateUtils';
 
@@ -7,37 +8,41 @@ const CARDS = [
   {
     key: 'records',
     label: 'Total Records',
-    sub: 'All time entries',
+    sub: 'All time entries logged',
     icon: ClipboardList,
-    accent: '#174351',         // Primary petrol teal
-    gradient: 'from-[#174351]/10 via-[#174351]/5 to-transparent',
+    // --blue: #1B345F
+    accent: '#1B345F',
+    gradient: 'rgba(27, 52, 95, 0.08)',
     badge: 'Live Logged',
   },
   {
     key: 'strength',
-    label: 'Total Strength',
-    sub: 'Cumulative headcount',
+    label: 'Total Headcount',
+    sub: 'Cumulative student strength',
     icon: Users,
-    accent: '#52B74A',         // Vibrant leaf green
-    gradient: 'from-[#52B74A]/15 via-[#52B74A]/5 to-transparent',
-    badge: 'Headcount',
+    // --green: #1B924B
+    accent: '#1B924B',
+    gradient: 'rgba(27, 146, 75, 0.08)',
+    badge: 'Enrolled',
   },
   {
     key: 'wastage',
     label: 'Total Wastage',
-    sub: 'All meals (KG)',
+    sub: 'Across all meals (KG)',
     icon: AlertTriangle,
-    accent: '#E65100',         // Warm orange
-    gradient: 'from-[#E65100]/15 via-[#E65100]/5 to-transparent',
+    // warm orange — standard warning
+    accent: '#D97706',
+    gradient: 'rgba(217, 119, 6, 0.08)',
     badge: 'Tracked KG',
   },
   {
     key: 'today',
     label: "Today's Entries",
-    sub: 'people served today',
+    sub: 'students served today',
     icon: Calendar,
-    accent: '#3DA1D1',         // Sky blue accent
-    gradient: 'from-[#3DA1D1]/15 via-[#3DA1D1]/5 to-transparent',
+    // --s5: #3BB5DD (sky)
+    accent: '#19909B',
+    gradient: 'rgba(25, 144, 155, 0.08)',
     badge: 'Active Today',
   },
 ];
@@ -45,63 +50,70 @@ const CARDS = [
 function StatCard({ label, value, sub, badge, icon: Icon, accent, gradient, delay }) {
   return (
     <div
-      className="card rounded-3xl p-5 
-                 bg-[var(--bg-card)] border border-[var(--border)]
-                 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 
-                 flex flex-col justify-between h-full relative overflow-hidden group animate-fade-in"
-      style={{ animationDelay: `${delay}ms` }}
+      className="relative overflow-hidden rounded-xl bg-[var(--bg-card)] border border-[var(--border)] flex flex-col justify-between h-full group animate-fade-in"
+      style={{
+        animationDelay: `${delay}ms`,
+        boxShadow: '0px 2px 4px 0 rgba(0,0,0,0.08)',
+        transition: 'all 0.3s ease',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.boxShadow = '1px 8px 16px 0 rgba(0,0,0,0.12)';
+        e.currentTarget.style.transform = 'translateY(-2px)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.boxShadow = '0px 2px 4px 0 rgba(0,0,0,0.08)';
+        e.currentTarget.style.transform = 'translateY(0)';
+      }}
     >
-      {/* Background Gradient Accent Glow */}
-      <div className={`absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl ${gradient} rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500`} />
-      
-      {/* Top Accent Stripe Line */}
+      {/* Top accent bar — like kpriet.ac.in .top-dash */}
+      <div className="h-1 w-full absolute top-0 left-0 right-0" style={{ backgroundColor: accent }} />
+
+      {/* Background gradient blob */}
       <div
-        className="h-1.5 w-full absolute top-0 left-0 right-0"
-        style={{ backgroundColor: accent }}
+        className="absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none transition-transform duration-500 group-hover:scale-125"
+        style={{ background: gradient }}
       />
 
-      <div className="flex items-start justify-between gap-3 pt-1">
-        <div className="flex flex-col min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[10.5px] font-black uppercase tracking-wider text-[var(--text-muted)]">
-              {label}
-            </span>
-            <span
-              className="text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wide border shadow-2xs"
-              style={{
-                color: accent,
-                backgroundColor: `${accent}15`,
-                borderColor: `${accent}30`,
-              }}
+      <div className="p-5 pt-6 flex flex-col gap-3 relative z-10">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                {label}
+              </span>
+              <span
+                className="text-[9px] font-semibold px-2 py-0.5 rounded uppercase tracking-wide"
+                style={{ color: accent, background: `${accent}15`, border: `1px solid ${accent}30` }}
+              >
+                {badge}
+              </span>
+            </div>
+            <p
+              className="text-3xl sm:text-4xl font-bold tracking-tight tabular-nums leading-none"
+              style={{ color: 'var(--text-primary)' }}
             >
-              {badge}
-            </span>
+              {value}
+            </p>
           </div>
-          <p className="text-3xl sm:text-3.5xl font-black text-[var(--text-primary)] tracking-tight tabular-nums mt-1 leading-none">
-            {value}
-          </p>
+
+          {/* Icon */}
+          <div
+            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 shadow-sm"
+            style={{ background: `${accent}15`, border: `1px solid ${accent}25` }}
+          >
+            <Icon size={21} strokeWidth={2} style={{ color: accent }} />
+          </div>
         </div>
 
-        {/* Icon Bubble Tile */}
-        <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-md border border-white/20"
-          style={{
-            backgroundColor: `${accent}18`,
-            borderColor: `${accent}30`,
-          }}
-        >
-          <Icon size={22} strokeWidth={2.2} style={{ color: accent }} />
+        {/* Footer */}
+        <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between gap-2">
+          <p className="text-xs font-normal text-[var(--text-secondary)] truncate" title={sub}>{sub}</p>
+          <span className="text-[10.5px] font-semibold flex items-center gap-0.5 flex-shrink-0" style={{ color: '#1B924B' }}>
+            <ArrowUpRight size={12} />
+            <span>Live</span>
+          </span>
         </div>
-      </div>
-
-      <div className="mt-4 pt-3 border-t border-[var(--border)]/80 flex items-center justify-between">
-        <p className="text-xs font-semibold text-[var(--text-secondary)] truncate" title={sub}>
-          {sub}
-        </p>
-        <span className="text-[11px] font-extrabold flex items-center gap-0.5 text-emerald-500">
-          <TrendingUp size={12} />
-          <span>Realtime</span>
-        </span>
       </div>
     </div>
   );
@@ -130,7 +142,7 @@ export default function SummaryCards({ entries }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 w-full">
       {CARDS.map((card, i) => (
         <StatCard
           key={card.key}
@@ -141,10 +153,9 @@ export default function SummaryCards({ entries }) {
           icon={card.icon}
           accent={card.accent}
           gradient={card.gradient}
-          delay={i * 70}
+          delay={i * 60}
         />
       ))}
     </div>
   );
 }
-

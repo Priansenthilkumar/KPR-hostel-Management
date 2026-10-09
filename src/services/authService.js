@@ -179,7 +179,7 @@ export const authService = {
         : isWarden
         ? 'Hostel Deputy Warden'
         : 'Mess Coordinator',
-      avatarBg: isSuperAdmin ? '#8B5CF6' : isWarden ? '#3DA1D1' : '#52B74A',
+      avatarBg: isSuperAdmin ? '#F59E0B' : isWarden ? '#3BB5DD' : '#1B924B',
       salt,
       passwordHash,
       isVerified: true,
@@ -264,7 +264,7 @@ export const authService = {
         name: inputEmail.split('@')[0].toUpperCase(),
         role: isSuperAdmin ? 'super_admin' : 'mess_staff',
         roleTitle: isSuperAdmin ? 'Super Admin' : 'Mess Coordinator',
-        avatarBg: isSuperAdmin ? '#8B5CF6' : '#52B74A',
+        avatarBg: isSuperAdmin ? '#F59E0B' : '#1B924B',
         salt,
         passwordHash,
         isVerified: true,
@@ -419,7 +419,7 @@ export const authService = {
         picture: googleUser.photoURL,
         role: assignedRole,
         roleTitle: assignedRole === 'super_admin' ? 'Super Admin (Full Access)' : assignedRole === 'warden' ? 'Hostel Deputy Warden' : 'Mess Coordinator',
-        avatarBg: assignedRole === 'super_admin' ? '#005555' : assignedRole === 'warden' ? '#3DA1D1' : '#52B74A',
+        avatarBg: assignedRole === 'super_admin' ? '#1B345F' : assignedRole === 'warden' ? '#3BB5DD' : '#1B924B',
         salt,
         passwordHash: dummyHash,
         isVerified: true,
@@ -487,7 +487,7 @@ export const authService = {
             : isWarden
             ? 'Hostel Deputy Warden'
             : 'Mess Coordinator',
-          avatarBg: isSuperAdmin ? '#8B5CF6' : isWarden ? '#3DA1D1' : '#52B74A',
+          avatarBg: isSuperAdmin ? '#F59E0B' : isWarden ? '#3BB5DD' : '#1B924B',
           salt,
           passwordHash: dummyHash,
           isVerified: true,
@@ -546,17 +546,17 @@ export const authService = {
       if (isSuperAdminRequest && registeredUser.role !== 'super_admin') {
         registeredUser.role = 'super_admin';
         registeredUser.roleTitle = 'Super Admin (Full Access)';
-        registeredUser.avatarBg = '#8B5CF6';
+        registeredUser.avatarBg = '#F59E0B';
         this.saveRegisteredUser(registeredUser);
       } else if (selectedRole === 'warden' && registeredUser.role !== 'super_admin') {
         registeredUser.role = 'warden';
         registeredUser.roleTitle = 'Hostel Deputy Warden';
-        registeredUser.avatarBg = '#3DA1D1';
+        registeredUser.avatarBg = '#3BB5DD';
         this.saveRegisteredUser(registeredUser);
       } else if (selectedRole === 'mess_staff' && registeredUser.role !== 'super_admin') {
         registeredUser.role = 'mess_staff';
         registeredUser.roleTitle = 'Mess Coordinator';
-        registeredUser.avatarBg = '#52B74A';
+        registeredUser.avatarBg = '#1B924B';
         this.saveRegisteredUser(registeredUser);
       }
 
@@ -589,7 +589,7 @@ export const authService = {
         : isWarden
         ? 'Hostel Deputy Warden'
         : 'Mess Coordinator',
-      avatarBg: isSuperAdmin ? '#8B5CF6' : isWarden ? '#3DA1D1' : '#52B74A',
+      avatarBg: isSuperAdmin ? '#F59E0B' : isWarden ? '#3BB5DD' : '#1B924B',
       salt,
       passwordHash,
       isVerified: true,

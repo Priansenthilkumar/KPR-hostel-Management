@@ -52,13 +52,13 @@ export default function Dashboard() {
       {/* ── Welcome Hero Banner (Centered on Mobile) ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-4 sm:p-10 shadow-xl border border-[#245767]">
         {/* Subtle background glow */}
-        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#52B74A]/15 blur-3xl pointer-events-none" />
-        <div className="absolute right-1/3 -bottom-16 w-60 h-60 rounded-full bg-[#3DA1D1]/10 blur-2xl pointer-events-none" />
+        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#1B924B]/15 blur-3xl pointer-events-none" />
+        <div className="absolute right-1/3 -bottom-16 w-60 h-60 rounded-full bg-[#3BB5DD]/10 blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row items-center text-center lg:text-left justify-between gap-6">
           <div className="max-w-2xl flex flex-col items-center lg:items-start">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#52B74A] mb-4 backdrop-blur-xs">
-              <Sparkles size={14} className="text-[#52B74A]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#1B924B] mb-4 backdrop-blur-xs">
+              <Sparkles size={14} className="text-[#1B924B]" />
               <span>KPR MESS Portal</span>
             </div>
 
@@ -96,7 +96,7 @@ export default function Dashboard() {
             <p className="text-[11px] text-[#B0D0D8] mt-1 font-medium">
               Hostel Food & Mess Operations
             </p>
-            <div className="mt-3 pt-3 border-t border-white/10 w-full flex items-center justify-center gap-1.5 text-xs text-[#52B74A] font-semibold">
+            <div className="mt-3 pt-3 border-t border-white/10 w-full flex items-center justify-center gap-1.5 text-xs text-[#1B924B] font-semibold">
               <ShieldCheck size={14} />
               <span>System Operational</span>
             </div>
@@ -113,7 +113,7 @@ export default function Dashboard() {
       {/* ── Quick Action Launchpad (Mobile & Desktop) ── */}
       <div>
         <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)] mb-4 tracking-tight flex items-center gap-2">
-          <Utensils size={18} className="text-[#52B74A]" />
+          <Utensils size={18} className="text-[#1B924B]" />
           <span>Quick Launchpad</span>
         </h2>
 
@@ -121,20 +121,20 @@ export default function Dashboard() {
           {/* Card 1: Add Entry */}
           <div
             onClick={() => navigate('/add-entry')}
-            className="card p-5 rounded-2xl cursor-pointer group hover:border-[#52B74A] hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+            className="card p-5 rounded-2xl cursor-pointer group hover:border-[#1B924B] hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
           >
             <div>
-              <div className="w-11 h-11 rounded-xl bg-[#52B74A]/10 text-[#52B74A] flex items-center justify-center mb-3 group-hover:bg-[#52B74A] group-hover:text-white transition-colors">
+              <div className="w-11 h-11 rounded-xl bg-[#1B924B]/10 text-[#1B924B] flex items-center justify-center mb-3 group-hover:bg-[#1B924B] group-hover:text-white transition-colors">
                 <PlusCircle size={22} strokeWidth={2.2} />
               </div>
-              <h3 className="font-bold text-base text-[var(--text-primary)] group-hover:text-[#52B74A] transition-colors">
+              <h3 className="font-bold text-base text-[var(--text-primary)] group-hover:text-[#1B924B] transition-colors">
                 Add Meal Entry
               </h3>
               <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
                 Log today's meal, headcount, cook name, and wastage details.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-semibold text-[#52B74A]">
+            <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-semibold text-[#1B924B]">
               <span>Create Record</span>
               <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
             </div>
@@ -143,20 +143,20 @@ export default function Dashboard() {
           {/* Card 2: Overview Analytics */}
           <div
             onClick={() => navigate('/overview')}
-            className="card p-5 rounded-2xl cursor-pointer group hover:border-[#52B74A] hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+            className="card p-5 rounded-2xl cursor-pointer group hover:border-[#1B924B] hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
           >
             <div>
-              <div className="w-11 h-11 rounded-xl bg-[#3DA1D1]/10 text-[#3DA1D1] flex items-center justify-center mb-3 group-hover:bg-[#3DA1D1] group-hover:text-white transition-colors">
+              <div className="w-11 h-11 rounded-xl bg-[#3BB5DD]/10 text-[#3BB5DD] flex items-center justify-center mb-3 group-hover:bg-[#3BB5DD] group-hover:text-white transition-colors">
                 <BarChart3 size={22} strokeWidth={2.2} />
               </div>
-              <h3 className="font-bold text-base text-[var(--text-primary)] group-hover:text-[#3DA1D1] transition-colors">
+              <h3 className="font-bold text-base text-[var(--text-primary)] group-hover:text-[#3BB5DD] transition-colors">
                 System Overview
               </h3>
               <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
                 View charts, meal trends, cook performance, and wastage analytics.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-semibold text-[#3DA1D1]">
+            <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-semibold text-[#3BB5DD]">
               <span>View Analytics</span>
               <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
             </div>
@@ -165,7 +165,7 @@ export default function Dashboard() {
           {/* Card 3: Food Records */}
           <div
             onClick={() => navigate('/overview')}
-            className="card p-5 rounded-2xl cursor-pointer group hover:border-[#52B74A] hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+            className="card p-5 rounded-2xl cursor-pointer group hover:border-[#1B924B] hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
           >
             <div>
               <div className="w-11 h-11 rounded-xl bg-[#174351]/10 dark:bg-[#174351]/60 text-[#174351] dark:text-[#B0D0D8] flex items-center justify-center mb-3 group-hover:bg-[#174351] group-hover:text-white transition-colors">
@@ -235,7 +235,7 @@ export default function Dashboard() {
         <div className="card overflow-hidden p-0 rounded-2xl flex flex-col shadow-xs">
           <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between bg-[var(--bg-subtle)]">
             <div className="flex items-center gap-2">
-              <Clock size={16} className="text-[#52B74A]" />
+              <Clock size={16} className="text-[#1B924B]" />
               <div>
                 <h3 className="font-bold text-[var(--text-primary)] text-sm leading-none">
                   Recent Food Maintenance Activity
@@ -245,7 +245,7 @@ export default function Dashboard() {
             </div>
             <button
               onClick={() => navigate('/overview')}
-              className="inline-flex items-center gap-1 text-xs text-[#52B74A] hover:text-[#44A03C] font-bold transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-[#1B924B] hover:text-[#44A03C] font-bold transition-colors"
             >
               View Full Overview
               <ChevronRight size={14} strokeWidth={2.2} />
@@ -283,7 +283,7 @@ export default function Dashboard() {
                       <td className="text-xs font-semibold text-[var(--text-secondary)] whitespace-nowrap">
                         {e.cookName}
                       </td>
-                      <td className="font-bold text-[#52B74A] text-right tabular-nums text-xs">
+                      <td className="font-bold text-[#1B924B] text-right tabular-nums text-xs">
                         {parseInt(e.strength).toLocaleString()}
                       </td>
                       <td className="text-right whitespace-nowrap">

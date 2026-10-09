@@ -21,7 +21,7 @@ export default function AddEntry() {
       <div className="mb-6">
         <Link
           to="/records"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#52B74A] hover:underline mb-3 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1B924B] hover:underline mb-3 transition-colors"
         >
           <ArrowLeft size={14} strokeWidth={2.2} />
           Back to Records Database
@@ -29,7 +29,7 @@ export default function AddEntry() {
 
         <div className="flex items-center justify-between gap-4 p-6 rounded-2xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white shadow-md border border-[#245767]">
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-12 h-12 rounded-xl bg-[#52B74A]/20 border border-[#52B74A]/30 flex items-center justify-center text-[#52B74A] flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-[#1B924B]/20 border border-[#1B924B]/30 flex items-center justify-center text-[#1B924B] flex-shrink-0">
               {isEdit ? <Edit3 size={24} strokeWidth={2.2} /> : <PlusCircle size={24} strokeWidth={2.2} />}
             </div>
             <div className="flex flex-col min-w-0">
@@ -44,7 +44,7 @@ export default function AddEntry() {
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-[#52B74A] border border-white/15">
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-[#1B924B] border border-white/15">
             <ShieldCheck size={14} />
             <span>KPR Audit Form</span>
           </div>
@@ -56,7 +56,7 @@ export default function AddEntry() {
           <p className="text-[var(--text-secondary)] font-medium">Record not found. It may have been deleted.</p>
           <Link
             to="/records"
-            className="inline-flex items-center gap-1.5 text-[#52B74A] hover:underline text-xs font-bold mt-3"
+            className="inline-flex items-center gap-1.5 text-[#1B924B] hover:underline text-xs font-bold mt-3"
           >
             <ArrowLeft size={14} strokeWidth={2} />
             Return to Records Database

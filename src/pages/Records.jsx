@@ -32,11 +32,11 @@ export default function Records() {
       {/* ── Executive Header Banner ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 mb-6 rounded-2xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white shadow-md border border-[#245767]">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-[#52B74A]/20 border border-[#52B74A]/30 flex items-center justify-center text-[#52B74A] flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-[#1B924B]/20 border border-[#1B924B]/30 flex items-center justify-center text-[#1B924B] flex-shrink-0">
             <Database size={24} strokeWidth={2.2} />
           </div>
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#52B74A] uppercase tracking-wider mb-0.5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#1B924B] uppercase tracking-wider mb-0.5">
               <span>Database Audit Log</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">

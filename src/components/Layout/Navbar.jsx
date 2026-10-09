@@ -30,7 +30,7 @@ import { exportToExcel } from '../../utils/exportExcel';
 import { storageService } from '../../services/storage';
 import { useAuth } from '../../context/AuthContext';
 import ComplaintBox from '../Dashboard/ComplaintBox';
-import NotificationCenter from '../Notification/NotificationCenter';
+
 import { notificationService } from '../../services/notificationService';
 import kprLogo from '../../assets/kprLogo.png';
 import toast from 'react-hot-toast';
@@ -129,7 +129,7 @@ export default function Navbar() {
     <>
       <header className="navbar w-full flex flex-col justify-center bg-gradient-to-r from-[#0C242C]/95 via-[#123843]/95 to-[#0C242C]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.25)] sticky top-0 z-50 transition-all duration-300">
         {/* Top Glowing Brand Line */}
-        <div className="h-[2px] w-full bg-gradient-to-r from-[#1C5362] via-[#52B74A] to-[#3DA1D1]" />
+        <div className="h-[2px] w-full bg-gradient-to-r from-[#1B345F] via-[#1B924B] to-[#3BB5DD]" />
 
         {/* ── Main Header Bar ── */}
         <div className="max-w-[1400px] w-full mx-auto px-3 sm:px-5 lg:px-7 min-h-16 flex items-center justify-between gap-2 sm:gap-4 py-1.5">
@@ -184,7 +184,7 @@ export default function Navbar() {
                 className={({ isActive }) =>
                   `inline-flex items-center gap-1.5 px-3 lg:px-3.5 py-1.5 rounded-xl text-[11.5px] lg:text-[12.5px] font-bold transition-all duration-200 leading-none whitespace-nowrap ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#52B74A] to-[#3DA1D1] text-white shadow-md shadow-[#52B74A]/25 scale-[1.02]'
+                      ? 'bg-gradient-to-r from-[#1B924B] to-[#3BB5DD] text-white shadow-md shadow-[#1B924B]/25 scale-[1.02]'
                       : 'text-[#B0D0D8] hover:bg-white/10 hover:text-white'
                   }`
                 }
@@ -207,33 +207,11 @@ export default function Navbar() {
               <RotateCw size={13} strokeWidth={2.2} />
             </button>
 
-            {/* Notification Bell — Super Admin Only */}
-            {user?.role === 'super_admin' && (
-              <div className="relative flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setIsNotifOpen(true)}
-                  className="p-2 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/35 transition-all shadow-xs active:scale-95"
-                  title="Super Admin Notifications"
-                >
-                  {unreadNotifCount > 0 ? (
-                    <BellRing size={15} className="text-amber-400 animate-bounce" />
-                  ) : (
-                    <Bell size={15} />
-                  )}
-                </button>
-                {unreadNotifCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-black flex items-center justify-center shadow-md pointer-events-none ring-2 ring-[#0C242C]">
-                    {unreadNotifCount > 9 ? '9+' : unreadNotifCount}
-                  </span>
-                )}
-              </div>
-            )}
 
             {/* Export Excel Button */}
             <button
               onClick={handleExport}
-              className="hidden 2xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#52B74A] to-[#44A03C] hover:from-[#44A03C] hover:to-[#388E32] text-white text-[11.5px] font-extrabold shadow-md shadow-emerald-900/30 transition-all active:scale-95 leading-none flex-shrink-0 border border-emerald-400/30"
+              className="hidden 2xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#1B924B] to-[#44A03C] hover:from-[#44A03C] hover:to-[#388E32] text-white text-[11.5px] font-extrabold shadow-md shadow-emerald-900/30 transition-all active:scale-95 leading-none flex-shrink-0 border border-emerald-400/30"
             >
               <Download size={13} strokeWidth={2.2} />
               <span>Export Excel</span>
@@ -249,13 +227,13 @@ export default function Navbar() {
                   title="Account Settings & Options"
                 >
                   {/* Avatar Badge Tile */}
-                  <div className="relative w-7.5 h-7.5 rounded-xl bg-gradient-to-br from-[#52B74A]/30 via-emerald-600/40 to-teal-700/40 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-xs">
+                  <div className="relative w-7.5 h-7.5 rounded-xl bg-gradient-to-br from-[#1B924B]/30 via-emerald-600/40 to-teal-700/40 text-[#1B924B] border border-[#1B924B]/40 flex items-center justify-center flex-shrink-0 shadow-xs">
                     {user.role === 'super_admin' ? (
                       <Crown size={15} className="text-teal-300" />
                     ) : user.role === 'warden' ? (
                       <ShieldCheck size={15} className="text-sky-300" />
                     ) : (
-                      <ChefHat size={15} className="text-[#52B74A]" />
+                      <ChefHat size={15} className="text-[#1B924B]" />
                     )}
                     {/* Green Online Status Indicator */}
                     <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#092028] animate-pulse" />
@@ -287,7 +265,7 @@ export default function Navbar() {
                   <ChevronDown
                     size={14}
                     className={`transition-transform duration-200 flex-shrink-0 ${
-                      isProfileDropdownOpen ? 'rotate-180 text-[#52B74A]' : 'text-[#B0D0D8]'
+                      isProfileDropdownOpen ? 'rotate-180 text-[#1B924B]' : 'text-[#B0D0D8]'
                     }`}
                   />
                 </div>
@@ -303,13 +281,13 @@ export default function Navbar() {
                       
                       {/* Header User Card inside Dropdown */}
                       <div className="p-3 bg-white/5 rounded-xl border border-white/10 mb-2 flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#52B74A]/30 to-teal-600/30 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1B924B]/30 to-teal-600/30 text-[#1B924B] border border-[#1B924B]/40 flex items-center justify-center flex-shrink-0 shadow-sm">
                           {user.role === 'super_admin' ? (
                             <Crown size={20} className="text-teal-300" />
                           ) : user.role === 'warden' ? (
                             <ShieldCheck size={20} className="text-sky-300" />
                           ) : (
-                            <ChefHat size={20} className="text-[#52B74A]" />
+                            <ChefHat size={20} className="text-[#1B924B]" />
                           )}
                         </div>
                         <div className="flex flex-col min-w-0">
@@ -342,26 +320,7 @@ export default function Navbar() {
                           <span>Profile & Account Details</span>
                         </button>
 
-                        {user?.role === 'super_admin' && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIsProfileDropdownOpen(false);
-                              setIsNotifOpen(true);
-                            }}
-                            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left text-white"
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <Bell size={15} className="text-teal-300" />
-                              <span>Live Notifications Desk</span>
-                            </div>
-                            {unreadNotifCount > 0 && (
-                              <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-black">
-                                {unreadNotifCount}
-                              </span>
-                            )}
-                          </button>
-                        )}
+
 
                         {user?.role === 'super_admin' && (
                           <button
@@ -423,7 +382,7 @@ export default function Navbar() {
             ) : (
               <NavLink
                 to="/login"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#3DA1D1] to-[#2C8EB8] hover:from-[#2C8EB8] hover:to-[#227599] text-white text-xs font-extrabold shadow-md transition-all active:scale-95 leading-none flex-shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#3BB5DD] to-[#2C8EB8] hover:from-[#2C8EB8] hover:to-[#227599] text-white text-xs font-extrabold shadow-md transition-all active:scale-95 leading-none flex-shrink-0"
               >
                 <LogIn size={15} strokeWidth={2.2} />
                 <span>Login</span>
@@ -480,13 +439,13 @@ export default function Navbar() {
               {user ? (
                 <div className="m-4 p-3 rounded-[15px] bg-[#164350] border border-[#245767] flex items-center justify-between gap-2 shadow-md">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                    <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[#52B74A]/25 via-emerald-600/30 to-teal-700/30 text-[#52B74A] border border-[#52B74A]/40 flex items-center justify-center flex-shrink-0 shadow-xs">
+                    <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[#1B924B]/25 via-emerald-600/30 to-teal-700/30 text-[#1B924B] border border-[#1B924B]/40 flex items-center justify-center flex-shrink-0 shadow-xs">
                       {user.role === 'super_admin' ? (
                         <Crown size={18} className="text-teal-300" />
                       ) : user.role === 'warden' ? (
                         <ShieldCheck size={18} className="text-sky-300" />
                       ) : (
-                        <UtensilsCrossed size={17} className="text-[#52B74A]" />
+                        <UtensilsCrossed size={17} className="text-[#1B924B]" />
                       )}
                       <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#164350] animate-pulse" />
                     </div>
@@ -529,7 +488,7 @@ export default function Navbar() {
                   <NavLink
                     to="/login"
                     onClick={closeDrawer}
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#1B924B] hover:bg-[#44A03C] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm"
                   >
                     <LogIn size={15} />
                     <span>Sign In to Portal</span>
@@ -562,7 +521,7 @@ export default function Navbar() {
                     }}
                     className={`flex-1 py-2 px-1 rounded-xl font-extrabold text-center transition-all ${
                       location.pathname === '/mess-dashboard' || location.pathname.startsWith('/menu') || location.pathname.startsWith('/add-entry')
-                        ? 'bg-[#52B74A] text-white shadow-xs'
+                        ? 'bg-[#1B924B] text-white shadow-xs'
                         : 'text-teal-300 hover:text-white'
                     }`}
                   >
@@ -599,7 +558,7 @@ export default function Navbar() {
                     className={({ isActive }) =>
                       `flex items-center justify-between p-3 rounded-xl transition-all ${
                         isActive
-                          ? 'bg-[#52B74A] text-white font-bold shadow-md'
+                          ? 'bg-[#1B924B] text-white font-bold shadow-md'
                           : 'text-[#B0D0D8] hover:bg-[#1A4B5B] hover:text-white'
                       }`
                     }
@@ -656,11 +615,6 @@ export default function Navbar() {
         onClose={() => setIsComplaintOpen(false)}
       />
 
-      {/* ── Super Admin Notification Center Drawer ── */}
-      <NotificationCenter
-        isOpen={isNotifOpen}
-        onClose={() => setIsNotifOpen(false)}
-      />
     </>
   );
 }

@@ -123,7 +123,7 @@ export default function EntryForm({ editEntry = null }) {
       {/* ── Card 1: Schedule & Meal Type Setup ── */}
       <div className="card p-6 rounded-2xl flex flex-col gap-5 shadow-xs">
         <div className="flex items-center gap-2.5 pb-3 border-b border-[var(--border)]">
-          <div className="w-8 h-8 rounded-lg bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold">
+          <div className="w-8 h-8 rounded-lg bg-[#1B924B]/15 text-[#1B924B] flex items-center justify-center font-bold">
             <Calendar size={18} strokeWidth={2.2} />
           </div>
           <div>
@@ -137,7 +137,7 @@ export default function EntryForm({ editEntry = null }) {
           {/* Date Picker */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-              <CalendarDays size={14} className="text-[#52B74A]" />
+              <CalendarDays size={14} className="text-[#1B924B]" />
               <span>Entry Date</span>
               <span className="text-red-500">*</span>
             </label>
@@ -147,7 +147,7 @@ export default function EntryForm({ editEntry = null }) {
                 className="form-input pl-10"
                 {...register('date', { required: 'Date is required' })}
               />
-              <CalendarDays size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+              <CalendarDays size={16} className="absolute left-3 text-[#1B924B] pointer-events-none" />
             </div>
             <FieldError message={errors.date?.message} />
           </div>
@@ -157,11 +157,11 @@ export default function EntryForm({ editEntry = null }) {
         <div className="flex flex-col gap-2 pt-2">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-              <CalendarDays size={14} className="text-[#52B74A]" />
+              <CalendarDays size={14} className="text-[#1B924B]" />
               <span>Day of Week</span>
               <span className="text-red-500">*</span>
             </label>
-            <span className="text-[11px] font-bold text-[#52B74A] bg-[#52B74A]/10 px-2 py-0.5 rounded-md">
+            <span className="text-[11px] font-bold text-[#1B924B] bg-[#1B924B]/10 px-2 py-0.5 rounded-md">
               {watchDay}
             </span>
           </div>
@@ -177,7 +177,7 @@ export default function EntryForm({ editEntry = null }) {
                   onClick={() => setValue('day', d)}
                   className={`py-2 px-1 rounded-xl text-xs font-extrabold transition-all duration-200 flex flex-col items-center justify-center leading-tight border ${
                     isSelected
-                      ? 'bg-[#52B74A] text-white border-[#52B74A] shadow-sm scale-[1.02]'
+                      ? 'bg-[#1B924B] text-white border-[#1B924B] shadow-sm scale-[1.02]'
                       : 'bg-transparent text-[var(--text-secondary)] border-transparent hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -194,11 +194,11 @@ export default function EntryForm({ editEntry = null }) {
         <div className="flex flex-col gap-2 pt-2">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-              <Utensils size={14} className="text-[#52B74A]" />
+              <Utensils size={14} className="text-[#1B924B]" />
               <span>Meal Session</span>
               <span className="text-red-500">*</span>
             </label>
-            <span className="text-[11px] font-bold text-[#52B74A] bg-[#52B74A]/10 px-2 py-0.5 rounded-md">
+            <span className="text-[11px] font-bold text-[#1B924B] bg-[#1B924B]/10 px-2 py-0.5 rounded-md">
               {watchMeal}
             </span>
           </div>
@@ -215,7 +215,7 @@ export default function EntryForm({ editEntry = null }) {
                   onClick={() => setValue('meal', m)}
                   className={`py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center justify-center gap-1.5 border ${
                     isSelected
-                      ? 'bg-[#52B74A] text-white border-[#52B74A] shadow-sm scale-[1.02]'
+                      ? 'bg-[#1B924B] text-white border-[#1B924B] shadow-sm scale-[1.02]'
                       : 'bg-transparent text-[var(--text-secondary)] border-transparent hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -232,7 +232,7 @@ export default function EntryForm({ editEntry = null }) {
       {/* ── Card 2: Kitchen Operations & Chef Slider ── */}
       <div className="card p-6 rounded-2xl flex flex-col gap-5 shadow-xs">
         <div className="flex items-center gap-2.5 pb-3 border-b border-[var(--border)]">
-          <div className="w-8 h-8 rounded-lg bg-[#3DA1D1]/15 text-[#3DA1D1] flex items-center justify-center font-bold">
+          <div className="w-8 h-8 rounded-lg bg-[#3BB5DD]/15 text-[#3BB5DD] flex items-center justify-center font-bold">
             <ChefHat size={18} strokeWidth={2.2} />
           </div>
           <div>
@@ -247,7 +247,7 @@ export default function EntryForm({ editEntry = null }) {
           {/* Main Course */}
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-              <Utensils size={14} className="text-[#3DA1D1]" />
+              <Utensils size={14} className="text-[#3BB5DD]" />
               <span>Main Course Menu</span>
               <span className="text-red-500">*</span>
             </label>
@@ -258,7 +258,7 @@ export default function EntryForm({ editEntry = null }) {
                 className="form-input pl-10"
                 {...register('mainCourse', { required: 'Main course menu is required' })}
               />
-              <Utensils size={16} className="absolute left-3 text-[#3DA1D1] pointer-events-none" />
+              <Utensils size={16} className="absolute left-3 text-[#3BB5DD] pointer-events-none" />
             </div>
             <FieldError message={errors.mainCourse?.message} />
           </div>
@@ -266,7 +266,7 @@ export default function EntryForm({ editEntry = null }) {
           {/* Raw Material (KG) */}
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-              <Scale size={14} className="text-[#52B74A]" />
+              <Scale size={14} className="text-[#1B924B]" />
               <span>Raw Material Weight (KG)</span>
               <span className="text-red-500">*</span>
             </label>
@@ -281,7 +281,7 @@ export default function EntryForm({ editEntry = null }) {
                   min: { value: 0.1, message: 'Weight must be greater than 0' },
                 })}
               />
-              <Scale size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+              <Scale size={16} className="absolute left-3 text-[#1B924B] pointer-events-none" />
             </div>
             <FieldError message={errors.rawMaterial?.message} />
           </div>
@@ -291,7 +291,7 @@ export default function EntryForm({ editEntry = null }) {
         <div className="flex flex-col gap-2 pt-2">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-              <ChefHat size={14} className="text-[#52B74A]" />
+              <ChefHat size={14} className="text-[#1B924B]" />
               <span>Assigned Cook / Chef (Slide & Click)</span>
               <span className="text-red-500">*</span>
             </label>
@@ -330,13 +330,13 @@ export default function EntryForm({ editEntry = null }) {
                   onClick={() => setValue('cookName', c)}
                   className={`min-w-[190px] flex-shrink-0 p-3.5 rounded-2xl cursor-pointer transition-all duration-200 border flex items-center justify-between gap-3 ${
                     isSelected
-                      ? 'bg-[#52B74A] text-white border-[#52B74A] shadow-md scale-[1.02]'
+                      ? 'bg-[#1B924B] text-white border-[#1B924B] shadow-md scale-[1.02]'
                       : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--border)]'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-[#52B74A]/15 text-[#52B74A]'
+                      isSelected ? 'bg-white/20 text-white' : 'bg-[#1B924B]/15 text-[#1B924B]'
                     }`}>
                       <ChefHat size={18} strokeWidth={2.2} />
                     </div>
@@ -349,7 +349,7 @@ export default function EntryForm({ editEntry = null }) {
                   </div>
 
                   {isSelected && (
-                    <div className="w-5 h-5 rounded-full bg-white text-[#52B74A] flex items-center justify-center flex-shrink-0 shadow-xs">
+                    <div className="w-5 h-5 rounded-full bg-white text-[#1B924B] flex items-center justify-center flex-shrink-0 shadow-xs">
                       <Check size={13} strokeWidth={3} />
                     </div>
                   )}
@@ -379,7 +379,7 @@ export default function EntryForm({ editEntry = null }) {
           {/* Headcount Strength */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-              <Users size={14} className="text-[#52B74A]" />
+              <Users size={14} className="text-[#1B924B]" />
               <span>Student Headcount Served</span>
               <span className="text-red-500">*</span>
             </label>
@@ -393,7 +393,7 @@ export default function EntryForm({ editEntry = null }) {
                   min: { value: 1, message: 'Strength must be at least 1' },
                 })}
               />
-              <Users size={16} className="absolute left-3 text-[#52B74A] pointer-events-none" />
+              <Users size={16} className="absolute left-3 text-[#1B924B] pointer-events-none" />
             </div>
             <FieldError message={errors.strength?.message} />
           </div>
@@ -432,7 +432,7 @@ export default function EntryForm({ editEntry = null }) {
           {/* Remarks Notes */}
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <label className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-              <FileText size={14} className="text-[#52B74A]" />
+              <FileText size={14} className="text-[#1B924B]" />
               <span>Remarks / Observations</span>
             </label>
             <div className="relative flex items-start">
@@ -442,7 +442,7 @@ export default function EntryForm({ editEntry = null }) {
                 className="form-textarea pl-10 pt-2.5"
                 {...register('remarks')}
               />
-              <FileText size={16} className="absolute left-3 top-3 text-[#52B74A] pointer-events-none" />
+              <FileText size={16} className="absolute left-3 top-3 text-[#1B924B] pointer-events-none" />
             </div>
           </div>
         </div>

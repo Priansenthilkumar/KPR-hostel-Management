@@ -119,7 +119,7 @@ export function evaluatePasswordStrength(password) {
     return { score: 2, label: 'Medium', color: 'bg-amber-500' };
   }
   if (score === 3) {
-    return { score: 3, label: 'Strong', color: 'bg-[#52B74A]' };
+    return { score: 3, label: 'Strong', color: 'bg-[#1B924B]' };
   }
   return { score: 4, label: 'Very Strong', color: 'bg-emerald-600' };
 }

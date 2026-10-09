@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 const COLORS = {
   Breakfast: '#F5A623',
-  Lunch: '#52B74A',
+  Lunch: '#1B924B',
   Dinner: '#174351',
 };
 

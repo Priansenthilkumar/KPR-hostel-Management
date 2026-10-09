@@ -185,7 +185,7 @@ export const gatepassService = {
 
     passes[idx] = {
       ...passes[idx],
-      status: 'Approved',
+      status: 'approved',
       approvedBy: wardenName || passes[idx].wardenName || 'Hostel Warden',
       approvedAt: new Date().toISOString(),
       wardenRemark: remark,
@@ -228,7 +228,7 @@ export const gatepassService = {
 
     passes[idx] = {
       ...passes[idx],
-      status: 'Rejected',
+      status: 'rejected',
       approvedBy: wardenName || passes[idx].wardenName || 'Hostel Warden',
       approvedAt: new Date().toISOString(),
       wardenRemark: remark,
@@ -259,7 +259,7 @@ export const gatepassService = {
 
     passes[idx] = {
       ...passes[idx],
-      status: 'Completed',
+      status: 'completed',
       updatedAt: new Date().toISOString(),
     };
 

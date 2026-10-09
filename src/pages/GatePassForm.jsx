@@ -107,11 +107,11 @@ export default function GatePassForm() {
       {/* Banner */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white shadow-xl border border-[#245767] mb-8">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-[#52B74A]/20 border border-[#52B74A]/30 flex items-center justify-center text-[#52B74A] flex-shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-[#1B924B]/20 border border-[#1B924B]/30 flex items-center justify-center text-[#1B924B] flex-shrink-0">
             <Ticket size={24} strokeWidth={2.2} />
           </div>
           <div>
-            <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#52B74A] uppercase tracking-wider mb-0.5">
+            <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#1B924B] uppercase tracking-wider mb-0.5">
               <Sparkles size={12} />
               <span>Hostel Student Outing System</span>
             </div>
@@ -147,7 +147,7 @@ export default function GatePassForm() {
 
           {/* Student Info Section */}
           <div>
-            <h3 className="text-xs font-extrabold text-[#52B74A] uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h3 className="text-xs font-extrabold text-[#1B924B] uppercase tracking-wider mb-4 flex items-center gap-2">
               <User size={15} />
               <span>1. Student & Department Details</span>
             </h3>
@@ -258,7 +258,7 @@ export default function GatePassForm() {
 
           {/* Schedule Section with Date & Time Pickers */}
           <div>
-            <h3 className="text-xs font-extrabold text-[#52B74A] uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h3 className="text-xs font-extrabold text-[#1B924B] uppercase tracking-wider mb-4 flex items-center gap-2">
               <Calendar size={15} />
               <span>2. Departure & Arrival Date & Time Schedule</span>
             </h3>

@@ -26,7 +26,7 @@ export default function GatePassReview() {
   const { user } = useAuth();
 
   const [passes, setPasses] = useState(() => gatepassService.getGatePasses());
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('pending');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Selected Pass for Modal Receipt or Approval Action
@@ -53,9 +53,9 @@ export default function GatePassReview() {
 
   // Status Metrics
   const totalCount = passes.length;
-  const pendingCount = passes.filter((p) => p.status === 'Pending').length;
-  const approvedCount = passes.filter((p) => p.status === 'Approved').length;
-  const rejectedCount = passes.filter((p) => p.status === 'Rejected').length;
+  const pendingCount = passes.filter((p) => p.status?.toLowerCase() === 'pending').length;
+  const approvedCount = passes.filter((p) => p.status?.toLowerCase() === 'approved').length;
+  const rejectedCount = passes.filter((p) => p.status?.toLowerCase() === 'rejected').length;
 
   // Filtered Passes
   const filteredPasses = useMemo(() => {
@@ -69,7 +69,7 @@ export default function GatePassReview() {
         (p.wardenName && p.wardenName.toLowerCase().includes(q));
 
       const matchStatus =
-        filterStatus === 'all' || p.status.toLowerCase() === filterStatus.toLowerCase();
+        filterStatus === 'all' || p.status?.toLowerCase() === filterStatus.toLowerCase();
 
       return matchSearch && matchStatus;
     });
@@ -136,11 +136,11 @@ export default function GatePassReview() {
       {/* Executive Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white shadow-xl border border-[#245767]">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-[#52B74A]/20 border border-[#52B74A]/30 flex items-center justify-center text-[#52B74A] flex-shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-[#1B924B]/20 border border-[#1B924B]/30 flex items-center justify-center text-[#1B924B] flex-shrink-0">
             <ShieldCheck size={24} strokeWidth={2.2} />
           </div>
           <div>
-            <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#52B74A] uppercase tracking-wider mb-0.5">
+            <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#1B924B] uppercase tracking-wider mb-0.5">
               <Sparkles size={12} />
               <span>Super Admin & Warden Audit Suite</span>
             </div>
@@ -169,12 +169,12 @@ export default function GatePassReview() {
         <div
           onClick={() => setFilterStatus('all')}
           className={`card p-4 rounded-2xl border border-[var(--border)] cursor-pointer transition-all ${
-            filterStatus === 'all' ? 'ring-2 ring-[#52B74A]' : ''
+            filterStatus === 'all' ? 'ring-2 ring-[#1B924B]' : ''
           }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-extrabold uppercase text-[var(--text-muted)]">Total Passes</span>
-            <Ticket size={16} className="text-[#52B74A]" />
+            <Ticket size={16} className="text-[#1B924B]" />
           </div>
           <span className="text-2xl font-black text-[var(--text-primary)] mt-1 block">{totalCount}</span>
         </div>
@@ -241,7 +241,7 @@ export default function GatePassReview() {
                 onClick={() => setFilterStatus(st)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold capitalize transition-all whitespace-nowrap ${
                   filterStatus === st
-                    ? 'bg-[#52B74A] text-white shadow-md'
+                    ? 'bg-[#1B924B] text-white shadow-md'
                     : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]'
                 }`}
               >
@@ -270,22 +270,22 @@ export default function GatePassReview() {
                   </span>
                   <span
                     className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                      pass.status === 'Approved'
+                      pass.status?.toLowerCase() === 'approved'
                         ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
-                        : pass.status === 'Pending'
+                        : pass.status?.toLowerCase() === 'pending'
                         ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
-                        : pass.status === 'Rejected'
+                        : pass.status?.toLowerCase() === 'rejected'
                         ? 'bg-red-500/15 text-red-500 border border-red-500/30'
                         : 'bg-sky-500/15 text-sky-500 border border-sky-500/30'
                     }`}
                   >
                     <span
                       className={`w-1.5 h-1.5 rounded-full ${
-                        pass.status === 'Approved'
+                        pass.status?.toLowerCase() === 'approved'
                           ? 'bg-emerald-500'
-                          : pass.status === 'Pending'
+                          : pass.status?.toLowerCase() === 'pending'
                           ? 'bg-amber-500 animate-pulse'
-                          : pass.status === 'Rejected'
+                          : pass.status?.toLowerCase() === 'rejected'
                           ? 'bg-red-500'
                           : 'bg-sky-500'
                       }`}
@@ -318,7 +318,7 @@ export default function GatePassReview() {
 
                 {/* Action Buttons */}
                 <div className="pt-2 border-t border-[var(--border)] flex items-center gap-2">
-                  {pass.status === 'Pending' && (
+                  {pass.status?.toLowerCase() === 'pending' && (
                     <>
                       {/* Prominent Mobile Redesigned Approve Button */}
                       <Button
@@ -342,7 +342,7 @@ export default function GatePassReview() {
                     </>
                   )}
 
-                  {pass.status === 'Approved' && (
+                  {pass.status?.toLowerCase() === 'approved' && (
                     <>
                       <Button
                         type="button"
@@ -355,7 +355,7 @@ export default function GatePassReview() {
                       <Button
                         type="button"
                         onClick={() => handleCompletePass(pass)}
-                        className="p-2.5 min-h-[42px] min-w-[42px] rounded-xl bg-[#52B74A]/10 text-[#52B74A] border border-[#52B74A]/30 hover:bg-[#52B74A]/20 transition-colors flex items-center justify-center cursor-pointer"
+                        className="p-2.5 min-h-[42px] min-w-[42px] rounded-xl bg-[#1B924B]/10 text-[#1B924B] border border-[#1B924B]/30 hover:bg-[#1B924B]/20 transition-colors flex items-center justify-center cursor-pointer"
                         title="Mark Student Returned"
                       >
                         <CheckCircle2 size={18} />
@@ -429,22 +429,22 @@ export default function GatePassReview() {
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <span
                         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10.5px] font-black uppercase ${
-                          pass.status === 'Approved'
+                          pass.status?.toLowerCase() === 'approved'
                             ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
-                            : pass.status === 'Pending'
+                            : pass.status?.toLowerCase() === 'pending'
                             ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
-                            : pass.status === 'Rejected'
+                            : pass.status?.toLowerCase() === 'rejected'
                             ? 'bg-red-500/15 text-red-500 border border-red-500/30'
                             : 'bg-sky-500/15 text-sky-500 border border-sky-500/30'
                         }`}
                       >
                         <span
                           className={`w-1.5 h-1.5 rounded-full ${
-                            pass.status === 'Approved'
+                            pass.status?.toLowerCase() === 'approved'
                               ? 'bg-emerald-500'
-                              : pass.status === 'Pending'
+                              : pass.status?.toLowerCase() === 'pending'
                               ? 'bg-amber-500 animate-pulse'
-                              : pass.status === 'Rejected'
+                              : pass.status?.toLowerCase() === 'rejected'
                               ? 'bg-red-500'
                               : 'bg-sky-500'
                           }`}
@@ -454,7 +454,7 @@ export default function GatePassReview() {
                     </td>
                     <td className="py-3.5 px-4 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
-                        {pass.status === 'Pending' && (
+                        {pass.status?.toLowerCase() === 'pending' && (
                           <>
                             <Button
                               type="button"
@@ -476,7 +476,7 @@ export default function GatePassReview() {
                           </>
                         )}
 
-                        {pass.status === 'Approved' && (
+                        {pass.status?.toLowerCase() === 'approved' && (
                           <>
                             <Button
                               type="button"
@@ -489,7 +489,7 @@ export default function GatePassReview() {
                             <Button
                               type="button"
                               onClick={() => handleCompletePass(pass)}
-                              className="px-3 py-1.5 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-emerald-600/30 btn-shine flex items-center gap-1.5 cursor-pointer"
+                              className="px-3 py-1.5 rounded-xl bg-[#1B924B] hover:bg-[#44A03C] text-white font-extrabold text-[11px] border-0 transition-all active:scale-95 shadow-md shadow-emerald-600/30 btn-shine flex items-center gap-1.5 cursor-pointer"
                               title="Mark Student Returned"
                             >
                               <CheckCircle2 size={13} />

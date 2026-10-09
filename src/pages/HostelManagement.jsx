@@ -96,12 +96,12 @@ export default function HostelManagement() {
       
       {/* ── Page Hero Header ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-6 sm:p-8 shadow-xl border border-[#245767]">
-        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3DA1D1]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3BB5DD]/15 blur-3xl pointer-events-none" />
         
         <div className="relative z-10 flex flex-col md:flex-row items-center text-center md:text-left justify-between gap-6">
           <div className="max-w-2xl flex flex-col items-center md:items-start">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#3DA1D1] mb-3 backdrop-blur-xs">
-              <ShieldCheck size={14} className="text-[#3DA1D1]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#3BB5DD] mb-3 backdrop-blur-xs">
+              <ShieldCheck size={14} className="text-[#3BB5DD]" />
               <span>Hostel Warden Administration Portal</span>
             </div>
 
@@ -140,7 +140,7 @@ export default function HostelManagement() {
           <div className="flex flex-row sm:flex-col items-center gap-3 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 shadow-inner">
             <div className="text-center px-3">
               <span className="text-[10px] font-bold uppercase text-[#B0D0D8] block">Gate Passes</span>
-              <strong className="text-xl font-extrabold text-[#3DA1D1]">{gatePasses.length}</strong>
+              <strong className="text-xl font-extrabold text-[#3BB5DD]">{gatePasses.length}</strong>
             </div>
             <div className="h-8 w-px sm:w-full sm:h-px bg-white/15" />
             <div className="text-center px-3">
@@ -155,7 +155,7 @@ export default function HostelManagement() {
       <div className="card p-5 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs border border-[var(--border)]">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-[#52B74A]/10 text-[#52B74A] flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#1B924B]/10 text-[#1B924B] flex items-center justify-center flex-shrink-0">
               <Ticket size={20} strokeWidth={2.2} />
             </div>
             <div>
@@ -174,7 +174,7 @@ export default function HostelManagement() {
             onClick={() => navigate('/gatepass-review')}
             className="text-xs font-bold flex items-center gap-1.5"
           >
-            <ShieldCheck size={14} className="text-[#52B74A]" />
+            <ShieldCheck size={14} className="text-[#1B924B]" />
             <span>Manage Approvals</span>
           </Button>
         </div>
@@ -199,7 +199,7 @@ export default function HostelManagement() {
               {gatePasses.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="text-center py-6 text-xs text-[var(--text-muted)]">
-                    No gate passes logged yet. Click <strong className="text-[#52B74A] cursor-pointer underline" onClick={() => navigate('/hostel-gatepass')}>Create Manual Gate Pass</strong> to create one.
+                    No gate passes logged yet. Click <strong className="text-[#1B924B] cursor-pointer underline" onClick={() => navigate('/hostel-gatepass')}>Create Manual Gate Pass</strong> to create one.
                   </td>
                 </tr>
               ) : (
@@ -215,9 +215,9 @@ export default function HostelManagement() {
                     <td className="py-3 px-4">
                       <span
                         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
-                          pass.status === 'Approved'
+                          pass.status?.toLowerCase() === 'approved'
                             ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
-                            : pass.status === 'Pending'
+                            : pass.status?.toLowerCase() === 'pending'
                             ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
                             : 'bg-red-500/15 text-red-500 border border-red-500/30'
                         }`}
@@ -226,7 +226,7 @@ export default function HostelManagement() {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">
-                      {pass.status === 'Approved' ? (
+                      {pass.status?.toLowerCase() === 'approved' ? (
                         <Button
                           type="button"
                           onClick={() => {
@@ -260,7 +260,7 @@ export default function HostelManagement() {
       <div className="card p-5 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs border border-[var(--border)]">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-[#3DA1D1] flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-[#3BB5DD] flex items-center justify-center flex-shrink-0">
               <UserCheck size={20} strokeWidth={2.2} />
             </div>
             <div>
@@ -279,7 +279,7 @@ export default function HostelManagement() {
             onClick={() => navigate('/hostel-add-entry')}
             className="text-xs font-bold flex items-center gap-1.5 self-end sm:self-auto"
           >
-            <PlusCircle size={14} className="text-[#3DA1D1]" />
+            <PlusCircle size={14} className="text-[#3BB5DD]" />
             <span>Log Staff Duty Shift</span>
           </Button>
         </div>
@@ -309,7 +309,7 @@ export default function HostelManagement() {
                   <tr key={log.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
                     <td className="font-bold text-[var(--text-primary)]">{log.name}</td>
                     <td>
-                      <span className="px-2 py-0.5 rounded-full bg-sky-500/15 text-[#3DA1D1] font-bold text-[10.5px]">
+                      <span className="px-2 py-0.5 rounded-full bg-sky-500/15 text-[#3BB5DD] font-bold text-[10.5px]">
                         {log.designation}
                       </span>
                     </td>
@@ -379,7 +379,7 @@ export default function HostelManagement() {
               onClick={() => navigate('/hostel-add-entry')}
               className="text-xs font-bold flex items-center gap-1.5 mr-1"
             >
-              <PlusCircle size={14} className="text-[#52B74A]" />
+              <PlusCircle size={14} className="text-[#1B924B]" />
               <span>Add Remark</span>
             </Button>
 
@@ -402,7 +402,7 @@ export default function HostelManagement() {
                   onClick={() => setFilterTab(tab)}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
                     filterTab === tab
-                      ? 'bg-[#52B74A] text-white shadow-xs'
+                      ? 'bg-[#1B924B] text-white shadow-xs'
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -434,7 +434,7 @@ export default function HostelManagement() {
                     <span className="font-extrabold text-[var(--text-primary)] text-sm">
                       {item.studentName}
                     </span>
-                    <span className="text-[11px] font-semibold text-[#3DA1D1]">
+                    <span className="text-[11px] font-semibold text-[#3BB5DD]">
                       ({item.block} • {item.roomNo})
                     </span>
                   </div>
@@ -498,7 +498,7 @@ export default function HostelManagement() {
                             <Button
                               type="button"
                               onClick={() => handleConfirmRectified(item.id)}
-                              className="px-3.5 py-1.5 rounded-lg bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-bold whitespace-nowrap shadow-xs"
+                              className="px-3.5 py-1.5 rounded-lg bg-[#1B924B] hover:bg-[#44A03C] text-white text-xs font-bold whitespace-nowrap shadow-xs"
                             >
                               Confirm Rectified
                             </Button>
@@ -514,7 +514,7 @@ export default function HostelManagement() {
                           <button
                             type="button"
                             onClick={() => setResolvingId(item.id)}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-bold shadow-xs transition-all active:scale-95"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1B924B] hover:bg-[#44A03C] text-white text-xs font-bold shadow-xs transition-all active:scale-95"
                           >
                             <Wrench size={14} />
                             <span>Mark as Rectified</span>

@@ -58,7 +58,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, tota
               onClick={() => onPageChange(p)}
               className={`${btnBase} w-8 h-8 ${
                 p === currentPage
-                  ? 'bg-[#52B74A] text-white font-semibold shadow-sm'
+                  ? 'bg-[#1B924B] text-white font-semibold shadow-sm'
                   : 'text-[#B0D0D8] hover:bg-[#1D5060]'
               }`}
               aria-label={`Page ${p}`}

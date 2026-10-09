@@ -127,11 +127,11 @@ export default function FoodMenu() {
       {/* ── Executive Header Banner ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 mb-6 rounded-2xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white shadow-md border border-[#245767]">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-[#52B74A]/20 border border-[#52B74A]/30 flex items-center justify-center text-[#52B74A] flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-[#1B924B]/20 border border-[#1B924B]/30 flex items-center justify-center text-[#1B924B] flex-shrink-0">
             <Utensils size={24} strokeWidth={2.2} />
           </div>
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#52B74A] uppercase tracking-wider mb-0.5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#1B924B] uppercase tracking-wider mb-0.5">
               <span>Official KPR Dining Schedule</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -151,7 +151,7 @@ export default function FoodMenu() {
               placeholder="Search dish (e.g. Briyani, Dosa)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white/10 text-white placeholder-white/60 text-xs rounded-xl pl-9 pr-4 py-2.5 border border-white/20 focus:outline-none focus:border-[#52B74A]"
+              className="w-full bg-white/10 text-white placeholder-white/60 text-xs rounded-xl pl-9 pr-4 py-2.5 border border-white/20 focus:outline-none focus:border-[#1B924B]"
             />
             <Search size={14} className="absolute left-3 top-3 text-white/60" />
             {searchQuery && (
@@ -167,7 +167,7 @@ export default function FoodMenu() {
           <Button
             type="button"
             onClick={() => setIsEditModalOpen(true)}
-            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#52B74A] hover:bg-[#44A03C] text-white text-xs font-extrabold shadow-sm flex items-center justify-center gap-2 transition-all flex-shrink-0"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#1B924B] hover:bg-[#44A03C] text-white text-xs font-extrabold shadow-sm flex items-center justify-center gap-2 transition-all flex-shrink-0"
           >
             <Edit3 size={15} />
             <span>Edit Weekly Menu</span>
@@ -180,7 +180,7 @@ export default function FoodMenu() {
         <div className="flex flex-col gap-4 mb-8">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
-              Search Results for <span className="text-[#52B74A]">"{searchQuery}"</span>
+              Search Results for <span className="text-[#1B924B]">"{searchQuery}"</span>
             </h2>
             <span className="text-xs text-[var(--text-muted)] font-semibold">
               Found {searchResults.length} matching meal sessions
@@ -198,10 +198,10 @@ export default function FoodMenu() {
               {searchResults.map((res, idx) => (
                 <div
                   key={`${res.day}-${res.meal}-${idx}`}
-                  className="card p-4 rounded-2xl flex flex-col gap-2.5 border border-[var(--border)] hover:border-[#52B74A]/40 transition-all shadow-xs"
+                  className="card p-4 rounded-2xl flex flex-col gap-2.5 border border-[var(--border)] hover:border-[#1B924B]/40 transition-all shadow-xs"
                 >
                   <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-                    <span className="text-xs font-extrabold text-[#52B74A]">{res.day}</span>
+                    <span className="text-xs font-extrabold text-[#1B924B]">{res.day}</span>
                     <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[var(--bg-subtle)] text-[var(--text-secondary)]">
                       {res.meal}
                     </span>
@@ -214,7 +214,7 @@ export default function FoodMenu() {
                           key={item}
                           className={`text-xs px-2.5 py-1 rounded-lg font-medium border ${
                             isMatch
-                              ? 'bg-[#52B74A] text-white border-[#52B74A] font-bold shadow-xs'
+                              ? 'bg-[#1B924B] text-white border-[#1B924B] font-bold shadow-xs'
                               : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border)]'
                           }`}
                         >
@@ -231,18 +231,18 @@ export default function FoodMenu() {
       ) : (
         <>
           {/* ── Today's Mess Spotlight Card ── */}
-          <div className="card p-6 mb-8 rounded-2xl border-2 border-[#52B74A]/30 bg-gradient-to-r from-[#52B74A]/5 via-transparent to-[#174351]/5 shadow-xs">
+          <div className="card p-6 mb-8 rounded-2xl border-2 border-[#1B924B]/30 bg-gradient-to-r from-[#1B924B]/5 via-transparent to-[#174351]/5 shadow-xs">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--border)] mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#52B74A] text-white flex items-center justify-center font-bold shadow-xs">
+                <div className="w-8 h-8 rounded-lg bg-[#1B924B] text-white flex items-center justify-center font-bold shadow-xs">
                   <Sparkles size={16} />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-extrabold text-[#52B74A] uppercase tracking-wider">
+                    <span className="text-xs font-extrabold text-[#1B924B] uppercase tracking-wider">
                       Today's Live Menu
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#52B74A] text-white">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#1B924B] text-white">
                       {todayDayName}
                     </span>
                   </div>
@@ -252,7 +252,7 @@ export default function FoodMenu() {
 
               <button
                 onClick={() => setSelectedDay(todayDayName)}
-                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-[#52B74A] hover:underline"
+                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-[#1B924B] hover:underline"
               >
                 <span>View Full {todayDayName} Schedule</span>
                 <ChevronRight size={14} />
@@ -270,7 +270,7 @@ export default function FoodMenu() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Icon size={16} className="text-[#52B74A]" />
+                        <Icon size={16} className="text-[#1B924B]" />
                         <span className="text-xs font-extrabold text-[var(--text-primary)]">{meal}</span>
                       </div>
                       <span className="text-[10px] font-semibold text-[var(--text-muted)] flex items-center gap-1">
@@ -299,7 +299,7 @@ export default function FoodMenu() {
           <div className="flex flex-col gap-4 mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
-                <Calendar size={16} className="text-[#52B74A]" />
+                <Calendar size={16} className="text-[#1B924B]" />
                 <span>Daily Menu Table — {selectedDay}</span>
               </h2>
               <span className="text-xs text-[var(--text-muted)] font-semibold">
@@ -319,7 +319,7 @@ export default function FoodMenu() {
                     onClick={() => setSelectedDay(d)}
                     className={`py-2 sm:py-2.5 px-0.5 sm:px-1 rounded-xl text-[11px] sm:text-xs font-extrabold transition-all duration-200 flex flex-col items-center justify-center leading-tight border ${
                       isSelected
-                        ? 'bg-[#52B74A] text-white border-[#52B74A] shadow-xs scale-[1.02]'
+                        ? 'bg-[#1B924B] text-white border-[#1B924B] shadow-xs scale-[1.02]'
                         : 'bg-transparent text-[var(--text-secondary)] border-transparent hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)]'
                     }`}
                   >
@@ -337,9 +337,9 @@ export default function FoodMenu() {
             <div className="card p-4 sm:p-6 rounded-2xl border border-[var(--border)] shadow-xs flex flex-col gap-3">
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-extrabold text-[#52B74A]">{selectedDay} Menu Table</span>
+                  <span className="text-sm font-extrabold text-[#1B924B]">{selectedDay} Menu Table</span>
                   {selectedDay === todayDayName && (
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#52B74A] text-white uppercase">
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#1B924B] text-white uppercase">
                       Today
                     </span>
                   )}
@@ -364,8 +364,8 @@ export default function FoodMenu() {
                         meal === 'Breakfast'
                           ? 'bg-amber-500/15 text-amber-600 border-amber-500/30'
                           : meal === 'Lunch'
-                          ? 'bg-[#52B74A]/15 text-[#52B74A] border-[#52B74A]/30'
-                          : 'bg-[#174351]/15 text-[#174351] dark:text-[#3DA1D1] border-[#174351]/30';
+                          ? 'bg-[#1B924B]/15 text-[#1B924B] border-[#1B924B]/30'
+                          : 'bg-[#174351]/15 text-[#174351] dark:text-[#3BB5DD] border-[#174351]/30';
 
                       return (
                         <tr key={meal} className="hover:bg-[var(--bg-subtle)] transition-colors">
@@ -415,7 +415,7 @@ export default function FoodMenu() {
                 >
                   <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold">
+                      <div className="w-9 h-9 rounded-xl bg-[#1B924B]/15 text-[#1B924B] flex items-center justify-center font-bold">
                         <Icon size={18} strokeWidth={2.2} />
                       </div>
                       <div>
@@ -440,7 +440,7 @@ export default function FoodMenu() {
                         key={dish}
                         className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] text-xs font-semibold text-[var(--text-primary)]"
                       >
-                        <CheckCircle2 size={15} className="text-[#52B74A] flex-shrink-0" />
+                        <CheckCircle2 size={15} className="text-[#1B924B] flex-shrink-0" />
                         <span>{dish}</span>
                       </div>
                     ))}
@@ -454,12 +454,12 @@ export default function FoodMenu() {
           <div className="card p-4 sm:p-6 rounded-2xl flex flex-col gap-6 shadow-xs">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
               <div className="flex items-center gap-2">
-                <Flame size={18} className="text-[#52B74A]" />
+                <Flame size={18} className="text-[#1B924B]" />
                 <h3 className="font-extrabold text-xs sm:text-sm text-[var(--text-primary)] uppercase tracking-wider">
                   Full 7-Day Weekly Mess Menu Tables
                 </h3>
               </div>
-              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#52B74A]/15 text-[#52B74A] border border-[#52B74A]/30">
+              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#1B924B]/15 text-[#1B924B] border border-[#1B924B]/30">
                 All 7 Days
               </span>
             </div>
@@ -476,7 +476,7 @@ export default function FoodMenu() {
                     key={dayName}
                     className={`rounded-2xl border transition-all p-4 ${
                       isSelected
-                        ? 'border-[#52B74A] bg-[#52B74A]/5 shadow-sm'
+                        ? 'border-[#1B924B] bg-[#1B924B]/5 shadow-sm'
                         : 'border-[var(--border)] bg-[var(--bg-card)]'
                     }`}
                   >
@@ -485,7 +485,7 @@ export default function FoodMenu() {
                       <div className="flex items-center gap-2">
                         <span className="font-extrabold text-sm text-[var(--text-primary)]">{dayName} Menu</span>
                         {isToday && (
-                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#52B74A] text-white uppercase">
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1B924B] text-white uppercase">
                             Today
                           </span>
                         )}
@@ -493,7 +493,7 @@ export default function FoodMenu() {
                       <button
                         type="button"
                         onClick={() => setSelectedDay(dayName)}
-                        className="text-xs font-bold text-[#52B74A] hover:underline"
+                        className="text-xs font-bold text-[#1B924B] hover:underline"
                       >
                         Select Day
                       </button>
@@ -518,7 +518,7 @@ export default function FoodMenu() {
                               <tr key={meal} className="hover:bg-[var(--bg-subtle)]/50">
                                 <td className="py-2.5 px-3 font-bold align-top">
                                   <span className="inline-flex items-center gap-1 text-[11.5px] text-[var(--text-primary)]">
-                                    <Icon size={13} className="text-[#52B74A]" />
+                                    <Icon size={13} className="text-[#1B924B]" />
                                     <span>{meal}</span>
                                   </span>
                                 </td>
@@ -548,7 +548,7 @@ export default function FoodMenu() {
           <div className="card w-full max-w-lg p-6 rounded-3xl bg-[var(--bg-card)] border border-[var(--border)] shadow-2xl flex flex-col gap-5">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-xl bg-[#1B924B]/15 text-[#1B924B] flex items-center justify-center font-bold">
                   <Edit3 size={18} />
                 </div>
                 <div>

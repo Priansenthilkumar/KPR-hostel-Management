@@ -70,7 +70,7 @@ export default function NotificationCenter({ isOpen, onClose }) {
   const getNotifIcon = (type) => {
     switch (type) {
       case 'mess':
-        return <Utensils size={16} className="text-[#52B74A]" />;
+        return <Utensils size={16} className="text-[#1B924B]" />;
       case 'hostel':
         return <ShieldCheck size={16} className="text-sky-500" />;
       case 'remark':
@@ -164,7 +164,7 @@ export default function NotificationCenter({ isOpen, onClose }) {
               <button
                 type="button"
                 onClick={handleMarkAllRead}
-                className="text-[11px] font-bold text-[#52B74A] hover:underline flex items-center gap-1"
+                className="text-[11px] font-bold text-[#1B924B] hover:underline flex items-center gap-1"
               >
                 <Check size={13} />
                 <span>Read All</span>

@@ -11,7 +11,7 @@ export const COOKS = getActiveCookNames();
 export const COOK_COLORS = {
   'Chef Nandhakumar': '#174351',
   'Master Munees': '#286072',
-  'Master Balu': '#52B74A',
+  'Master Balu': '#1B924B',
   'Master Sombu': '#E65100',
   'Master Panty': '#D32F2F',
   'Master Suthan': '#44A03C',

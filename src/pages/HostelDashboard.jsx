@@ -75,13 +75,13 @@ export default function HostelDashboard() {
       
       {/* ── Welcome Hero Banner ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#174351] via-[#1A4B5B] to-[#0E2730] text-white p-4 sm:p-8 shadow-xl border border-[#245767]">
-        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3DA1D1]/15 blur-3xl pointer-events-none" />
-        <div className="absolute -left-16 -bottom-16 w-72 h-72 rounded-full bg-[#52B74A]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-[#3BB5DD]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -left-16 -bottom-16 w-72 h-72 rounded-full bg-[#1B924B]/15 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
           <div className="max-w-2xl flex flex-col items-center md:items-start">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-extrabold text-[#3DA1D1] mb-3 backdrop-blur-xs">
-              <ShieldCheck size={14} className="text-[#3DA1D1]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-extrabold text-[#3BB5DD] mb-3 backdrop-blur-xs">
+              <ShieldCheck size={14} className="text-[#3BB5DD]" />
               <span>KPR Hostel Warden Executive Operations</span>
             </div>
 
@@ -196,10 +196,10 @@ export default function HostelDashboard() {
         {/* Option 1: Manual Gate Pass */}
         <div
           onClick={() => navigate('/hostel-gatepass')}
-          className="card p-5 rounded-3xl border border-[var(--border)] hover:border-[#52B74A] cursor-pointer transition-all group flex flex-col justify-between shadow-xs hover:shadow-lg"
+          className="card p-5 rounded-3xl border border-[var(--border)] hover:border-[#1B924B] cursor-pointer transition-all group flex flex-col justify-between shadow-xs hover:shadow-lg"
         >
           <div>
-            <div className="w-12 h-12 rounded-2xl bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center mb-3 font-bold group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-2xl bg-[#1B924B]/15 text-[#1B924B] flex items-center justify-center mb-3 font-bold group-hover:scale-110 transition-transform">
               <Ticket size={24} />
             </div>
             <h3 className="text-base font-extrabold text-[var(--text-primary)]">Manual Gate Pass</h3>
@@ -207,7 +207,7 @@ export default function HostelDashboard() {
               Create student outing pass with departure and arrival schedule.
             </p>
           </div>
-          <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-extrabold text-[#52B74A]">
+          <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-extrabold text-[#1B924B]">
             <span>Create Gate Pass</span>
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </div>

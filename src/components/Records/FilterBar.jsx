@@ -16,7 +16,7 @@ export default function FilterBar({ filters, onChange, onReset }) {
       {/* Header row */}
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#52B74A]/15 text-[#52B74A] flex items-center justify-center flex-shrink-0 font-bold">
+          <div className="w-7 h-7 rounded-lg bg-[#1B924B]/15 text-[#1B924B] flex items-center justify-center flex-shrink-0 font-bold">
             <Filter size={14} strokeWidth={2.2} />
           </div>
           <span className="font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]">
