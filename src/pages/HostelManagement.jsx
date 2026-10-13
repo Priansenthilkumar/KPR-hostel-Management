@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Button from '../components/UI/Button';
+import ConfirmDialog from '../components/UI/ConfirmDialog';
 import { hostelService } from '../services/hostelService';
 import { gatepassService } from '../services/gatepassService';
 import GatePassReceipt from '../components/Hostel/GatePassReceipt';
@@ -35,6 +36,7 @@ export default function HostelManagement() {
   const [gatePasses, setGatePasses] = useState(() => gatepassService.getGatePasses());
   const [selectedPass, setSelectedPass] = useState(null);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+  const [isConfirmClearHostelOpen, setIsConfirmClearHostelOpen] = useState(false);
 
   // Rectification Modal Input State
   const [resolvingId, setResolvingId] = useState(null);
@@ -71,6 +73,14 @@ export default function HostelManagement() {
   const handleDeleteRemark = (id) => {
     hostelService.deleteStudentRemark(id);
     toast.success('Remark deleted.');
+  };
+
+  const handleClearAllHostel = () => {
+    hostelService.clearAllHostelRecords();
+    gatepassService.clearAllGatePasses();
+    refreshData();
+    setIsConfirmClearHostelOpen(false);
+    toast.success('All hostel duty logs, student remarks, and gate passes cleared!', { icon: '🧹' });
   };
 
   const filteredRemarks = remarks.filter((r) => {
@@ -132,6 +142,16 @@ export default function HostelManagement() {
               >
                 <ShieldCheck size={15} />
                 <span>Gate Pass Review System</span>
+              </Button>
+
+              <Button
+                variant="danger"
+                size="md"
+                onClick={() => setIsConfirmClearHostelOpen(true)}
+                className="shadow-md text-xs font-bold bg-red-600 hover:bg-red-500 text-white flex items-center gap-1.5"
+              >
+                <Trash2 size={15} />
+                <span>Clear All Hostel Records</span>
               </Button>
             </div>
           </div>
@@ -219,10 +239,12 @@ export default function HostelManagement() {
                             ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
                             : pass.status?.toLowerCase() === 'pending'
                             ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
+                            : pass.status?.toLowerCase() === 'completed'
+                            ? 'bg-sky-500/15 text-sky-500 border border-sky-500/30'
                             : 'bg-red-500/15 text-red-500 border border-red-500/30'
                         }`}
                       >
-                        {pass.status}
+                        {pass.status ? pass.status.charAt(0).toUpperCase() + pass.status.slice(1).toLowerCase() : 'Pending'}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">
@@ -565,6 +587,17 @@ export default function HostelManagement() {
           </div>
         </div>
       )}
+
+      {/* ── Confirmation Dialog for Hostel Records Purge ── */}
+      <ConfirmDialog
+        isOpen={isConfirmClearHostelOpen}
+        title="Clear All Hostel Records"
+        message="Are you sure you want to permanently clear all warden duty shifts, student grievance remarks, and gate passes? This action cannot be undone."
+        confirmLabel="Clear All Records"
+        danger={true}
+        onConfirm={handleClearAllHostel}
+        onCancel={() => setIsConfirmClearHostelOpen(false)}
+      />
 
     </div>
   );

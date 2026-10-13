@@ -94,34 +94,57 @@ export default function GatePassReview() {
     if (!selectedPass) return;
 
     setIsSubmittingAction(true);
-    setTimeout(() => {
+    try {
       const wardenName = user?.name || selectedPass.wardenName || 'Hostel Warden';
 
       if (actionType === 'approve') {
         const updated = gatepassService.approveGatePass(selectedPass.id, wardenName, actionRemark);
+        // Immediately update local state from return value — no race with events
+        setPasses((prev) =>
+          prev.map((p) => (p.id === updated.id ? updated : p))
+        );
         toast.success(`Gate Pass ${updated.id} APPROVED for ${updated.studentName}!`, { icon: '✅' });
       } else {
         const updated = gatepassService.rejectGatePass(selectedPass.id, wardenName, actionRemark);
+        setPasses((prev) =>
+          prev.map((p) => (p.id === updated.id ? updated : p))
+        );
         toast.error(`Gate Pass ${updated.id} REJECTED for ${updated.studentName}`, { icon: '❌' });
       }
-
+    } catch (err) {
+      toast.error('Action failed. Please try again.');
+      console.error('Gate pass action error:', err);
+    } finally {
       setIsSubmittingAction(false);
       setIsActionModalOpen(false);
-      refreshPasses();
-    }, 450);
+      setSelectedPass(null);
+    }
   };
 
   const handleCompletePass = (pass) => {
-    gatepassService.completeGatePass(pass.id);
-    toast.success(`Marked student ${pass.studentName} as returned to hostel!`, { icon: '🏠' });
-    refreshPasses();
+    try {
+      const updated = gatepassService.completeGatePass(pass.id);
+      setPasses((prev) =>
+        prev.map((p) => (p.id === updated.id ? updated : p))
+      );
+      toast.success(`Marked student ${pass.studentName} as returned to hostel!`, { icon: '🏠' });
+    } catch (err) {
+      toast.error('Failed to mark as returned.');
+      console.error('Complete pass error:', err);
+    }
   };
 
   const handleDeletePass = (pass) => {
     if (window.confirm(`Delete gate pass record ${pass.id} for ${pass.studentName}?`)) {
-      gatepassService.deleteGatePass(pass.id);
-      toast.success(`Deleted gate pass ${pass.id}`);
-      refreshPasses();
+      try {
+        gatepassService.deleteGatePass(pass.id);
+        // Immediately remove from local state — no waiting for events or Firestore
+        setPasses((prev) => prev.filter((p) => p.id !== pass.id));
+        toast.success(`Deleted gate pass ${pass.id}`);
+      } catch (err) {
+        toast.error('Failed to delete gate pass.');
+        console.error('Delete pass error:', err);
+      }
     }
   };
 
@@ -290,7 +313,7 @@ export default function GatePassReview() {
                           : 'bg-sky-500'
                       }`}
                     />
-                    {pass.status}
+                    {pass.status ? pass.status.charAt(0).toUpperCase() + pass.status.slice(1).toLowerCase() : 'Pending'}
                   </span>
                 </div>
 
@@ -449,7 +472,7 @@ export default function GatePassReview() {
                               : 'bg-sky-500'
                           }`}
                         />
-                        {pass.status}
+                        {pass.status ? pass.status.charAt(0).toUpperCase() + pass.status.slice(1).toLowerCase() : 'Pending'}
                       </span>
                     </td>
                     <td className="py-3.5 px-4 text-right whitespace-nowrap">

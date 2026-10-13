@@ -32,7 +32,10 @@ const DEPARTMENTS = [
 
 const PURPOSES = [
   'Medical Emergency / Hospital',
-  
+  'Family Function / Personal',
+  'Government / Official Work',
+  'Educational Tour / Event',
+  'Other Purpose',
 ];
 
 export default function GatePassForm() {
@@ -90,15 +93,18 @@ export default function GatePassForm() {
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      // Create Gate Pass
+    try {
       const createdPass = gatepassService.addGatePass(form);
       toast.success(`Gate pass submitted for ${createdPass.studentName}! Status: Pending Warden Approval`, {
         icon: '🎫',
       });
-      setIsSubmitting(false);
       navigate('/gatepass-review');
-    }, 500);
+    } catch (err) {
+      toast.error('Failed to submit gate pass. Please try again.');
+      console.error('Gate pass submit error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

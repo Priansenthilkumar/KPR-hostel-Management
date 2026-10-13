@@ -7,80 +7,27 @@ import { realtimeSync } from './realtimeSync';
 const STORAGE_GATEPASS_KEY = 'kpr_hostel_gatepasses_v2';
 const GATEPASS_COLLECTION = 'hostel_gate_passes';
 
-const DEFAULT_GATEPASSES = [
-  {
-    id: 'KPR-GP-2026-98104',
-    studentName: 'Praveen Kumar S',
-    rollNo: '7377221CS104',
-    wardenName: 'Dr. M. Senthil',
-    block: 'Pallavan Hostel',
-    department: 'Computer Science Engineering',
-    purpose: 'Medical Emergency / Hospital',
-    depDate: new Date().toISOString().split('T')[0],
-    depTime: '16:30',
-    arrDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
-    arrTime: '20:00',
-    status: 'Pending',
-    wardenRemark: '',
-    approvedBy: null,
-    approvedAt: null,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id:'KPR-GP-2026-44192',
-    studentName: 'Kaviarasan M',
-    rollNo: '7377221IT052',
-    wardenName: 'Prof. K. Anand',
-    block: 'Cheran Hostel',
-    department:'Information Technology',
-    purpose: 'Academic Project / Industrial Visit',
-    depDate: new Date().toISOString().split('T')[0],
-    depTime: '09:00',
-    arrDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-    arrTime: '18:00',
-    status: 'Pending',
-    wardenRemark: '',
-    approvedBy: null,
-    approvedAt: null,
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-  },
-  {
-    id: 'KPR-GP-2026-11029',
-    studentName: 'Sneha R',
-    rollNo: '7377221EC089',
-    wardenName: 'Dr. S. Ramya',
-    block: 'Kaviri Hostel (Girls)',
-    department: 'Electronics & Communication Engineering',
-    purpose: 'Home Visit (Weekend Outing)',
-    depDate: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-    depTime: '17:00',
-    arrDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
-    arrTime: '19:30',
-    status: 'Approved',
-    wardenRemark: 'Parent phone confirmation verified.',
-    approvedBy: 'Dr. S. Ramya',
-    approvedAt: new Date(Date.now() - 82000000).toISOString(),
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: 'KPR-GP-2026-66230',
-    studentName: 'Dinesh Karthik B',
-    rollNo: '7377221ME031',
-    wardenName: 'Dr. M. Senthil',
-    block: 'Cholan Hostel',
-    department: 'Mechanical Engineering',
-    purpose: 'Campus On-Duty Event',
-    depDate: new Date(Date.now() - 86400000 * 3).toISOString().split('T')[0],
-    depTime: '08:00',
-    arrDate: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
-    arrTime: '21:00',
-    status: 'Approved',
-    wardenRemark: 'Returned on schedule.',
-    approvedBy: 'Dr. M. Senthil',
-    approvedAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-  },
-];
+/**
+ * Guard flag — set to true while a local write (add/update/delete) is in-flight.
+ * While true, the Firestore onSnapshot callback skips overwriting localStorage
+ * so that stale cloud cache does not restore a just-deleted or just-modified record.
+ */
+let _pendingLocalWrite = false;
+let _pendingLocalWriteTimer = null;
+
+function _beginLocalWrite() {
+  _pendingLocalWrite = true;
+  // Safety valve: clear the flag after 5 s even if Firestore never responds
+  clearTimeout(_pendingLocalWriteTimer);
+  _pendingLocalWriteTimer = setTimeout(() => {
+    _pendingLocalWrite = false;
+  }, 5000);
+}
+
+function _endLocalWrite() {
+  clearTimeout(_pendingLocalWriteTimer);
+  _pendingLocalWrite = false;
+}
 
 function purgeLegacyGatePassKeys() {
   try {
@@ -105,12 +52,14 @@ if (db) {
     onSnapshot(
       q,
       (snapshot) => {
+        // Skip overwriting localStorage while a local mutation is still in-flight.
+        // This prevents Firestore's optimistic-cache snapshot from restoring a
+        // record that the user just deleted/modified locally.
+        if (_pendingLocalWrite) return;
         const cloudPasses = [];
         snapshot.forEach((d) => cloudPasses.push({ id: d.id, ...d.data() }));
-        if (cloudPasses.length > 0) {
-          localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(cloudPasses));
-          notifyChange();
-        }
+        localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(cloudPasses));
+        notifyChange();
       },
       (err) => console.warn('Gatepasses Firestore listener notice:', err.message)
     );
@@ -124,14 +73,21 @@ export const gatepassService = {
     purgeLegacyGatePassKeys();
     try {
       const raw = localStorage.getItem(STORAGE_GATEPASS_KEY);
-      if (raw) {
+      if (raw !== null) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) {
+          // Normalize any legacy mixed-case status values to lowercase
+          // so all UI comparisons using .toLowerCase() work correctly
+          const normalized = parsed.map((p) => ({
+            ...p,
+            status: (p.status || 'pending').toLowerCase(),
+          }));
+          return normalized;
+        }
       }
-      localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(DEFAULT_GATEPASSES));
-      return DEFAULT_GATEPASSES;
+      return [];
     } catch {
-      return DEFAULT_GATEPASSES;
+      return [];
     }
   },
 
@@ -141,13 +97,14 @@ export const gatepassService = {
     const newPass = {
       ...data,
       id: `KPR-GP-${new Date().getFullYear()}-${randomSuffix}`,
-      status: 'Pending',
+      status: 'pending',  // Always lowercase — consistent with approve/reject/complete
       wardenRemark: '',
       approvedBy: null,
       approvedAt: null,
       createdAt: new Date().toISOString(),
     };
 
+    _beginLocalWrite();
     passes.unshift(newPass);
     localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(passes));
     notifyChange();
@@ -155,11 +112,17 @@ export const gatepassService = {
     // Sync to Firestore Cloud DB for real-time cross-device sync
     try {
       if (db) {
-        setDoc(doc(db, GATEPASS_COLLECTION, newPass.id), newPass).catch((err) =>
-          console.warn('Firestore setDoc gatepass warning:', err)
-        );
+        setDoc(doc(db, GATEPASS_COLLECTION, newPass.id), newPass)
+          .then(() => _endLocalWrite())
+          .catch((err) => {
+            _endLocalWrite();
+            console.warn('Firestore setDoc gatepass warning:', err);
+          });
+      } else {
+        _endLocalWrite();
       }
     } catch (e) {
+      _endLocalWrite();
       console.warn('Cloud gatepass sync error:', e);
     }
 
@@ -192,17 +155,24 @@ export const gatepassService = {
       updatedAt: new Date().toISOString(),
     };
 
+    _beginLocalWrite();
     localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(passes));
     notifyChange();
 
     // Sync update to Cloud DB
     try {
       if (db) {
-        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true }).catch((err) =>
-          console.warn('Firestore approve gatepass warning:', err)
-        );
+        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true })
+          .then(() => _endLocalWrite())
+          .catch((err) => {
+            _endLocalWrite();
+            console.warn('Firestore approve gatepass warning:', err);
+          });
+      } else {
+        _endLocalWrite();
       }
     } catch (e) {
+      _endLocalWrite();
       console.warn('Cloud approve gatepass error:', e);
     }
 
@@ -235,17 +205,24 @@ export const gatepassService = {
       updatedAt: new Date().toISOString(),
     };
 
+    _beginLocalWrite();
     localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(passes));
     notifyChange();
 
     // Sync update to Cloud DB
     try {
       if (db) {
-        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true }).catch((err) =>
-          console.warn('Firestore reject gatepass warning:', err)
-        );
+        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true })
+          .then(() => _endLocalWrite())
+          .catch((err) => {
+            _endLocalWrite();
+            console.warn('Firestore reject gatepass warning:', err);
+          });
+      } else {
+        _endLocalWrite();
       }
     } catch (e) {
+      _endLocalWrite();
       console.warn('Cloud reject gatepass error:', e);
     }
 
@@ -263,17 +240,24 @@ export const gatepassService = {
       updatedAt: new Date().toISOString(),
     };
 
+    _beginLocalWrite();
     localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(passes));
     notifyChange();
 
     // Sync to Cloud DB
     try {
       if (db) {
-        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true }).catch((err) =>
-          console.warn('Firestore complete gatepass warning:', err)
-        );
+        setDoc(doc(db, GATEPASS_COLLECTION, id), passes[idx], { merge: true })
+          .then(() => _endLocalWrite())
+          .catch((err) => {
+            _endLocalWrite();
+            console.warn('Firestore complete gatepass warning:', err);
+          });
+      } else {
+        _endLocalWrite();
       }
     } catch (e) {
+      _endLocalWrite();
       console.warn('Cloud complete gatepass error:', e);
     }
 
@@ -282,16 +266,23 @@ export const gatepassService = {
 
   deleteGatePass(id) {
     const passes = this.getGatePasses().filter((p) => p.id !== id);
+    _beginLocalWrite();
     localStorage.setItem(STORAGE_GATEPASS_KEY, JSON.stringify(passes));
     notifyChange();
 
     try {
       if (db) {
-        deleteDoc(doc(db, GATEPASS_COLLECTION, id)).catch((err) =>
-          console.warn('Firestore delete gatepass warning:', err)
-        );
+        deleteDoc(doc(db, GATEPASS_COLLECTION, id))
+          .then(() => _endLocalWrite())
+          .catch((err) => {
+            _endLocalWrite();
+            console.warn('Firestore delete gatepass warning:', err);
+          });
+      } else {
+        _endLocalWrite();
       }
     } catch (e) {
+      _endLocalWrite();
       console.warn('Cloud delete gatepass error:', e);
     }
 

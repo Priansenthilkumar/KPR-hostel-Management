@@ -63,7 +63,7 @@ export default function HostelDashboard() {
   }, [blocks]);
 
   const pendingPassesCount = useMemo(() => {
-    return gatePasses.filter((p) => p.status === 'Pending').length;
+    return gatePasses.filter((p) => p.status?.toLowerCase() === 'pending').length;
   }, [gatePasses]);
 
   const pendingRemarksCount = useMemo(() => {
